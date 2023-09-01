@@ -1,0 +1,29 @@
+@import "../../scss/index.scss";
+
+.selectorTabs {
+    display: flex;
+
+    &_item {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        padding: 12px 0;
+        cursor: pointer;
+        background-color: white;
+        color: #699BF7;
+        border: 2px solid #699BF7;
+        border-left: none;
+
+        &:first-child {
+            border-left: 2px solid #699BF7;
+        }
+
+        &.selected {
+            font-weight: 600;
+            // background-color: white;
+            background-color: $primary-color;
+            color: white;
+        }
+    }
+}

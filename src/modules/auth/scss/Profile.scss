@@ -1,0 +1,90 @@
+.profile {
+    display: grid;
+    height: 100%;
+    gap: 24px;
+    grid-template-rows: auto 1fr;
+
+    &_container {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: 800px 488px;
+        margin: 0 auto;
+
+        &_principal {
+            background-color: white;
+            display: grid;
+            height: fit-content;
+        }
+        &_secondary {
+            display: grid;
+        }
+    }
+}
+
+.basicinfo {
+    display: grid;
+    gap: 16px;
+
+    &_main {
+        display: grid;
+        position: relative;
+        height: fit-content;
+        border-radius: 4px;
+        overflow: hidden;
+        gap: 10px;
+
+        &_back {
+            margin: 0;
+            height: 200px;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+            }
+        }
+        &_details {
+            display: grid;
+            padding-left: 200px;
+
+            span {
+                color: #929292;
+                font-size: 16px;
+                font-weight: 400;
+            }
+            &_title {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                span {
+                    color: #000;
+                    font-size: 24px;
+                    font-weight: 500;
+                }
+                i {
+                    cursor: pointer;
+                }
+            }
+            strong {
+                color: #699BF7;
+                font-size: 16px;
+                font-weight: 400;
+            }
+        }
+        &_photo {
+            margin: 0;
+            width: 200px;
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            
+            img {
+                border: 1px solid #c9c9c9;
+                width: 170px;
+                border-radius: 999px;
+            }
+        }
+    }
+}

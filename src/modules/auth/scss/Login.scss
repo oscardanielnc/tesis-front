@@ -1,0 +1,97 @@
+@import "../../../scss/index.scss";
+
+.login {
+    display: grid;
+    height: 100%;
+    gap: 24px;
+    grid-template-rows: auto 1fr;
+
+    &_container {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: 488px 800px;
+        margin: 0 auto;
+
+        &_left {
+            display: grid;
+            height: fit-content;
+            gap: 16px;
+
+            &_google {
+                display: grid;
+                gap: 16px;
+                text-align: center;
+                font-size: 16px;
+                color: #666;
+                font-weight: 400;
+
+                &_photo {
+                    border-radius: 999px;
+                    border: 1px solid #c9c9c9;
+                    overflow: hidden;
+                    width: 120px;
+                    height: 120px;
+                    margin: auto;
+    
+                    img {
+                        height: 120px;
+                    } 
+                }
+                &_email {
+                    font-size: 15px;
+                }
+                &_button {
+                    justify-content: center;
+                    width: fit-content;
+                    margin: auto;
+                    padding: 0 48px !important;
+                    border: 2px solid #699bf7 !important;
+                    box-shadow: none !important;
+                    color: #699bf7 !important;
+                    border-radius: 8px !important;
+                }
+
+            }
+        }
+
+        &_right {
+            &_form {
+                display: grid;
+                height: fit-content;
+                gap: 16px;
+                grid-template-columns: 1fr 1fr;
+            }
+            &-box {
+                display: grid;
+                gap: 16px;
+                margin-top: 22px;
+                
+                &-submit {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                &-acount {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 8px;
+
+                    &-text {
+                        font-size: 15px;
+                    }
+                    &-link {
+                        box-shadow: none !important;
+                        color: $primary-color !important;
+                        font-size: 16px !important; 
+                        text-decoration: underline;
+
+                        div {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

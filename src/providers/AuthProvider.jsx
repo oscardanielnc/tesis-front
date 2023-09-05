@@ -1,13 +1,15 @@
 import React, {useState, createContext} from "react";
-import { PSP_KEY } from "../config";
-// import jwtDecode from "jwt-decode";
-import jwt from 'jwt-simple';
 
-function getAccessToken() {
+function getUserToken() {
     const accessToken = localStorage.getItem("ACCESS_TOKEN");
     if(!accessToken || accessToken==="null") return null;
     
-    const user = JSON.parse(accessToken)
+    let user = null
+    try {
+        user = JSON.parse(accessToken)
+    } catch(e) {
+        console.log(e)
+    }
 
     // return willExpireToken(accessToken)? null : accessToken;
     return user
@@ -26,9 +28,9 @@ function logout() {
 }
 
 let preUser = null
-const accessToken = getAccessToken();
-if(accessToken) {
-    preUser = accessToken
+const userToken = getUserToken();
+if(userToken) {
+    preUser = userToken
 } else {
     logout();
     preUser = null

@@ -5,54 +5,14 @@ import "./scss/Login.scss"
 import InputCombo from "../../components/Inputs/InputCombo";
 import SelectorTabs from "../../components/SelectorTabs";
 import {useEffect, useState } from "react";
-import jwt from 'jwt-simple';
 import Button from "../../components/Inputs/Button";
 import TableInputslogin from "./TableInputslogin";
 import { gapi } from "gapi-script";
 import { GOOGLE_ID, PSP_KEY } from "../../config";
 import GoogleLogin from "react-google-login";
 import { signInApi } from "../../api/auth";
-
-
-const users = [
-    {
-        value: 'STUDENT',
-        name: 'Estudiante'
-    },
-    {
-        value: 'ENTERPRISE',
-        name: 'Empresa'
-    },
-    {
-        value: 'EMPLOYED',
-        name: 'Empleado'
-    },
-    {
-        value: 'PROFESSOR',
-        name: 'Profesor'
-    },
-]
-const locations = [
-    {
-        value: '1',
-        name: 'Lima'
-    },
-    {
-        value: '2',
-        name: 'Tarapoto'
-    },
-]
-const languages = [
-    {
-        value: '1',
-        name: 'Español'
-    },
-    {
-        value: '2',
-        name: 'Inglés'
-    },
-]
-
+import { getLanguagesApi, getLocationsApi } from "../../api/sysData";
+import { usersType } from "../../utils/global-consts";
 
 const userDummy = {
     role: "STUDENT",
@@ -76,8 +36,10 @@ const userDummy = {
 
 
 export default function Login () {
-    const [userSelected, setUserSelected] = useState(users[0]);
+    const [userSelected, setUserSelected] = useState(usersType[0]);
     const [data, setData] = useState(userDummy);
+    const [locations, setLocations] = useState([]);
+    const [languages, setLanguages] = useState([]);
 
     useEffect(() => {
         // localStorage.removeItem("ACCESS_TOKEN")
@@ -88,6 +50,22 @@ export default function Login () {
             })
         }
         gapi.load("client:auth2", start)
+    }, [])
+
+    useEffect(() => {
+        async function fetchData() {
+            //locations
+            const response1 = await getLocationsApi();
+            if(response1.success) {
+                setLocations(response1.result)
+            }
+            //languages
+            const response2 = await getLanguagesApi();
+            if(response2.success) {
+                setLanguages(response2.result)
+            }
+        }
+        fetchData();
     }, [])
 
     const onSuccess = response => {
@@ -115,12 +93,11 @@ export default function Login () {
     }
     const onLogin = async response => {
         const obj = response.profileObj
-        const responseApi = await signInApi(obj.email);
+        const responseApi = await signInApi('email', obj.email);
         if(responseApi.success) {
             const user = responseApi.result;
-            // const accessToken = jwt.encode(user, PSP_KEY);
             localStorage.setItem("ACCESS_TOKEN", JSON.stringify(user));
-            window.location.href = `/profile/student/${user.id}`;
+            window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
         }
     }
 
@@ -155,7 +132,7 @@ export default function Login () {
                     </Section>
                 </div>
                 <div className="login_container_right">
-                    <SelectorTabs list={users} valueSelected={userSelected.value} handleClick={element => handleChangeUser(element)}/>
+                    <SelectorTabs list={usersType} valueSelected={userSelected.value} handleClick={element => handleChangeUser(element)}/>
                     <Section title={`Registro de ${userSelected.name}`} shadow>
                         <TableInputslogin data={data} setData={setData} userSelected={userSelected.value}/>
                         <div className="login_container_right-box">

@@ -14,9 +14,24 @@
             background-color: white;
             display: grid;
             height: fit-content;
+
+            &_plus {
+                display: flex;
+                justify-content: center;
+                padding: 8px;
+                
+                i {
+                    display: flex;
+                    cursor: pointer;
+                    font-size: 30px;
+                    color: #666;
+                }
+            }
         }
         &_secondary {
             display: grid;
+            height: fit-content;
+            gap: 16px;
         }
     }
 }
@@ -44,7 +59,7 @@
         }
         &_details {
             display: grid;
-            padding-left: 200px;
+            padding: 0px 16px 0px 200px;
 
             span {
                 color: #929292;

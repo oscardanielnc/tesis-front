@@ -6,44 +6,29 @@ import "./scss/Login.scss"
 import InputCombo from "../../components/Inputs/InputCombo";
 import InputDate from "../../components/Inputs/InputDate";
 import InputRUC from "../../components/Inputs/InputRUC";
-
-const specialties = [
-    {
-        value: '1',
-        name: 'Ingeniería informática',
-        cycles: 10
-    },
-    {
-        value: '2',
-        name: 'Derecho',
-        cycles: 12
-    },
-]
-const employees = [
-    {
-        value: '1 - 10',
-        name: '1 - 10',
-    },
-    {
-        value: '10 - 100',
-        name: '10 - 100',
-    },
-    {
-        value: '100 - 1000',
-        name: '100 - 1000',
-    },
-]
+import { getSpecialtiesApi } from "../../api/specialty";
+import { numEmployees } from "../../utils/global-consts";
 
 export default function TableInputslogin({setData, data, userSelected}) {
-    useEffect(()=> {
-        if(specialties.length>0) {
-            setData({
-                ...data,
-                specialty: specialties[0].value,
-                cycle: 1,
-            })
+    const [specialties, setSpecialties] = useState([])
+
+    useEffect(() => {
+        async function fetchData() {
+            const response = await getSpecialtiesApi()
+            if(response.success) {
+                const specialtiesPre = response.result;
+                setSpecialties(specialtiesPre)
+                if(specialtiesPre.length>0) {
+                    setData({
+                        ...data,
+                        specialty: specialtiesPre[0].value,
+                        cycle: 1,
+                    })
+                }
+            }
         }
-    }, [setData])
+        fetchData();
+      }, []);
 
 
     if (userSelected==='STUDENT') return (<LoginStudent specialties={specialties} data={data} setData={setData}/>)
@@ -124,7 +109,7 @@ function LoginEnterprise({setData, data}) {
                     <InputText data={data} setData={setData} attribute={"sector"}/>
                 </Section>
                 <Section title={"Número de empleados"} small>
-                    <InputCombo list={employees} setData={setData} attribute={"numEmployees"} data={data} />
+                    <InputCombo list={numEmployees} setData={setData} attribute={"numEmployees"} data={data} />
                 </Section>
             </div>
         </div>

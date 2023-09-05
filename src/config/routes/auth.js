@@ -1,4 +1,5 @@
-import Login from "../../modules/auth/Login";
+import ProfileEmployed from "../../modules/auth/ProfileEmployed";
+import ProfileEnterprise from "../../modules/auth/ProfileEnterprise";
 import ProfileStudent from "../../modules/auth/ProfileStudent";
 
 const ROUTE = "/profile"
@@ -12,6 +13,11 @@ export const routes = [
     {
         path: `${ROUTE}/enterprise/:idUser`,
         exact: true,
-        component: Login,
+        component: ProfileEnterprise,
+    },
+    {
+        path: `${ROUTE}/employed/:idUser`,
+        exact: true,
+        component: ProfileEmployed,
     },
 ]

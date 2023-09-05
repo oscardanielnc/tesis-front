@@ -10,3 +10,10 @@
     font-weight: 600;
     width: calc(100% - 18px);
 }
+
+.inputRange {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+}

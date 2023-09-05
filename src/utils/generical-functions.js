@@ -5,3 +5,14 @@ export function generateRange(a, b, step) {
     }
     return arr;
 }
+
+export function addingInitArr(arr) {
+    const finalArr = [{
+        value: '',
+        name: 'Elegir...'
+    }]
+    for (let elem of arr) {
+        finalArr.push(elem)
+    }
+    return finalArr;
+}

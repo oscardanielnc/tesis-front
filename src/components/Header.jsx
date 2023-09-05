@@ -4,10 +4,10 @@ import { NavLink } from 'react-router-dom';
 import "./scss/Header.scss"
 import { useEffect, useState } from "react";
 
-export default function Header ({type = 'none', idUser='', photo=''}) {
+export default function Header ({type = 'none', idUser='', photo='', idEnterprise=''}) {
     const [ops, setOps] = useState([])
     useEffect(()=> {
-        setOps(getDataHeader(type, idUser))
+        setOps(getDataHeader(type, idUser, idEnterprise))
     }, [])
 
     return (
@@ -41,7 +41,7 @@ export default function Header ({type = 'none', idUser='', photo=''}) {
     )
 }
 
-function getDataHeader (type, idUser) {
+function getDataHeader (type, idUser, idEnterprise) {
     const options = {
         none: [],
         admin: [
@@ -61,7 +61,7 @@ function getDataHeader (type, idUser) {
             },
             {
                 name: "Convocatorias",
-                link: `/job-portal/student`
+                link: `/job-portal/search`
             },
             {
                 name: "Convenios",
@@ -83,7 +83,29 @@ function getDataHeader (type, idUser) {
             },
             {
                 name: "Mis Convocatorias",
-                link: `/job-portal/enterprise`
+                link: `/job-portal/search`
+            },
+            {
+                name: "Miembros",
+                link: `/job-portal/members`
+            },
+            {
+                name: "Convenios",
+                link: `/digital-sign/agreements`
+            },
+        ],
+        employed: [
+            {
+                name: "Perfil",
+                link: `/profile/employed/${idUser}`
+            },
+            {
+                name: "Empresa",
+                link: `/profile/enterprise/${idEnterprise}`
+            },
+            {
+                name: "Mis Convocatorias",
+                link: `/job-portal/search`
             },
             {
                 name: "Miembros",

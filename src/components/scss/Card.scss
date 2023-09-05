@@ -1,0 +1,73 @@
+.psp-card {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 10px;
+    border-bottom: 0.5px solid #929292;
+    margin-top: 10px;
+    padding: 8px 10px;
+
+    &_img {
+        width: auto;
+        
+        &_fig {
+            width: auto;
+            img {
+                width: 36px;
+                border-radius: 999px;
+                overflow: hidden;
+            }
+        }
+        i {
+
+        }
+    }
+    &_details{
+        display: grid;
+        gap: 1px;
+        font-size: 13px;
+
+        &_text1 {
+            font-weight: 600;
+        }
+        &_text2 {
+            font-weight: 400;
+        }
+        &_text3 {
+            color: #929292;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        &_text4 {
+            font-weight: 300;
+            display: flex;
+            gap: 8px;
+        }
+    }
+}
+
+.iconSystem {
+    display: flex;
+    font-size: 32px;
+}
+
+
+.miniCard {
+    display: flex;
+    gap: 8px;
+    color: #929292;
+    font-size: 16px;
+    font-weight: 600;
+    align-items: center;
+
+    &_img {
+        display: flex;
+
+        i {
+            font-size: 24px;
+        }
+    }
+    &_details {
+
+    }
+
+}

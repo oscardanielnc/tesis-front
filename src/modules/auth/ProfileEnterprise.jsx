@@ -5,22 +5,19 @@ import useAuth from "../../hooks/useAuth";
 import "./scss/Profile.scss"
 import BasicInfo from "./BasicInfo";
 import { useParams } from "react-router-dom";
-import { studentDataApi } from "../../api/student";
 import Card from "../../components/Card";
-import MiniCard from "../../components/MiniCard";
 import Opinion from "../../components/Opinion";
 import OptionsIcon from "../../components/OptionsIcon";
 import { signInApi } from "../../api/auth";
+import { enterpriseDataApi } from "../../api/enterprise";
+import Button from "../../components/Inputs/Button"
 
 const detailsDummy = {
-    experience: [],
-    certificates: [],
-    agreements: [],
     ads: [],
     opinions: []
 }
 
-export default function ProfileStudent () {
+export default function ProfileEnterprise () {
     const {user} = useAuth();
     const {idUser} = useParams();
     const [data, setData] = useState(user)
@@ -39,7 +36,7 @@ export default function ProfileStudent () {
             }
 
             //details
-            const response = await studentDataApi(idUser);
+            const response = await enterpriseDataApi(idUser);
             if(response.success) {
                 setDetails(response.result)
             }
@@ -47,8 +44,15 @@ export default function ProfileStudent () {
         fetchData();
       }, []);
 
-    const getTimeTo = (dateInit, dateEnd) => {
-        return `${dateInit} - ${dateEnd} · ${"1 mes"}`;
+    const alredySigned = (studentId, opinions) => {
+        if (opinions) {
+            for (let element of opinions) {
+                if(element.student_id === studentId) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     return (
@@ -56,19 +60,17 @@ export default function ProfileStudent () {
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} idEnterprise={user.enterprise_id}></Header>
             <div className="profile_container">
                 <div className="profile_container_principal">
-                    <BasicInfo data={data} myself={mySelf}/> 
+                    <BasicInfo data={data} myself={mySelf}/>
                     <Section icon={"bi bi-briefcase-fill"}
-                        title={"Experiencia laboral"}>
+                        title={"Anuncios laborales próximos a terminar"}>
                         {
-                            details.experience.map((item, index) => (
+                            details.ads.map((item, index) => (
                                 <Card key={index} 
-                                    text1={item.title}
+                                    text1={`${item.job_title} (${item.code})`}
                                     text2={item.enterprise_name}
-                                    text3={getTimeTo(item.date_init, item.date_end)}
+                                    text3={`Fin de postulación: ${item.date_end}`}
                                     text4={item.description}
-                                    userId={item.enterprise_id}
-                                    photo={item.enterprise_photo}
-                                    icon={item.icon}
+                                    photo={data.photo}
                                     circleState={-2}
                                 >
                                     {mySelf && <OptionsIcon vertical size="22px"
@@ -81,39 +83,12 @@ export default function ProfileStudent () {
                             <i className="bi bi-plus-circle"></i>
                         </div>}
                     </Section>
-
-                    <Section icon={"bi bi-briefcase-fill"}
-                        title={"Certificados & Voluntariados"}>
-                        {
-                            details.certificates.map((item, index) => (
-                                <Card key={index} 
-                                    text1={item.title}
-                                    text2={item.enterprise_name}
-                                    text3={getTimeTo(item.date_init, item.date_end)}
-                                    text4={item.description}
-                                    userId={item.enterprise_id}
-                                    photo={item.enterprise_photo}
-                                    icon={item.icon}
-                                    circleState={-2}
-                                >
-                                    {mySelf && <OptionsIcon vertical size="22px"
-                                        listIcons={[{icon: 'bi bi-pencil-fill'},{icon: 'bi bi-trash-fill'}]} 
-                                    />}
-                                </Card>
-                            ))
-                        }
-                        {mySelf && <div className="profile_container_principal_plus">
-                            <i className="bi bi-plus-circle"></i>
-                        </div>}
-                    </Section>
-
                     <Section icon={"bi bi-briefcase-fill"}
                         title={"Idiomas"}>
                         {
                             data.languages.map((item, index) => (
                                 <Card key={index} 
                                     text1={item.name}
-                                    text2={item.level}
                                     icon={-1}
                                 >
                                     {mySelf && <OptionsIcon vertical size="22px"
@@ -128,39 +103,15 @@ export default function ProfileStudent () {
                     </Section>
                 </div>
                 <div className="profile_container_secondary">
-                    <Section title={"CV"} shadow>
-                        <MiniCard icon={"bi bi-file-earmark-text"} 
-                            text={`${data.name.split(' ')[0]} ${data.lastname.split(' ')[0]} - CV (${data.uploadDateCV})`}>
-                                <OptionsIcon 
-                                    listIcons={mySelf? [{icon: 'bi bi-download'},{icon: 'bi bi-cloud-upload'}]: [{icon: 'bi bi-download'}]} 
-                                />
-                        </MiniCard>
-                    </Section>
-                    <Section title={"Convenios"} shadow>
-                        {
-                            details.agreements.map((item, index) => (
-                                <MiniCard key={index} icon={"bi bi-file-earmark-text"} 
-                                    text={`${item.job_title} en ${item.enterprise_name} (vigente)`}>
-                                        <OptionsIcon visibleText
-                                            listIcons={[{icon: 'bi bi-download'}]} 
-                                        />
-                                </MiniCard>
-                            ))
-                        }
-                    </Section>
-                    {mySelf && <Section title={"Anuncios guardados"} shadow>
-                        {
-                            details.ads.map((item, index) => (
-                                <MiniCard key={index} icon={"bi bi-calendar-week"} 
-                                    text={`${item.job_title} - ${item.enterprise_name} (${item.date_end})`}>
-                                        <OptionsIcon visibleText
-                                            listIcons={[{icon: 'bi bi-box-arrow-in-right', text: 'Ver'}]} 
-                                        />
-                                </MiniCard>
-                            ))
-                        }
-                    </Section>}
                     <Section title={"Opiniones"} shadow>
+                        {user.role==="STUDENT" && !alredySigned(user.id, details.opinions) && 
+                        <div className="profile_container_principal_plus">
+                            <Button title={"Escribe tu opinión"}
+                                icon={"bi bi-plus"}
+                                variant={"primary"}
+                                circle
+                            />
+                        </div>}
                         {
                             details.opinions.map((item, index) => (
                                 <Opinion key={index} 

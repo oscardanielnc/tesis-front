@@ -1,0 +1,40 @@
+.opinion {
+    display: grid;
+    gap: 6px;
+    color: #666;
+    border-bottom: 1px solid #929292;
+    padding: 8px;
+
+    &_top {
+        display: flex;
+        gap: 12px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    &_bottom {
+        font-size: 14px;
+        font-weight: 300;
+        
+        p {
+            margin: 0;
+        }
+    }
+}
+
+
+.score_container {
+    display: flex;
+    gap: 8px;
+}
+.score_box {
+    display: flex;
+    font-size: 16px;
+    gap: 4px;
+}
+.score_span {
+    display: flex;
+    align-items: center;
+    color: #666 !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+}

@@ -4,13 +4,18 @@ import {useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import "./scss/Profile.scss"
 import BasicInfo from "./BasicInfo";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { studentDataApi } from "../../api/student";
 import Card from "../../components/Card";
 import MiniCard from "../../components/MiniCard";
 import Opinion from "../../components/Opinion";
 import OptionsIcon from "../../components/OptionsIcon";
 import { signInApi } from "../../api/auth";
+import ModalLanguage from "../../components/Modals/ModalLanguage";
+import ModalCerfiticates from "../../components/Modals/ModalCertificates";
+import { deleteItemOfArray } from "../../utils/generical-functions";
+import ModalBasic from "../../components/Modals/ModalBasic";
+import { deleteMyLenguageApi } from "../../api/sysData";
 
 const detailsDummy = {
     experience: [],
@@ -20,12 +25,34 @@ const detailsDummy = {
     opinions: []
 }
 
+const dummyCert = {
+    id: '',
+    title: '',
+    enterprise_name: '',
+    icon: -1,
+    date_init: "",
+    date_end: "",
+    description: "",
+    enterprise_id: '',
+    enterprise_photo: '',
+    ruc: '',
+    rucVerified: false
+}
+
 export default function ProfileStudent () {
-    const {user} = useAuth();
+    const {user, updateUser} = useAuth();
     const {idUser} = useParams();
+    const navigate = useNavigate();
     const [data, setData] = useState(user)
     const [mySelf, setMySelf] = useState(true)
     const [details, setDetails] = useState(detailsDummy);
+    const [modalDelete, setModalDelete] = useState(false)
+    const [modalLanguage, setModalLanguage] = useState(false)
+    const [modalCerfiticates, setModalCerfiticates] = useState(false)
+    const [elemToEdit, setElementToEdit] = useState(dummyCert)
+    const [modeModal, setModeModal] = useState("edit");
+    const [campCertificates, setCampCertificates] = useState("");
+    const [attrsToDelete, setAttrsToDelete] = useState({arr: [], item: {},islanguage: false})
 
     useEffect(() => {
         async function fetchData() {
@@ -51,6 +78,55 @@ export default function ProfileStudent () {
         return `${dateInit} - ${dateEnd} · ${"1 mes"}`;
     }
 
+    const handleModalLanguage = (item=null) => {
+        let elem = {value: '', level: 'Básico'}
+        if(item) {
+            elem = item
+            setModeModal("edit")
+        }else {
+            setModeModal("add")
+        }
+        setElementToEdit(elem)
+        setModalLanguage(true)
+    }
+    const handleModalCertificates = (camp, item=null) => {
+        let elem = dummyCert
+
+        if(item) {
+            elem = item
+            setModeModal("edit")
+        }else {
+            setModeModal("add")
+        }
+        setCampCertificates(camp===1? "Experiencia laboral": "Certificados & Voluntariados")
+        setElementToEdit(elem)
+        setModalCerfiticates(true)
+    }
+
+    const showModalDelete = (arr, item, islanguage) => {
+        setAttrsToDelete({arr, item, islanguage})
+        setModalDelete(true)
+    }
+
+    const deleteItemModal = async () => {
+        if(attrsToDelete.islanguage) {
+            const response = await deleteMyLenguageApi({userId: user.id, lanId: attrsToDelete.item.value}) 
+            if(response.success && response.result) {
+                const nLangs = deleteItemOfArray(attrsToDelete.arr, attrsToDelete.item, 'value')
+                updateUser({
+                    ...user,
+                    languages: nLangs
+                })
+                window.location.reload()
+            }
+        } else {
+            const response = await deleteMyLenguageApi({id: attrsToDelete.item.id}) 
+            if(response.success && response.result) {
+                window.location.reload()
+            }
+        }
+    }
+
     return (
         <div className="profile">
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} idEnterprise={user.enterprise_id}></Header>
@@ -66,19 +142,21 @@ export default function ProfileStudent () {
                                     text2={item.enterprise_name}
                                     text3={getTimeTo(item.date_init, item.date_end)}
                                     text4={item.description}
-                                    userId={item.enterprise_id}
+                                    userId={item.enterprise_id!==''? item.enterprise_id: undefined}
+                                    profile={"enterprise"}
                                     photo={item.enterprise_photo}
                                     icon={item.icon}
                                     circleState={-2}
                                 >
                                     {mySelf && <OptionsIcon vertical size="22px"
-                                        listIcons={[{icon: 'bi bi-pencil-fill'},{icon: 'bi bi-trash-fill'}]} 
+                                        listIcons={[{icon: 'bi bi-pencil-fill', fn: ()=> handleModalCertificates(1,item)},
+                                                    {icon: 'bi bi-trash-fill', fn: ()=> showModalDelete(details.experience, item, false)}]} 
                                     />}
                                 </Card>
                             ))
                         }
                         {mySelf && <div className="profile_container_principal_plus">
-                            <i className="bi bi-plus-circle"></i>
+                            <i className="bi bi-plus-circle"  onClick={()=> handleModalCertificates(1)}></i>
                         </div>}
                     </Section>
 
@@ -91,19 +169,20 @@ export default function ProfileStudent () {
                                     text2={item.enterprise_name}
                                     text3={getTimeTo(item.date_init, item.date_end)}
                                     text4={item.description}
-                                    userId={item.enterprise_id}
+                                    userId={item.enterprise_id!==''? item.enterprise_id: undefined}
                                     photo={item.enterprise_photo}
                                     icon={item.icon}
                                     circleState={-2}
                                 >
                                     {mySelf && <OptionsIcon vertical size="22px"
-                                        listIcons={[{icon: 'bi bi-pencil-fill'},{icon: 'bi bi-trash-fill'}]} 
+                                        listIcons={[{icon: 'bi bi-pencil-fill', fn: ()=> handleModalCertificates(2,item)},
+                                                    {icon: 'bi bi-trash-fill', fn: ()=> showModalDelete(details.certificates, item, false)}]} 
                                     />}
                                 </Card>
                             ))
                         }
                         {mySelf && <div className="profile_container_principal_plus">
-                            <i className="bi bi-plus-circle"></i>
+                            <i className="bi bi-plus-circle" onClick={()=> handleModalCertificates(2)}></i>
                         </div>}
                     </Section>
 
@@ -117,26 +196,35 @@ export default function ProfileStudent () {
                                     icon={-1}
                                 >
                                     {mySelf && <OptionsIcon vertical size="22px"
-                                        listIcons={[{icon: 'bi bi-pencil-fill'},{icon: 'bi bi-trash-fill'}]} 
+                                        listIcons={[{icon: 'bi bi-pencil-fill', fn: ()=> handleModalLanguage(item)},
+                                                    {icon: 'bi bi-trash-fill', fn: ()=> showModalDelete(data.languages, item, true)}]} 
                                     />}
                                 </Card>
                             ))
                         }
                         {mySelf && <div className="profile_container_principal_plus">
-                            <i className="bi bi-plus-circle"></i>
+                            <i className="bi bi-plus-circle" onClick={()=> handleModalLanguage()}></i>
                         </div>}
                     </Section>
                 </div>
                 <div className="profile_container_secondary">
                     <Section title={"CV"} shadow>
-                        <MiniCard icon={"bi bi-file-earmark-text"} 
+                        {(data.cv_path && data.cv_path!=='') && <MiniCard icon={"bi bi-file-earmark-text"} 
                             text={`${data.name.split(' ')[0]} ${data.lastname.split(' ')[0]} - CV (${data.uploadDateCV})`}>
                                 <OptionsIcon 
                                     listIcons={mySelf? [{icon: 'bi bi-download'},{icon: 'bi bi-cloud-upload'}]: [{icon: 'bi bi-download'}]} 
                                 />
-                        </MiniCard>
+                        </MiniCard>}
+                        {(data.cv_path==='' || !data.cv_path) && <MiniCard icon={"bi bi-file-earmark-text"} text={`Sin CV`}>
+                                {
+                                    mySelf && <OptionsIcon listIcons={[{icon: 'bi bi-cloud-upload'}]}/> 
+                                }
+                        </MiniCard>}
                     </Section>
                     <Section title={"Convenios"} shadow>
+                        {
+                            details.agreements.length===0 && <MiniCard icon={"bi bi-file-earmark-text"} text={`Sin Convenio`}></MiniCard>
+                        }
                         {
                             details.agreements.map((item, index) => (
                                 <MiniCard key={index} icon={"bi bi-file-earmark-text"} 
@@ -154,7 +242,8 @@ export default function ProfileStudent () {
                                 <MiniCard key={index} icon={"bi bi-calendar-week"} 
                                     text={`${item.job_title} - ${item.enterprise_name} (${item.date_end})`}>
                                         <OptionsIcon visibleText
-                                            listIcons={[{icon: 'bi bi-box-arrow-in-right', text: 'Ver'}]} 
+                                            listIcons={[{icon: 'bi bi-box-arrow-in-right', text: 'Ver',
+                                                        fn: ()=> navigate(`/job-portal/job/${item.code}`)}]} 
                                         />
                                 </MiniCard>
                             ))
@@ -175,6 +264,13 @@ export default function ProfileStudent () {
                             ))
                         }
                     </Section>
+                    <ModalLanguage show={modalLanguage} setShow={setModalLanguage} type={modeModal} 
+                        myData={user.languages} lanEdit={elemToEdit} />
+                    <ModalCerfiticates show={modalCerfiticates} setShow={setModalCerfiticates} type={modeModal} 
+                        camp={campCertificates} item={elemToEdit}/>
+                    <ModalBasic title={`Eliminar elemento`} show={modalDelete} setShow={setModalDelete} handleClick={deleteItemModal}>
+                        <span>{`${attrsToDelete.islanguage? 'Idioma ': ''} ${attrsToDelete.islanguage? attrsToDelete.item.name: attrsToDelete.item.title}`}</span>
+                    </ModalBasic>
                 </div>
             </div>
         </div>

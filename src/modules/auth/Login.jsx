@@ -8,11 +8,12 @@ import {useEffect, useState } from "react";
 import Button from "../../components/Inputs/Button";
 import TableInputslogin from "./TableInputslogin";
 import { gapi } from "gapi-script";
-import { GOOGLE_ID, PSP_KEY } from "../../config";
+import { GOOGLE_ID } from "../../config";
 import GoogleLogin from "react-google-login";
-import { signInApi } from "../../api/auth";
-import { getLanguagesApi, getLocationsApi } from "../../api/sysData";
+import { signInApi, signUpApi } from "../../api/auth";
+import { getEmailsSystemApi, getLanguagesApi, getLocationsApi } from "../../api/sysData";
 import { usersType } from "../../utils/global-consts";
+import invokeToast from "../../utils/invokeToast";
 
 const userDummy = {
     role: "STUDENT",
@@ -31,7 +32,10 @@ const userDummy = {
     phone: '',
     sector: '',
     numEmployees: '',
-    job: ''
+    job: '',
+    enterprise_name: '',
+    enterprise_photo: '',
+    icon: -1
 }
 
 
@@ -40,6 +44,7 @@ export default function Login () {
     const [data, setData] = useState(userDummy);
     const [locations, setLocations] = useState([]);
     const [languages, setLanguages] = useState([]);
+    const [sysConf, setSysConf] = useState([]);
 
     useEffect(() => {
         // localStorage.removeItem("ACCESS_TOKEN")
@@ -54,15 +59,27 @@ export default function Login () {
 
     useEffect(() => {
         async function fetchData() {
-            //locations
             const response1 = await getLocationsApi();
+            const response2 = await getLanguagesApi();
+            const response3 = await getEmailsSystemApi();
+            
+            //locations
             if(response1.success) {
                 setLocations(response1.result)
             }
             //languages
-            const response2 = await getLanguagesApi();
             if(response2.success) {
                 setLanguages(response2.result)
+            }
+            if(response3.success) {
+                setSysConf(response3.result)
+            }
+            if(response1.success && response2.success) {
+                setData({
+                    ...data,
+                    location: response1.result[0].value,
+                    language: response2.result[0].value
+                })
             }
         }
         fetchData();
@@ -77,7 +94,7 @@ export default function Login () {
         })
     }
     const onFailure = err => {
-        console.log("ERROR: Google Auth", err)
+        invokeToast("error", err)
     }
 
     const handleChangeUser = (element) => {
@@ -88,8 +105,47 @@ export default function Login () {
         })
     }
 
-    const handleSubmit = () => {
-        console.log(data)
+    const validateInputs = () => {
+        if(data.email === '-') 
+            {invokeToast("warning", "Es necesario registrar un correo"); return false}
+        if(data.role==='STUDENT' && data.email.split('@')[1] !== sysConf.domain) 
+            {invokeToast("warning", "Debe registrarse con su correo institucional"); return false}
+        if((data.role==='ENTERPRISE' || data.role==='EMPLOYED') && data.ruc === '') 
+            {invokeToast("warning", `El RUC no puede ser un campo vacío`); return false}
+        if((data.role==='ENTERPRISE' || data.role==='EMPLOYED') && !data.rucVerified) 
+            {invokeToast("warning", `El RUC ingresado no es válido`); return false}
+        if(data.name === '') 
+            {invokeToast("warning", `${data.role==='ENTERPRISE'? 'La razón social': 'El nombre'} no puede ser un campo vacío`); return false}
+        if(data.role!=='ENTERPRISE' && data.lastname === '') 
+            {invokeToast("warning", `El campo de apellido no puede estar vacío`); return false}
+        if(data.date === '') 
+            {invokeToast("warning", `Ingrese una fecha de ${data.role==='ENTERPRISE'? 'fundación': 'nacimiento'} válida`); return false}
+        if(new Date(data.date) > new Date()) 
+            {invokeToast("warning", `La fecha de ${data.role==='ENTERPRISE'? 'fundación': 'nacimiento'} no puede ser mayor a la fecha actual`); return false}
+        if(data.role==='STUDENT' && data.code === '') 
+            {invokeToast("warning", `El código de estudiante no puede estar vacío`); return false}
+        if((data.role==='ENTERPRISE' || data.role==='EMPLOYED') && data.phone === '') 
+            {invokeToast("warning", `El número de teléfono no puede ser un campo vacío`); return false}
+        if(data.role==='ENTERPRISE' && data.sector === '') 
+            {invokeToast("warning", `El sector empresarial no puede ser un campo vacío`); return false}
+        if(data.role==='ENTERPRISE' && data.numEmployees === '') 
+            {invokeToast("warning", `Ingrese el número de empleados en su empresa`); return false}
+        if(data.role==='EMPLOYED' && data.job === '') 
+            {invokeToast("warning", `Ingrese su puesto de trabajo en la empresa`); return false}
+        return true
+    }
+
+    const handleSubmit = async () => {
+        if(validateInputs()) {
+            const responseApi = await signUpApi(data);
+            if(responseApi.success) {
+                const user = responseApi.result;
+                localStorage.setItem("ACCESS_TOKEN", JSON.stringify(user));
+                window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
+            } else {
+                invokeToast("error", responseApi.message)
+            }
+        }
     }
     const onLogin = async response => {
         const obj = response.profileObj
@@ -98,6 +154,8 @@ export default function Login () {
             const user = responseApi.result;
             localStorage.setItem("ACCESS_TOKEN", JSON.stringify(user));
             window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
+        } else {
+            invokeToast("error", responseApi.message)
         }
     }
 
@@ -139,6 +197,7 @@ export default function Login () {
                             <div className="login_container_right-box-submit">
                                 <Button title="Registrar" handleClick={handleSubmit} variant="primary" icon="bi-hand-index-fill"/>
                             </div>
+                            <span style={{fontSize: "14px"}}>¿Hay algún problema con su registro? Puede contactar con <strong>{sysConf.support}</strong></span>
                             <div className="login_container_right-box-acount">
                                 <span className="login_container_right-box-acount-text">¿Ya tiene una cuenta registrada</span>
                                 <GoogleLogin 
@@ -149,7 +208,6 @@ export default function Login () {
                                     buttonText={"Iniciar sesión"}
                                     className="login_container_right-box-acount-link"
                                 />
-                                {/* <span className="login_container_right-box-acount-link">Iniciar Sesión</span> */}
                             </div>
                         </div>
                     </Section>

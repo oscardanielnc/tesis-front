@@ -4,13 +4,17 @@ import {useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import "./scss/Profile.scss"
 import BasicInfo from "./BasicInfo";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Card from "../../components/Card";
 import OptionsIcon from "../../components/OptionsIcon";
 import { signInApi } from "../../api/auth";
 import { employedDataApi } from "../../api/employed";
 import MiniCard from "../../components/MiniCard";
 import InputCheck from "../../components/Inputs/InputCheck";
+import ModalLanguage from "../../components/Modals/ModalLanguage";
+import ModalBasic from "../../components/Modals/ModalBasic";
+import { deleteMyLenguageApi } from "../../api/sysData";
+import { deleteItemOfArray } from "../../utils/generical-functions";
 
 const detailsDummy = {
     agreements: [],
@@ -18,11 +22,17 @@ const detailsDummy = {
 }
 
 export default function ProfileEmployed () {
-    const {user} = useAuth();
+    const {user,updateUser} = useAuth();
     const {idUser} = useParams();
+    const navigate = useNavigate();
     const [data, setData] = useState(user)
     const [mySelf, setMySelf] = useState(true)
     const [details, setDetails] = useState(detailsDummy);
+    const [modalLanguage, setModalLanguage] = useState(false)
+    const [modalDelete, setModalDelete] = useState(false)
+    const [attrsToDelete, setAttrsToDelete] = useState({arr: [], item: {}})
+    const [modeModal, setModeModal] = useState("edit");
+    const [elemToEdit, setElementToEdit] = useState({})
 
     useEffect(() => {
         async function fetchData() {
@@ -44,6 +54,35 @@ export default function ProfileEmployed () {
         fetchData();
       }, []);
 
+    const handleModalLanguage = (item=null) => {
+        let elem = {value: '', level: 'Básico'}
+        if(item) {
+            elem = item
+            setModeModal("edit")
+        }else {
+            setModeModal("add")
+        }
+        setElementToEdit(elem)
+        setModalLanguage(true)
+    }
+
+    const showModalDelete = (arr, item) => {
+        setAttrsToDelete({arr, item})
+        setModalDelete(true)
+    }
+
+    const deleteItemModal = async () => {
+        const response = await deleteMyLenguageApi({userId: user.id, lanId: attrsToDelete.item.value}) 
+        if(response.success && response.result) {
+            const nLangs = deleteItemOfArray(attrsToDelete.arr, attrsToDelete.item, 'value')
+            updateUser({
+                ...user,
+                languages: nLangs
+            })
+            window.location.reload()
+        }
+    }
+
     return (
         <div className="profile">
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} idEnterprise={user.enterprise_id}></Header>
@@ -61,16 +100,17 @@ export default function ProfileEmployed () {
                                     text4={item.description}
                                     photo={data.photo}
                                     userId={item.enterprise_id}
+                                    profile={"enterprise"}
                                     circleState={-2}
                                 >
                                     {mySelf && <OptionsIcon vertical size="22px"
-                                        listIcons={[{icon: 'bi bi-pencil-fill'},{icon: 'bi bi-trash-fill'}]} 
+                                        listIcons={[{icon: 'bi bi-pencil-fill', fn: ()=> navigate(`/job-portal/job/${item.code}`)}]} 
                                     />}
                                 </Card>
                             ))
                         }
                         {mySelf && user.recruiter && <div className="profile_container_principal_plus">
-                            <i className="bi bi-plus-circle"></i>
+                            <i className="bi bi-plus-circle" onClick={()=>navigate(`/job-portal/create`)}></i>
                         </div>}
                     </Section>
                     <Section icon={"bi bi-briefcase-fill"}
@@ -83,13 +123,14 @@ export default function ProfileEmployed () {
                                     icon={-1}
                                 >
                                     {mySelf && <OptionsIcon vertical size="22px"
-                                        listIcons={[{icon: 'bi bi-pencil-fill'},{icon: 'bi bi-trash-fill'}]} 
+                                        listIcons={[{icon: 'bi bi-pencil-fill', fn: ()=> handleModalLanguage(item)},
+                                        {icon: 'bi bi-trash-fill', fn: ()=> showModalDelete(data.languages, item, true)}]} 
                                     />}
                                 </Card>
                             ))
                         }
                         {mySelf && <div className="profile_container_principal_plus">
-                            <i className="bi bi-plus-circle"></i>
+                            <i className="bi bi-plus-circle" onClick={()=> handleModalLanguage()}></i>
                         </div>}
                     </Section>
                 </div>
@@ -122,6 +163,11 @@ export default function ProfileEmployed () {
                             ))
                         }
                     </Section>
+                    <ModalLanguage show={modalLanguage} setShow={setModalLanguage} type={modeModal} 
+                        myData={user.languages} lanEdit={elemToEdit} />
+                    <ModalBasic title={`Eliminar elemento`} show={modalDelete} setShow={setModalDelete} handleClick={deleteItemModal}>
+                        <span>{`Idioma ${attrsToDelete.item.name}`}</span>
+                    </ModalBasic>
                 </div>
             </div>
         </div>

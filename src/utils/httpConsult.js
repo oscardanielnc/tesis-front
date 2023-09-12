@@ -6,8 +6,9 @@ export default function httpConsult(url, method, body=null) {
         headers: {
             'Content-type': 'application/json'
         },
-        // body: JSON.stringify(body)
     }
+    if(body)
+        params.body = JSON.stringify(body)
     
     const completeUrl = `http://${BASE_PATH}/api/${API_VERSION}/${url}`
 

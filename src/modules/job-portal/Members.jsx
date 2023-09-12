@@ -8,7 +8,11 @@ import Card from "../../components/Card";
 import InputText from "../../components/Inputs/InputText";
 import Button from "../../components/Inputs/Button";
 import InputCheck from "../../components/Inputs/InputCheck";
-import { getEmployeesApi } from "../../api/employed";
+import { changePrivToEmployedApi, getEmployeesApi } from "../../api/employed";
+import CardProfile from "../../components/CardProfile";
+import ModalBasic from "../../components/Modals/ModalBasic";
+import invokeToast from "../../utils/invokeToast";
+import { modifyItemOfArray } from "../../utils/generical-functions";
 
 const formDummy = {
     name: '',
@@ -22,32 +26,76 @@ export default function SearchJob () {
     const {user} = useAuth();
     const [data, setData] = useState([])
     const [form, setForm] = useState(formDummy)
+    const [modalPriv, setModalPriv] = useState(false);
+    const [employedPriv, setEmployedPriv] = useState({});
 
     const onSearch = async () => {
-        const response = await getEmployeesApi();
+        const response = await getEmployeesApi(form);
         if(response.success) {
             setData(response.result)
         }
     }
 
-    const getPrivilegies = (reader, signatory, recruiter) => {
+    const getPrivilegies = (employed) => {
         return [
             {
-                icon: reader? 'bi bi-check-circle-fill': 'bi bi-exclamation-octagon-fill', 
-                color: reader? '#198754': '#dc3545', 
-                text: reader? 'Verificado': 'No Verificado'
+                icon: employed.reader? 'bi bi-check-circle-fill': 'bi bi-exclamation-octagon-fill', 
+                color: employed.reader? '#198754': '#dc3545', 
+                text: employed.reader? 'Verificado': 'No Verificado',
+                fn: ()=>showModalEmployed(employed,1)
             },
             {
                 icon: 'bi bi-badge-ad-fill', 
-                color: recruiter? '#699BF7': '#666', 
-                text: recruiter? 'Reclutador': 'No Reclutador'
+                color: employed.recruiter? '#699BF7': '#666', 
+                text: employed.recruiter? 'Reclutador': 'No Reclutador',
+                fn: ()=>showModalEmployed(employed,2)
             },
             {
                 icon: 'bi bi-file-earmark-richtext-fill', 
-                color: signatory? '#699BF7': '#666', 
-                text: signatory? 'Firmante': 'No Firmante'
+                color: employed.signatory? '#699BF7': '#666', 
+                text: employed.signatory? 'Firmante': 'No Firmante',
+                fn: ()=>showModalEmployed(employed,3)
             },
         ]
+    }
+
+    const showModalEmployed = (employed,priv) => {
+        if(user.role!=='ENTERPRISE') return;
+        if(!employed.reader && priv!==1) {
+            invokeToast("warning", "Antes de asignar un privilegio debe verificar al empleado")
+            return;
+        }
+        else if(priv===1 && employed.reader) {
+            setEmployedPriv({
+                ...employed,
+                reader: false,
+                recruiter: false,
+                signatory: false
+            })
+        } else if (priv===1 && !employed.reader) {
+            setEmployedPriv({
+                ...employed,
+                reader: true
+            })
+        } else if(priv===2) {
+            setEmployedPriv({
+                ...employed,
+                recruiter: !employed.recruiter
+            })
+        } else if(priv===3) {
+            setEmployedPriv({
+                ...employed,
+                signatory: !employed.signatory
+            })
+        }
+        setModalPriv(true)
+    }
+    const changePrivToEmployed = async () => {
+        const response = await changePrivToEmployedApi(employedPriv)
+        if(response.success && response.result) {
+            setData(modifyItemOfArray(data, employedPriv, 'user_id'))
+            setModalPriv(false)
+        }
     }
 
     return (
@@ -95,11 +143,33 @@ export default function SearchJob () {
                                     photo={item.user_photo}
                                     circleState={-2}
                                 >
-                                    <OptionsIcon listIcons={getPrivilegies(item.reader, item.signatory, item.recruiter)}/>
+                                    <OptionsIcon listIcons={getPrivilegies(item)}/>
                                 </Card>
                             ))
                         }
                     </Section>
+                    <ModalBasic setShow={setModalPriv} show={modalPriv} 
+                        handleClick={changePrivToEmployed} title={"Cambiar privilegios"}>
+                            <div style={{display: 'grid', gap: '16px', gridTemplateColumns: '1fr 1fr'}}>
+                                <CardProfile idUser={employedPriv.user_id} name={employedPriv.name} profile={"employed"}
+                                    photo={employedPriv.user_photo} subTitle={employedPriv.job}/>
+                                <div>
+                                    <span>Privilegios resultantes:</span>
+                                    <InputCheck data={employedPriv} attribute={"reader"} 
+                                        states={[{icon: 'bi bi-check-circle-fill', color: '#198754', text: 'Lector (usuario verificado)'},
+                                                {icon: 'bi bi-exclamation-octagon-fill', color: '#dc3545', text: 'Lector (usuario verificado)'}]}
+                                    />
+                                    <InputCheck data={employedPriv} attribute={"recruiter"} 
+                                        states={[{icon: 'bi bi-badge-ad-fill', color: '#699BF7', text: 'Reclutador'},
+                                                {icon: 'bi bi-badge-ad-fill', color: '#666', text: 'Reclutador'}]}
+                                    />
+                                    <InputCheck data={employedPriv} attribute={"signatory"} 
+                                        states={[{icon: 'bi bi-file-earmark-richtext-fill', color: '#699BF7', text: 'Firmante'},
+                                                {icon: 'bi bi-file-earmark-richtext-fill', color: '#666', text: 'Firmante'}]}
+                                    />
+                                </div>
+                            </div>
+                    </ModalBasic>
                 </div>
             </div>
         </div>

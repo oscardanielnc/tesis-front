@@ -10,7 +10,7 @@ export default function InputCombo ({list, setData, data, attribute}) {
     }
     
     return (
-        <Form.Select className="inputCombo" onChange={handleChange} name={attribute}>
+        <Form.Select className="inputCombo" onChange={handleChange} name={attribute} value={data[attribute]}>
             {
                 list.map((element, index) => (
                     <option value={element.value} 

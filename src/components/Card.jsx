@@ -1,15 +1,24 @@
+import { useNavigate } from "react-router-dom";
 import IconSystem from "./IconSystem";
 import "./scss/Card.scss"
 
 export default function Card (props) {
-    const {icon,userId=null,photo,circleState=-2,text1=null,text2=null,text3=null,text4=null,children} = props;
+    const {icon,userId,photo,circleState=-2,text1=null,text2=null,text3=null,text4=null,children, profile} = props;
+    const navigate = useNavigate();
+
+    const redirectToProfile = () => {
+        if(userId && profile) {
+            navigate(`/profile/${profile.toLowerCase()}/${userId}`)
+        }
+    }
 
     return (
         <div className="psp-card">
             <div className="psp-card_img">
                 {photo && photo!==''? 
                     <figure className="psp-card_img_fig">
-                        <img src={photo} alt="enterprise" />
+                        <img src={photo} alt="enterprise" onClick={redirectToProfile} 
+                            style={{cursor: userId && profile? 'pointer': 'default'}}/>
                     </figure>:
                     <IconSystem type={icon}/>
                 }

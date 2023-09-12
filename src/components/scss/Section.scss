@@ -15,13 +15,36 @@
             display: flex;
             color: #666666;
         }
+        &.small {
+            font-size: 16px;
+        }
+    }
+
+    &_super-title {
+        display: flex;
+        justify-content: space-between;
+
+        &_ops {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+
+            i {
+                font-size: 18px;
+                cursor: pointer;
+                color: #5c5c5c;
+            }
+            i:hover {
+                color: #699BF7;
+            }
+        }
     }
 
     &_content {
-
+        &_p {
+            font-size: 14px;
+            font-weight: 300;
+        }
     }
 }
 
-.small {
-    font-size: 16px;
-}

@@ -81,3 +81,46 @@ export const agreementStatesType = [
         name: 'Sin convenio',
     },
 ]
+
+export const typeOfApplicants = [
+    {
+        value: '1',
+        name: 'Mostrar todos',
+    },
+    {
+        value: '2',
+        name: 'Mostrar contratados',
+    },
+    {
+        value: '3',
+        name: 'No mostrar contratados',
+    },
+]
+export const orderByApplicants = [
+    {
+        value: '',
+        name: 'Elegir...',
+    },
+    {
+        value: '1',
+        name: 'Fecha de carga de CV',
+    },
+    {
+        value: '2',
+        name: 'Ciclo de estudios',
+    },
+]
+export const languageLeves = [
+    {
+        value: 'Básico',
+        name: 'Básico',
+    },
+    {
+        value: 'Intermedio',
+        name: 'Intermedio',
+    },
+    {
+        value: 'Avanzado',
+        name: 'Avanzado',
+    },
+]

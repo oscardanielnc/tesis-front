@@ -4,7 +4,6 @@ export default function InputCheck (props) {
     const {size='24px', withInput=false, data, setData, attribute, states} = props
 
     const handleClick = () => {
-        console.log(data[attribute])
         setData({
             ...data,
             [attribute]: !data[attribute]

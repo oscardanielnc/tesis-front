@@ -1,7 +1,7 @@
 import {FormControl} from 'react-bootstrap';
 import "../scss/InputText.scss"
 
-export default function InputText ({data, attribute, setData, maxLength=36, isNumber=false}) {
+export default function InputText ({data, attribute, setData, maxLength=36, isNumber=false, placeholder='', disabled=false}) {
     
     const handleChange = e => {
         const value = e.target.value
@@ -19,6 +19,8 @@ export default function InputText ({data, attribute, setData, maxLength=36, isNu
             value={data[attribute]}
             name={attribute}
             maxLength={maxLength}
+            placeholder={placeholder}
+            disabled={disabled}
         />
     )
 }

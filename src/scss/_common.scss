@@ -24,3 +24,23 @@
             }
         }
 }
+
+.div_plus {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 8px;
+    
+    i {
+        display: flex;
+        cursor: pointer;
+        font-size: 30px;
+        color: #666;
+    }
+}
+
+.single-cont {
+    height: fit-content;
+    max-width: 1120px;
+    margin: 0 auto;
+}

@@ -25,6 +25,10 @@
                     cursor: pointer;
                     font-size: 30px;
                     color: #666;
+
+                    &:hover {
+                        color: #699BF7;
+                    }
                 }
             }
         }
@@ -70,6 +74,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                gap: 8px;
 
                 span {
                     color: #000;
@@ -78,7 +83,16 @@
                 }
                 i {
                     cursor: pointer;
+
+                    &:hover {
+                        color: #699BF7;
+                    }
                 }
+            }
+            &_edit {
+                display: flex;
+                gap: 12px;
+                margin: 6px 0;
             }
             strong {
                 color: #699BF7;

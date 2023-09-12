@@ -3,6 +3,7 @@ import nouser from "../assets/jpg/user.jpg";
 import { NavLink } from 'react-router-dom';
 import "./scss/Header.scss"
 import { useEffect, useState } from "react";
+import { ToastContainer } from 'react-toastify';
 
 export default function Header ({type = 'none', idUser='', photo='', idEnterprise=''}) {
     const [ops, setOps] = useState([])
@@ -29,6 +30,7 @@ export default function Header ({type = 'none', idUser='', photo='', idEnterpris
                         ))
                     }
                 </div>
+                <ToastContainer />
                 <div className="header_right_photo">
                     {type!=='admin' && type!=='none' &&
                         <figure className="header_right_photo_profile">

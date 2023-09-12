@@ -4,19 +4,54 @@ import user from "../../assets/jpg/user.jpg";
 import enterprise1 from "../../assets/jpg/enterprise1.jpg";
 import university2 from "../../assets/jpg/university2.jpg";
 import Score from "../../components/Score";
+import InputText from "../../components/Inputs/InputText";
+import {getLocationsApi} from "../../api/sysData"
+import InputCombo from "../../components/Inputs/InputCombo";
+import { generateRange } from "../../utils/generical-functions";
+import { numEmployees } from "../../utils/global-consts";
+import ModalBasic from "../../components/Modals/ModalBasic";
+import useAuth from "../../hooks/useAuth";
+import { updateProfileApi } from "../../api/auth";
+import InputTextarea from "../../components/Inputs/InputTextarea";
+
 
 export default function BasicInfo ({data, myself=false}) {
-    useEffect(() => {
+    const {updateUser} = useAuth()
+    const [editMode, setEditMode] = useState(false);
+    const [updates, setUpdates] = useState(data)
+    const [locations, setLocations] = useState([]);
+    const [modal, setModal] = useState(false)
 
+    useEffect(() => {
+        async function fetchData() {
+            const response1 = await getLocationsApi();
+            if(response1.success) {
+                setLocations(response1.result)
+            }
+        }
+        fetchData();
     }, [])
 
     const getBasics = (role) => {
         switch (role) {
             case "STUDENT": return `${data.specialty} - ${data.cycle}° ciclo`;
             case "ENTERPRISE": return `${data.sector} (${data.numEmployees} empleados) • ${data.phone}`;
-            case "PROFFESSOR": return `${data.specialty}`;
+            case "PROFESSOR": return `${data.specialty}`;
             default: return `${data.enterprise_name} - ${data.job} • ${data.phone}`;
         }
+    }
+
+    const generateCycles = () => {
+        const arrNums = generateRange(1,data.max_cycles,1);
+        return arrNums.map(item => ({value: `${item}`, name: `${item}`}))
+    }
+
+    const saveChanges = async () => {
+        const response = await updateProfileApi(updates);
+            if(response.success && response.result) {
+                updateUser(updates)
+                window.location.reload()
+            }
     }
 
     return (
@@ -27,14 +62,36 @@ export default function BasicInfo ({data, myself=false}) {
                 </figure>
                 <div className="basicinfo_main_details">
                     <div className="basicinfo_main_details_title">
-                        <span>{data.name.toUpperCase()} {data.role!=='ENTERPRISE'? data.lastname.toUpperCase(): ''} {data.role==="STUDENT"? `(${data.code})`: 
+                        {/* No Edit Mode */}
+                        {!editMode && <span>{data.name.toUpperCase()} {data.role!=='ENTERPRISE'? data.lastname.toUpperCase(): ''} {data.role==="STUDENT"? `(${data.code})`: 
                             data.role==="ENTERPRISE"? `(${data.ruc})`: ''}
-                        </span>
-                        {data.role==="ENTERPRISE" && <Score score={data.score} showScore/>}
-                        {myself && <i className="bi bi-pencil-fill"></i>}
+                        </span>}
+                        {data.role==="ENTERPRISE" && !editMode && <Score score={data.score} showScore/>}
+                        {myself && !editMode && <i className="bi bi-pencil-fill" onClick={()=> setEditMode(true)}></i>}
+                        {/* Edit Mode */}
+                        {editMode && <InputText data={updates} setData={setUpdates} attribute={"name"} placeholder={data.role==='ENTERPRISE'? "Razón social": "Nombre"}/>}
+                        {editMode && data.role!=='ENTERPRISE' && <InputText data={updates} setData={setUpdates} attribute={"lastname"}/>}
+                        {editMode && <div className="section_super-title_ops">
+                            <i className={`bi bi-check-circle-fill`} onClick={()=> setModal(true)} ></i>
+                            <i className={`bi bi-x`} onClick={()=> setEditMode(false)} style={{fontSize: "28px"}}></i>
+                        </div>}
                     </div>
-                    <span>{getBasics(data.role)}</span>
-                    <span>{data.role==="ENTERPRISE"? "Ubicado": "Vive"} en {data.location} - <strong>{data.email}</strong></span>
+                    {/* No Edit Mode */}
+                    {!editMode && <span>{getBasics(data.role)}</span>}
+                    {/* Edit Mode */}
+                    {editMode && <div className="basicinfo_main_details_edit">
+                        {data.role==="EMPLOYED" && <InputText data={updates} setData={setUpdates} attribute={"job"} placeholder={"Puesto de trabajo"}/>}
+                        {data.role==="ENTERPRISE" && <InputText data={updates} setData={setUpdates} attribute={"sector"} placeholder={"Sector empresarial"}/>}
+                        {(data.role==="EMPLOYED" || data.role==="ENTERPRISE") && <InputText data={updates} setData={setUpdates} attribute={"phone"} placeholder={"Número de teléfono"}/>}
+                    </div>}
+                    {/* No Edit Mode */}
+                    {!editMode && <span>{data.role==="ENTERPRISE"? "Ubicado": "Vive"} en {data.location_name} - <strong>{data.email}</strong></span>}
+                    {/* Edit Mode */}
+                    {editMode && <div className="basicinfo_main_details_edit">
+                        <InputCombo list={locations} setData={setUpdates} attribute={"location"} data={updates} />
+                        {data.role==="ENTERPRISE" && <InputCombo list={numEmployees} setData={setUpdates} attribute={"numEmployees"} data={updates} />}
+                        {data.role==="STUDENT" && <InputCombo list={generateCycles()} setData={setUpdates} attribute={"cycle"} data={updates} />}
+                    </div>}
                 </div>
                 <figure className="basicinfo_main_photo">
                     <img src={data.photo !== ''? data.photo: user} alt="user" />
@@ -42,8 +99,14 @@ export default function BasicInfo ({data, myself=false}) {
             </div>
             <Section icon={"bi bi-justify-left"}
                 title={data.role==="ENTERPRISE"? "Acerca de la empresa": "Reseña personal"}>
-                <p style={{fontSize: "14px"}}>{data.description}</p>
+                {!editMode && <p style={{fontSize: "14px"}}>{data.description}</p>}
+                {editMode && 
+                    <InputTextarea cols={90} rows={10} attribute={"description"} data={updates} setData={setUpdates} />
+                }
             </Section>
+            <ModalBasic title={`Confirmar cambios`} show={modal} setShow={setModal} handleClick={saveChanges}>
+                <span>¿Desea guardar los cambios en su perfil?</span>
+            </ModalBasic>
         </div>
     )
 }

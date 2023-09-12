@@ -12,6 +12,7 @@ import { agreementStatesType, modalitiesType } from "../../utils/global-consts";
 import Button from "../../components/Inputs/Button";
 import InputRange from "../../components/Inputs/InputRange";
 import { getAgreementsApi } from "../../api/agreement";
+import { useNavigate } from "react-router-dom";
 
 const formDummy = {
     job: '',
@@ -30,7 +31,7 @@ const formDummy = {
 export default function Agreements () {
     const {user} = useAuth();
     const [isStudent, setIsStudent] = useState(user.role === 'STUDENT')
-    // const {idUser} = useParams();
+    const navigate = useNavigate();
     const [data, setData] = useState([])
     const [form, setForm] = useState(formDummy)
     const [locations, setLocations] = useState([]);
@@ -47,10 +48,40 @@ export default function Agreements () {
     }, [])
 
     const onSearch = async () => {
-        const response = await getAgreementsApi();
+        const response = await getAgreementsApi(form);
         if(response.success) {
             setData(response.result)
         }
+    }
+
+    const getOptions = item => {
+        const download = {
+            icon: 'bi bi-download',
+            text: 'Descargar',
+            fn: ()=> {},
+        }
+        const sign = {
+            icon: 'bi bi-file-earmark-richtext-fill',
+            text: 'Firmar',
+            fn: ()=>navigate(`/digital-sign/draw/${item.code}`),
+        }
+        const upload = {
+            icon: 'bi bi-cloud-upload',
+            text: 'Subir Conv.',
+            fn: ()=> {},
+        }
+        const arr = []
+
+        if(user.role==="EMPLOYED" && user.signatory && item.state!=='Vigente' && item.state!=='Vencido') {
+            arr.push(upload)
+        }
+        if(item.state!=='Sin convenio') {
+            arr.push(download)
+        }
+        if(item.state==='Falta firmar' && (user.role==="STUDENT" || user.role==="PROFESSOR" || (user.role==="EMPLOYED" && user.signatory ))) {
+            arr.push(sign)
+        }
+        return arr
     }
 
     return (
@@ -101,9 +132,10 @@ export default function Agreements () {
                                     text4={`(${item.state})`}
                                     userId={item.user_id}
                                     photo={item.user_photo}
+                                    profile={user.role==="STUDENT"? "enterprise": "student"}
                                     circleState={item.state_id}
                                 >
-                                    <OptionsIcon listIcons={[{icon: 'bi bi-box-arrow-in-right', text: 'Ver'}]} visibleText/>
+                                    <OptionsIcon listIcons={getOptions(item)} visibleText verticalIcons size='20px'/>
                                 </Card>
                             ))
                         }

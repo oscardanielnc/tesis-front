@@ -5,7 +5,12 @@ export function employedDataApi (idUser) {
     return httpConsult(url, 'GET')
 }
 
-export function getEmployeesApi () {
+export function getEmployeesApi (body) {
     const url = `employed`
-    return httpConsult(url, 'GET')
+    return httpConsult(url, 'POST',body)
+}
+
+export function changePrivToEmployedApi (body) {
+    const url = `employed-priv`
+    return httpConsult(url, 'PUT',body)
 }

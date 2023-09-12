@@ -14,6 +14,7 @@ import Button from "../../components/Inputs/Button";
 import { addingInitArr } from "../../utils/generical-functions";
 import InputRange from "../../components/Inputs/InputRange";
 import { getJobsApi } from "../../api/job";
+import { useNavigate } from "react-router-dom";
 
 const formDummy = {
     job: '',
@@ -31,7 +32,7 @@ const formDummy = {
 export default function SearchJob () {
     const {user} = useAuth();
     const [isStudent, setIsStudent] = useState(user.role === 'STUDENT')
-    // const {idUser} = useParams();
+    const navigate = useNavigate();
     const [data, setData] = useState([])
     const [form, setForm] = useState(formDummy)
     const [locations, setLocations] = useState([]);
@@ -54,7 +55,7 @@ export default function SearchJob () {
     }, [])
 
     const onSearch = async () => {
-        const response = await getJobsApi();
+        const response = await getJobsApi(form);
         if(response.success) {
             setData(response.result)
         }
@@ -94,8 +95,16 @@ export default function SearchJob () {
                     </Section>
                 </div>
                 <div className="psp_container_results">
-                    <Section icon={"bi bi-briefcase-fill"}
-                        title={"Resultados"}>
+                    <Section icon={"bi bi-briefcase-fill"} title={"Resultados"}>
+                        {user.role==="EMPLOYED" && user.recluiter && 
+                        <div className="div_plus">
+                            <Button title={"Nueva convocatoria"}
+                                icon={"bi bi-plus"}
+                                variant={"primary"}
+                                circle
+                                handleClick={()=> navigate('/job-portal/create')}
+                            />
+                        </div>}
                         {
                             data.map((item, index) => (
                                 <Card key={index} 
@@ -104,10 +113,12 @@ export default function SearchJob () {
                                     text3={`Fin de postulación: ${item.date_end}`}
                                     text4={item.description}
                                     userId={item.enterprise_id}
+                                    profile={"enterprise"}
                                     photo={item.enterprise_photo}
                                     circleState={-2}
                                 >
-                                    <OptionsIcon listIcons={[{icon: 'bi bi-box-arrow-in-right', text: 'Ver'}]} visibleText/>
+                                    <OptionsIcon visibleText listIcons={[{icon: 'bi bi-box-arrow-in-right', 
+                                        text: 'Ver', fn: ()=> navigate(`/job-portal/job/${item.code}`)}]} />
                                 </Card>
                             ))
                         }

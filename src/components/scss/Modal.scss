@@ -1,0 +1,81 @@
+.modal-psp {
+    align-items: center !important;
+    display: flex !important;
+
+    .modal-dialog {
+        width: 768px !important;
+        max-width: fit-content;
+
+        .modal-content {
+            width: 768px !important;
+        }
+    }
+    &-footer {
+        display: flex !important;
+        justify-content: center !important;
+        gap: 8px;
+    }
+}
+
+.modal {
+    &-language {
+        display: grid;
+        gap: 16px;
+    }
+
+    &-certificates {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 16px;
+
+        &_left {
+            display: grid;
+            gap: 12px;
+            justify-content: center;
+            height: fit-content;
+
+            span {
+                color: #929292;
+                font-size: 15px;
+                font-weight: 600;
+            }
+            strong {
+                color: #000;
+                font-size: 20px;
+                font-weight: 400;
+            }
+
+            &_photo {
+                display: flex;
+                gap: 16px;
+                justify-content: center;
+
+                &_controls {
+                    display: grid;
+                    gap: 8px;
+                    height: fit-content;
+
+                    i {
+                        cursor: pointer;
+                        &:hover {
+                            color: #699BF7;
+                        }
+                    }
+                }
+                figure {
+                    img {
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 999px;
+                        overflow: hidden;
+                    }
+                }
+            }
+        }
+        &_right {
+            display: grid;
+            gap: 12px;
+        }
+    }
+}
+

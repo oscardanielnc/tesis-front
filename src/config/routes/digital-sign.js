@@ -1,5 +1,6 @@
 import Login from "../../modules/auth/Login";
 import Agreements from "../../modules/digital-sign/Agreements";
+import DrawSign from "../../modules/digital-sign/DrawSign";
 
 const ROUTE = "/digital-sign"
 
@@ -10,8 +11,8 @@ export const routes = [
         component: Agreements,
     },
     {
-        path: `${ROUTE}/draw`,
+        path: `${ROUTE}/draw/:code`,
         exact: true,
-        component: Login,
+        component: DrawSign,
     },
 ]

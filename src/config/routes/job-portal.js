@@ -2,6 +2,8 @@ import Login from "../../modules/auth/Login";
 import SearchJob from "../../modules/job-portal/SearchJob";
 import Members from "../../modules/job-portal/Members";
 import Job from "../../modules/job-portal/Job";
+import Applicants from "../../modules/job-portal/Applicants";
+import CreateJob from "../../modules/job-portal/CreateJob";
 
 const ROUTE = "/job-portal"
 
@@ -17,9 +19,19 @@ export const routes = [
         component: Members,
     },
     {
-        path: `${ROUTE}/job/:idJob`,
+        path: `${ROUTE}/job/:code`,
         exact: true,
         component: Job,
+    },
+    {
+        path: `${ROUTE}/create`,
+        exact: true,
+        component: CreateJob,
+    },
+    {
+        path: `${ROUTE}/applicants/:code`,
+        exact: true,
+        component: Applicants,
     },
     {
         path: `${ROUTE}/data`,

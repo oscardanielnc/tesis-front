@@ -6,7 +6,7 @@ export default function OptionsIcon (props) {
         <div className={`options-icon ${vertical && 'vertical'}`}>
             {
                 listIcons.map((item, key) => (
-                    <div  key={key} 
+                    <div  key={key}  onClick={item.fn? item.fn: ()=>{}}
                         className={`options-icon_icon ${verticalIcons && 'vertical'} ${reverse && 'reverse'} ${onlyRead && 'onlyRead'}`}
                     >
                         {visibleText && <span>{item.text}</span>}

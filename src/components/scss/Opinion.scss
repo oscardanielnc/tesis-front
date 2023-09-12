@@ -30,6 +30,19 @@
     display: flex;
     font-size: 16px;
     gap: 4px;
+
+    &.input {
+        margin: auto;
+    }
+
+    &.input i {
+        font-size: 40px;
+        margin: 0 8px;
+        cursor: pointer;
+    }
+    &.input i:hover {
+        transform: scale(1.2);
+    }
 }
 .score_span {
     display: flex;

@@ -15,7 +15,7 @@ import ModalLanguage from "../../components/Modals/ModalLanguage";
 import ModalCerfiticates from "../../components/Modals/ModalCertificates";
 import { deleteItemOfArray } from "../../utils/generical-functions";
 import ModalBasic from "../../components/Modals/ModalBasic";
-import { deleteMyLenguageApi } from "../../api/sysData";
+import { deleteMyCertificateApi, deleteMyLenguageApi } from "../../api/sysData";
 
 const detailsDummy = {
     experience: [],
@@ -120,7 +120,7 @@ export default function ProfileStudent () {
                 window.location.reload()
             }
         } else {
-            const response = await deleteMyLenguageApi({id: attrsToDelete.item.id}) 
+            const response = await deleteMyCertificateApi({id: attrsToDelete.item.id}) 
             if(response.success && response.result) {
                 window.location.reload()
             }

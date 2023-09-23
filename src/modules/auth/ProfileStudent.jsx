@@ -59,7 +59,7 @@ export default function ProfileStudent () {
             //data = perfil del que observo
             if(idUser!==user.id) {
                 setMySelf(false)
-                const dataResponse = await signInApi('id', idUser);
+                const dataResponse = await signInApi({attr: 'id', value: idUser, photo: ''});
                 if(dataResponse.success) {
                     setData(dataResponse.result)
                 }

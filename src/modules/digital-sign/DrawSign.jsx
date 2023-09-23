@@ -3,13 +3,14 @@ import {useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import "./scss/Agreements.scss"
 import Section from "../../components/Section";
-import Button from "../../components/Inputs/Button";
+import InputTextarea from "../../components/Inputs/InputTextarea";
 import CardProfile from "../../components/CardProfile";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { getAgreementStateApi } from "../../api/agreement";
 import Card from "../../components/Card";
 import OptionsIcon from "../../components/OptionsIcon";
+import DrawFunction from "./DrawFunction";
 
 export default function DrawSign () {
     const {user} = useAuth();
@@ -27,7 +28,6 @@ export default function DrawSign () {
         }
         fetchData();
     }, [])
-
 
     return (
         <div className="psp">
@@ -70,7 +70,29 @@ export default function DrawSign () {
 
                 </div>
                 <div className="psp_container_results">
-                    
+                    <DrawFunction />
+                    <Section small title={`Observaciones de la institución educativa`} icon={"bi bi-justify-left"}>
+                        <div className="draw-sign_date">
+                            <span>{data.observation_date_ie===''? 'Sin observaciones': 'Actualizado el: '}{data.observation_date_ie}</span>
+                            {user.role==="SIGNATORY" && 
+                                <i className={`bi bi-check-circle-fill`} onClick={()=>saveChanges('ie')}></i>}
+                        </div>
+                        {user.role==="SIGNATORY" && 
+                            <InputTextarea rows={6} attribute={"observation_ie"} setData={setData} data={data}/>}
+                            {(user.role!=="SIGNATORY") && 
+                                <p>{data.observation_ie}</p>}
+                    </Section>
+                    <Section small title={`Observaciones del estudiante`} icon={"bi bi-justify-left"}>
+                        <div className="draw-sign_date">
+                            <span>{data.observation_date_st===''? 'Sin observaciones': 'Actualizado el: '}{data.observation_date_st}</span>
+                            {user.role==="STUDENT" && user.id===data.student_id &&
+                                <i className={`bi bi-check-circle-fill`} onClick={()=>saveChanges('st')}></i>}
+                        </div>
+                        {user.role==="STUDENT" && user.id===data.student_id &&
+                            <InputTextarea rows={6} attribute={"observation_student"} setData={setData} data={data}/>}
+                            {(user.role!=="STUDENT" || user.id!==data.student_id) && 
+                                <p>{data.observation_student}</p>}
+                    </Section>
                 </div>
             </div>
         </div>

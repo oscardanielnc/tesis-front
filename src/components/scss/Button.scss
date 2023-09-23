@@ -53,6 +53,18 @@
             color: white;
         }
     }
+    &.disabled {
+        background-color: #6c757d;
+        border: 1px solid #6c757d;
+        color: white;
+        &:hover {
+            box-shadow: none;
+        }
+
+        i {
+            color: white;
+        }
+    }
 
 
 }

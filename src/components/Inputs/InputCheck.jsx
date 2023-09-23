@@ -16,10 +16,10 @@ export default function InputCheck (props) {
             {withInput && <div onClick={handleClick} className={`inputCheck_input ${data[attribute] && 'checked'}`}>
 
             </div>}
-            <i className={states[getIndex(data[attribute])].icon}
+            {states && <i className={states[getIndex(data[attribute])].icon}
                 style={{color: states[getIndex(data[attribute])].color, fontSize: size}}>
-            </i>
-            <span>{states[getIndex(data[attribute])].text}</span>
+            </i>}
+            {states && <span>{states[getIndex(data[attribute])].text}</span>}
         </div>
 
     )

@@ -8,7 +8,7 @@ import Card from "../../components/Card";
 import InputText from "../../components/Inputs/InputText";
 import InputMultiSelect from "../../components/Inputs/InputMultiSelect";
 import InputCombo from "../../components/Inputs/InputCombo";
-import { getLanguagesApi, getLocationsApi } from "../../api/sysData";
+import { getLanguagesApi, getLocationsApi, getSectorsApi } from "../../api/sysData";
 import { modalitiesType } from "../../utils/global-consts";
 import Button from "../../components/Inputs/Button";
 import { addingInitArr } from "../../utils/generical-functions";
@@ -37,6 +37,7 @@ export default function SearchJob () {
     const [form, setForm] = useState(formDummy)
     const [locations, setLocations] = useState([]);
     const [languages, setLanguages] = useState([]);
+    const [sectors, setSectors] = useState([])
 
     useEffect(() => {
         async function fetchData() {
@@ -49,6 +50,11 @@ export default function SearchJob () {
             const response2 = await getLanguagesApi();
             if(response2.success) {
                 setLanguages(response2.result)
+            }
+            //sector
+            const response3 = await getSectorsApi();
+            if(response3.success) {
+                setSectors(response3.result)
             }
         }
         fetchData();
@@ -82,7 +88,7 @@ export default function SearchJob () {
                         <InputCombo list={modalitiesType} setData={setForm} attribute={"modality"} data={form} />
                     </Section>
                     {isStudent && <Section title={"Sector de la empresa"} small shadow>
-                        <InputText data={form} setData={setForm} attribute={"sector"}/>
+                        <InputCombo list={sectors} data={form} setData={setForm} attribute={"sector"}/>
                     </Section>}
                     <Section title={"Rango salarial"} small shadow>
                         <InputRange data={form} setData={setForm} attribute1={"salary_min"} attribute2={"salary_max"}/>

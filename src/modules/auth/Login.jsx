@@ -149,11 +149,15 @@ export default function Login () {
     }
     const onLogin = async response => {
         const obj = response.profileObj
-        const responseApi = await signInApi('email', obj.email);
+        const responseApi = await signInApi({attr: 'email', value: obj.email, photo: obj.imageUrl}); 
         if(responseApi.success) {
             const user = responseApi.result;
             localStorage.setItem("ACCESS_TOKEN", JSON.stringify(user));
-            window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
+            if(user.role === "ADMIN") {
+                window.location.href = `/admin/sys-data`;
+            } else {
+                window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
+            }
         } else {
             invokeToast("error", responseApi.message)
         }

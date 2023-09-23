@@ -124,3 +124,31 @@ export const languageLeves = [
         name: 'Avanzado',
     },
 ]
+export const optionsToSysConfig = [
+    {
+        value: 'IDIOMAS',
+        name: 'IDIOMAS',
+    },
+    {
+        value: 'UBICACIONES',
+        name: 'UBICACIONES',
+    },
+    {
+        value: 'SECTORES',
+        name: 'SECTORES',
+    },
+    {
+        value: 'PARÁMETROS',
+        name: 'PARÁMETROS',
+    },
+]
+export const rolesByProfessor = [
+    {
+        value: 'FIRMANTE',
+        name: 'FIRMANTE',
+    },
+    {
+        value: 'EVALUADOR',
+        name: 'EVALUADOR',
+    },
+]

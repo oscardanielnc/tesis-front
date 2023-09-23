@@ -5,7 +5,7 @@ import enterprise1 from "../../assets/jpg/enterprise1.jpg";
 import university2 from "../../assets/jpg/university2.jpg";
 import Score from "../../components/Score";
 import InputText from "../../components/Inputs/InputText";
-import {getLocationsApi} from "../../api/sysData"
+import {getLocationsApi, getSectorsApi} from "../../api/sysData"
 import InputCombo from "../../components/Inputs/InputCombo";
 import { generateRange } from "../../utils/generical-functions";
 import { numEmployees } from "../../utils/global-consts";
@@ -21,12 +21,17 @@ export default function BasicInfo ({data, myself=false}) {
     const [updates, setUpdates] = useState(data)
     const [locations, setLocations] = useState([]);
     const [modal, setModal] = useState(false)
+    const [sectors, setSectors] = useState([])
 
     useEffect(() => {
         async function fetchData() {
             const response1 = await getLocationsApi();
+            const response2 = await getSectorsApi()
             if(response1.success) {
                 setLocations(response1.result)
+            }
+            if(response2.success) {
+                setSectors(response2.result)
             }
         }
         fetchData();
@@ -35,15 +40,17 @@ export default function BasicInfo ({data, myself=false}) {
     const getBasics = (role) => {
         switch (role) {
             case "STUDENT": return `${data.specialty} - ${data.cycle}° ciclo`;
-            case "ENTERPRISE": return `${data.sector} (${data.numEmployees} empleados) • ${data.phone}`;
+            case "ENTERPRISE": return `${data.sector_name} (${data.numEmployees} empleados) • ${data.phone}`;
             case "PROFESSOR": return `${data.specialty}`;
             default: return `${data.enterprise_name} - ${data.job} • ${data.phone}`;
         }
     }
 
     const generateCycles = () => {
-        const arrNums = generateRange(1,data.max_cycles,1);
-        return arrNums.map(item => ({value: `${item}`, name: `${item}`}))
+        const arrNums = generateRange(1,data.max_cycles+1,1);
+        const preResult = arrNums.map(item => ({value: `${item}`, name: `${item}`}))
+        preResult.push({value: `${'Egresado'}`, name: `${'Egresado'}`})
+        return preResult
     }
 
     const saveChanges = async () => {
@@ -81,7 +88,7 @@ export default function BasicInfo ({data, myself=false}) {
                     {/* Edit Mode */}
                     {editMode && <div className="basicinfo_main_details_edit">
                         {data.role==="EMPLOYED" && <InputText data={updates} setData={setUpdates} attribute={"job"} placeholder={"Puesto de trabajo"}/>}
-                        {data.role==="ENTERPRISE" && <InputText data={updates} setData={setUpdates} attribute={"sector"} placeholder={"Sector empresarial"}/>}
+                        {data.role==="ENTERPRISE" && <InputCombo list={sectors} setData={setUpdates} attribute={"sector"} data={updates} />}
                         {(data.role==="EMPLOYED" || data.role==="ENTERPRISE") && <InputText data={updates} setData={setUpdates} attribute={"phone"} placeholder={"Número de teléfono"}/>}
                     </div>}
                     {/* No Edit Mode */}

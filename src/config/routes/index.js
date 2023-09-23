@@ -3,6 +3,7 @@ import { routes as authRoutes } from './auth';
 import { routes as jobPortalRoutes } from './job-portal';
 import { routes as practicesRoutes } from './practices';
 import { routes as digitalSignRoutes } from './digital-sign';
+import { routes as adminSignRoutes } from './admin';
 import Error404 from "../../pages/Error404";
 
 const routes = [ 
@@ -17,6 +18,7 @@ const routes = [
     ...jobPortalRoutes,
     ...practicesRoutes,
     ...digitalSignRoutes,
+    ...adminSignRoutes,
     //Error 404
     {
         path: "*", 

@@ -1,8 +1,8 @@
 import httpConsult from "../utils/httpConsult"
 
-export function signInApi (attr, value) {
-    const url = `sign-in/${attr}/${value}`
-    return httpConsult(url, 'GET')
+export function signInApi (body) {
+    const url = `sign-in`
+    return httpConsult(url, 'PUT',body)
 }
 export function signUpApi (body) {
     const url = `sign-up`

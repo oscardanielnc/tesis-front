@@ -1,4 +1,3 @@
-import Login from "../../modules/auth/Login";
 import SearchJob from "../../modules/job-portal/SearchJob";
 import Members from "../../modules/job-portal/Members";
 import Job from "../../modules/job-portal/Job";
@@ -32,15 +31,5 @@ export const routes = [
         path: `${ROUTE}/applicants/:code`,
         exact: true,
         component: Applicants,
-    },
-    {
-        path: `${ROUTE}/data`,
-        exact: true,
-        component: Login,
-    },
-    {
-        path: `${ROUTE}/business-management`,
-        exact: true,
-        component: Login,
     },
 ]

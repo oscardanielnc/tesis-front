@@ -1,4 +1,4 @@
-import {generateRange} from "../../utils/generical-functions"
+import {addingInitArr, generateRange} from "../../utils/generical-functions"
 import InputText from "../../components/Inputs/InputText";
 import Section from "../../components/Section";
 import { useEffect, useState} from "react";
@@ -8,13 +8,16 @@ import InputDate from "../../components/Inputs/InputDate";
 import InputRUC from "../../components/Inputs/InputRUC";
 import { getSpecialtiesApi } from "../../api/specialty";
 import { numEmployees } from "../../utils/global-consts";
+import { getSectorsApi } from "../../api/sysData";
 
 export default function TableInputslogin({setData, data, userSelected}) {
     const [specialties, setSpecialties] = useState([])
+    const [sectors, setSectors] = useState([])
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getSpecialtiesApi()
+            const response = await getSpecialtiesApi({active: true, name: ''})
+            const response2 = await getSectorsApi()
             if(response.success) {
                 const specialtiesPre = response.result;
                 setSpecialties(specialtiesPre)
@@ -26,13 +29,16 @@ export default function TableInputslogin({setData, data, userSelected}) {
                     })
                 }
             }
+            if(response2.success) {
+                setSectors(response2.result)
+            }
         }
         fetchData();
       }, []);
 
 
     if (userSelected==='STUDENT') return (<LoginStudent specialties={specialties} data={data} setData={setData}/>)
-    if (userSelected==='ENTERPRISE') return (<LoginEnterprise data={data} setData={setData}/>)
+    if (userSelected==='ENTERPRISE') return (<LoginEnterprise data={data} setData={setData} sectors={sectors}/>)
     if (userSelected==='EMPLOYED') return (<LoginEmployed data={data} setData={setData}/>)
     return (<LoginProfessor specialties={specialties} data={data} setData={setData}/>)
 
@@ -56,7 +62,9 @@ function LoginStudent({specialties, setData, data}) {
 
     const generateCycles = () => {
         const arrNums = generateRange(1,getCyclesSpecialty(data.specialty)+1,1);
-        return arrNums.map(item => ({value: `${item}`, name: `${item}`}))
+        const preResult = arrNums.map(item => ({value: `${item}`, name: `${item}`}))
+        preResult.push({value: `${'-1'}`, name: `${'Egresado'}`})
+        return preResult
     }
 
     return (
@@ -87,7 +95,8 @@ function LoginStudent({specialties, setData, data}) {
     )
 }
 
-function LoginEnterprise({setData, data}) {
+function LoginEnterprise({setData, data, sectors}) {
+
     return (
         <div className="login_container_right_form">
             <div className="login_container_right_form-div">
@@ -106,7 +115,7 @@ function LoginEnterprise({setData, data}) {
                     <InputText data={data} setData={setData} attribute={"name"}/>
                 </Section>
                 <Section title={"Sector empresarial"} small>
-                    <InputText data={data} setData={setData} attribute={"sector"}/>
+                    <InputCombo list={addingInitArr(sectors)} setData={setData} attribute={"sector"} data={data} />
                 </Section>
                 <Section title={"Número de empleados"} small>
                     <InputCombo list={numEmployees} setData={setData} attribute={"numEmployees"} data={data} />

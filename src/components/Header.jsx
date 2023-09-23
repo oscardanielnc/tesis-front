@@ -49,11 +49,23 @@ function getDataHeader (type, idUser, idEnterprise) {
         admin: [
             {
                 name: "Datos del sistema",
-                link: `/job-portal/data`
+                link: `/admin/sys-data`
             },
             {
                 name: "Empresas",
-                link: `/job-portal/business-management`
+                link: `/admin/enterprises`
+            },
+            {
+                name: "Especialidades",
+                link: `/admin/specialties`
+            },
+            {
+                name: "Ciclos",
+                link: `/admin/cycles`
+            },
+            {
+                name: "Comité de PSP",
+                link: `/admin/committee`
             },
         ],
         student: [

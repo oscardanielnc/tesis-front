@@ -1,0 +1,53 @@
+.box-to-search {
+    display: flex;
+    gap: 16px;
+    margin: 8px 0;
+
+    i {
+        font-size: 22px;
+        cursor: pointer;
+
+        &:hover {
+            color: #699BF7;
+        }
+    }
+}
+.box-to-result {
+    display: grid;
+    gap: 8px;
+}
+
+
+.cycles-admin {
+    display: flex;
+    justify-content: space-between;
+}
+.cycles-admin li {
+    color: #929292;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+.specialty-admin {
+    margin-bottom: 20px;
+
+    &_title {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+
+        strong {
+            font-size: 20px;
+        }
+    }
+    .pencil:hover {
+        cursor: pointer;
+        color: #699BF7;
+    }
+    &_modal_state {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+}

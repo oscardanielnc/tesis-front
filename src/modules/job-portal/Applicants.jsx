@@ -44,7 +44,7 @@ export default function Applicants () {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getSpecialtiesApi()
+            const response = await getSpecialtiesApi({active: true, name: ''})
             if(response.success) {
                 const specialtiesPre = response.result;
                 setSpecialties(specialtiesPre)

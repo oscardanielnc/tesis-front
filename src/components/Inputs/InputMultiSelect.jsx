@@ -1,6 +1,5 @@
 import {Form} from 'react-bootstrap';
 import "../scss/InputCombo.scss"
-import { useState } from 'react';
 
 export default function InputMultiSelect ({list, setData, data, attribute}) {
     const handleChange = e => {

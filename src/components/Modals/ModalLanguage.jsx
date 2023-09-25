@@ -16,7 +16,7 @@ function ModalLanguage({show, setShow, type, myData, lanEdit={value: '', level: 
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getLanguagesApi();
+            const response = await getLanguagesApi({name: '', active: true});
             if(response.success) {
                 setLanguages(response.result)
                 setNoLanguages(noElementsInArr(response.result, myData))

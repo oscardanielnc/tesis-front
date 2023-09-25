@@ -42,17 +42,17 @@ export default function SearchJob () {
     useEffect(() => {
         async function fetchData() {
             //locations
-            const response1 = await getLocationsApi();
+            const response1 = await getLocationsApi({name: '', active:true});
             if(response1.success) {
                 setLocations(response1.result)
             }
             //languages
-            const response2 = await getLanguagesApi();
+            const response2 = await getLanguagesApi({name: '', active: true});
             if(response2.success) {
                 setLanguages(response2.result)
             }
             //sector
-            const response3 = await getSectorsApi();
+            const response3 = await getSectorsApi({name: '', active: true});
             if(response3.success) {
                 setSectors(response3.result)
             }

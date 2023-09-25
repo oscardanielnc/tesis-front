@@ -61,7 +61,7 @@ export default function ProfileStudent () {
                 setMySelf(false)
                 const dataResponse = await signInApi({attr: 'id', value: idUser, photo: ''});
                 if(dataResponse.success) {
-                    setData(dataResponse.result)
+                    setData(dataResponse.result[0])
                 }
             }
 

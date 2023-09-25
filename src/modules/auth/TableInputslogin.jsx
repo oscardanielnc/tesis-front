@@ -17,17 +17,19 @@ export default function TableInputslogin({setData, data, userSelected}) {
     useEffect(() => {
         async function fetchData() {
             const response = await getSpecialtiesApi({active: true, name: ''})
-            const response2 = await getSectorsApi()
+            const response2 = await getSectorsApi({active: true, name: ''})
             if(response.success) {
                 const specialtiesPre = response.result;
                 setSpecialties(specialtiesPre)
-                if(specialtiesPre.length>0) {
-                    setData({
-                        ...data,
-                        specialty: specialtiesPre[0].value,
-                        cycle: 1,
-                    })
-                }
+                // if(specialtiesPre.length>0) {
+                //     const sp = specialtiesPre[0].value
+                //     console.log(sp)
+                //     setData({
+                //         ...data,
+                //         specialty: sp,
+                //         cycle: 1,
+                //     })
+                // }
             }
             if(response2.success) {
                 setSectors(response2.result)
@@ -77,7 +79,7 @@ function LoginStudent({specialties, setData, data}) {
                     <InputDate data={data} setData={setData} attribute={"date"}/>
                 </Section>
                 <Section title={"Especialidad"} small>
-                    <InputCombo list={specialties} setData={setData} attribute={"specialty"} data={data} />
+                    <InputCombo list={addingInitArr(specialties)} setData={setData} attribute={"specialty"} data={data} />
                 </Section>
             </div>
             <div className="login_container_right_form-div">
@@ -101,7 +103,7 @@ function LoginEnterprise({setData, data, sectors}) {
         <div className="login_container_right_form">
             <div className="login_container_right_form-div">
                 <Section title={"RUC"} small>
-                    <InputRUC data={data} setData={setData}/>
+                    <InputRUC data={data} setData={setData} checkNoVerified/>
                 </Section>
                 <Section title={"Fecha de fundación"} small>
                     <InputDate data={data} setData={setData} attribute={"date"}/>
@@ -160,7 +162,7 @@ function LoginProfessor({setData, data, specialties}) {
                     <InputText data={data} setData={setData} attribute={"name"}/>
                 </Section>
                 <Section title={"Especialidad"} small>
-                    <InputCombo list={specialties} setData={setData} attribute={"specialty"} data={data} />
+                    <InputCombo list={addingInitArr(specialties)} setData={setData} attribute={"specialty"} data={data} />
                 </Section>
             </div>
             <div className="login_container_right_form-div">

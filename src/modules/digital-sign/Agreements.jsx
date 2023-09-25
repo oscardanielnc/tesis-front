@@ -39,7 +39,7 @@ export default function Agreements () {
     useEffect(() => {
         async function fetchData() {
             //locations
-            const response1 = await getLocationsApi();
+            const response1 = await getLocationsApi({name: '', active:true});
             if(response1.success) {
                 setLocations(response1.result)
             }

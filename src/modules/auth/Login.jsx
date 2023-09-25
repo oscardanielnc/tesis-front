@@ -14,6 +14,8 @@ import { signInApi, signUpApi } from "../../api/auth";
 import { getEmailsSystemApi, getLanguagesApi, getLocationsApi } from "../../api/sysData";
 import { usersType } from "../../utils/global-consts";
 import invokeToast from "../../utils/invokeToast";
+import { goToHome } from "../../utils/generical-functions";
+import ModalUsers from "../../components/Modals/ModalUsers";
 
 const userDummy = {
     role: "STUDENT",
@@ -45,6 +47,8 @@ export default function Login () {
     const [locations, setLocations] = useState([]);
     const [languages, setLanguages] = useState([]);
     const [sysConf, setSysConf] = useState([]);
+    const [arrUsers, setArrUsers] = useState([])
+    const [show, setShow] = useState(false)
 
     useEffect(() => {
         // localStorage.removeItem("ACCESS_TOKEN")
@@ -59,8 +63,8 @@ export default function Login () {
 
     useEffect(() => {
         async function fetchData() {
-            const response1 = await getLocationsApi();
-            const response2 = await getLanguagesApi();
+            const response1 = await getLocationsApi({name: '', active:true});
+            const response2 = await getLanguagesApi({name: '', active:true});
             const response3 = await getEmailsSystemApi();
             
             //locations
@@ -106,13 +110,18 @@ export default function Login () {
     }
 
     const validateInputs = () => {
+        console.log(data)
         if(data.email === '-') 
             {invokeToast("warning", "Es necesario registrar un correo"); return false}
         if(data.role==='STUDENT' && data.email.split('@')[1] !== sysConf.domain) 
             {invokeToast("warning", "Debe registrarse con su correo institucional"); return false}
+        if((data.role==='STUDENT' || data.role==='PROFESSOR') && data.specialty==='') 
+            {invokeToast("warning", "Debe seleccionar su especialidad"); return false}
         if((data.role==='ENTERPRISE' || data.role==='EMPLOYED') && data.ruc === '') 
             {invokeToast("warning", `El RUC no puede ser un campo vacío`); return false}
-        if((data.role==='ENTERPRISE' || data.role==='EMPLOYED') && !data.rucVerified) 
+        if((data.role==='ENTERPRISE') && data.rucVerified) 
+            {invokeToast("warning", `El RUC ingresado no es válido`); return false}
+        if((data.role==='EMPLOYED') && !data.rucVerified) 
             {invokeToast("warning", `El RUC ingresado no es válido`); return false}
         if(data.name === '') 
             {invokeToast("warning", `${data.role==='ENTERPRISE'? 'La razón social': 'El nombre'} no puede ser un campo vacío`); return false}
@@ -149,14 +158,15 @@ export default function Login () {
     }
     const onLogin = async response => {
         const obj = response.profileObj
-        const responseApi = await signInApi({attr: 'email', value: obj.email, photo: obj.imageUrl}); 
+        const responseApi = await signInApi({attr: 'email', value: obj.email, photo: obj.imageUrl});
+        console.log(responseApi)
         if(responseApi.success) {
-            const user = responseApi.result;
-            localStorage.setItem("ACCESS_TOKEN", JSON.stringify(user));
-            if(user.role === "ADMIN") {
-                window.location.href = `/admin/sys-data`;
+            if(responseApi.result.length===1) {
+                const user = responseApi.result[0];
+                goToHome(user)
             } else {
-                window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
+                setArrUsers(responseApi.result)
+                setShow(true)
             }
         } else {
             invokeToast("error", responseApi.message)
@@ -215,6 +225,7 @@ export default function Login () {
                             </div>
                         </div>
                     </Section>
+                    <ModalUsers arrUsers={arrUsers} setShow={setShow} show={show} />
                 </div>
             </div>
         </div>

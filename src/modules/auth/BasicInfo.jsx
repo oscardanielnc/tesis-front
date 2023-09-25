@@ -25,8 +25,8 @@ export default function BasicInfo ({data, myself=false}) {
 
     useEffect(() => {
         async function fetchData() {
-            const response1 = await getLocationsApi();
-            const response2 = await getSectorsApi()
+            const response1 = await getLocationsApi({name: '', active:true});
+            const response2 = await getSectorsApi({name: '', active:true});
             if(response1.success) {
                 setLocations(response1.result)
             }

@@ -16,16 +16,17 @@ export default function httpConsult(url, method, body=null) {
         .then(response => {
             return response.json()
         })
-        .then(result => {
-            if(result) {
+        .then(response => {
+            if(response) {
                 return {
-                    success: true,
-                    result
+                    success: response.success,
+                    result: response.result,
+                    message: response.message
                 }
             } else {
                 return {
                     success: false,
-                    message: result.message
+                    message: response.message
                 }
             }
         })

@@ -72,12 +72,12 @@ export default function Applicants () {
     useEffect(() => {
         async function fetchData() {
             //locations
-            const response1 = await getLocationsApi();
+            const response1 = await getLocationsApi({name: '', active:true});
             if(response1.success) {
                 setLocations(response1.result)
             }
             //languages
-            const response2 = await getLanguagesApi();
+            const response2 = await getLanguagesApi({name: '', active: true});
             if(response2.success) {
                 setLanguages(response2.result)
             }

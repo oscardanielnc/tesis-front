@@ -75,7 +75,7 @@ export default function SpecialtiesAdmin () {
             if(spe.name==='') {
                 invokeToast('warning', 'El nombre no puede ser un campo vacío'); return;
             }
-            if(newSig.cycles==='') {
+            if(spe.cycles==='') {
                 invokeToast('warning', 'Debe colocar el número de ciclos de esta especialidad'); return;
             }
             if (execute==='edit' ) {

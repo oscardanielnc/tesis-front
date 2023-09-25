@@ -79,3 +79,44 @@
     }
 }
 
+.modal-users {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+
+    .card-user {
+        display: grid;
+        gap: 8px;
+        width: 200px;
+        border: 1px solid #929292;
+        border-radius: 16px;
+        cursor: pointer;
+        padding: 16px;
+
+        &:hover {
+            box-shadow: 2px 3px 16px #929292;
+        }
+
+        &.selected {
+            border: #699bf7 solid 8px;
+        }
+        
+        i {
+            margin: auto;
+            font-size: 80px;
+            display: flex;
+        }
+
+        &_title {
+            justify-content: center;
+            display: grid;
+            text-align: center;
+            
+            strong {
+                margin: auto;
+                font-size: 18px;
+            }
+        }
+
+    }
+}

@@ -11,7 +11,6 @@ export default function Card (props) {
             navigate(`/profile/${profile.toLowerCase()}/${userId}`)
         }
     }
-
     return (
         <div className="psp-card">
             <div className="psp-card_img">

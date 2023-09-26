@@ -40,7 +40,8 @@ export default function Job () {
 
     return (
         <div className="psp">
-            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} idEnterprise={user.enterprise_id}></Header>
+            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
+                idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
             <div className="psp_container">
                 <div className="psp_container_form">
                     <Section title={`Empresa`} small shadow>

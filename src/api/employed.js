@@ -1,7 +1,7 @@
 import httpConsult from "../utils/httpConsult"
 
-export function employedDataApi (idUser) {
-    const url = `employed-data/${idUser}`
+export function employedDataApi (idUser,enterprise_id) {
+    const url = `employed-data/${idUser}/${enterprise_id}`
     return httpConsult(url, 'GET')
 }
 

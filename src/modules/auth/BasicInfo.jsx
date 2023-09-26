@@ -13,6 +13,7 @@ import ModalBasic from "../../components/Modals/ModalBasic";
 import useAuth from "../../hooks/useAuth";
 import { updateProfileApi } from "../../api/auth";
 import InputTextarea from "../../components/Inputs/InputTextarea";
+import invokeToast from "../../utils/invokeToast"
 
 
 export default function BasicInfo ({data, myself=false}) {
@@ -39,9 +40,9 @@ export default function BasicInfo ({data, myself=false}) {
 
     const getBasics = (role) => {
         switch (role) {
-            case "STUDENT": return `${data.specialty} - ${data.cycle}° ciclo`;
-            case "ENTERPRISE": return `${data.sector_name} (${data.numEmployees} empleados) • ${data.phone}`;
-            case "PROFESSOR": return `${data.specialty}`;
+            case "STUDENT": return `${data.specialty_name} - ${data.cycle=='-1'? 'Egresado': `${data.cycle}° ciclo`}`;
+            case "ENTERPRISE": return `${getNameByv(data.sector, sectors)} (${data.numEmployees} empleados) • ${data.phone}`;
+            case "PROFESSOR": return `${data.specialty_name}`;
             default: return `${data.enterprise_name} - ${data.job} • ${data.phone}`;
         }
     }
@@ -49,16 +50,27 @@ export default function BasicInfo ({data, myself=false}) {
     const generateCycles = () => {
         const arrNums = generateRange(1,data.max_cycles+1,1);
         const preResult = arrNums.map(item => ({value: `${item}`, name: `${item}`}))
-        preResult.push({value: `${'Egresado'}`, name: `${'Egresado'}`})
+        preResult.push({value: `${'-1'}`, name: `${'Egresado'}`})
         return preResult
     }
 
     const saveChanges = async () => {
         const response = await updateProfileApi(updates);
-            if(response.success && response.result) {
-                updateUser(updates)
-                window.location.reload()
-            }
+        if(response.success && response.result) {
+            updateUser(updates)
+            window.location.reload()
+            invokeToast("success", "Actualización de datos exitosa")
+        } else {
+            invokeToast("error", response.message)
+        }
+        console.log(updates)
+    }
+
+    const getNameByv = (id, arr) => {
+        for(let item of arr) {
+            if(id == item.value) return item.name
+        }
+        return '?'
     }
 
     return (
@@ -92,7 +104,7 @@ export default function BasicInfo ({data, myself=false}) {
                         {(data.role==="EMPLOYED" || data.role==="ENTERPRISE") && <InputText data={updates} setData={setUpdates} attribute={"phone"} placeholder={"Número de teléfono"}/>}
                     </div>}
                     {/* No Edit Mode */}
-                    {!editMode && <span>{data.role==="ENTERPRISE"? "Ubicado": "Vive"} en {data.location_name} - <strong>{data.email}</strong></span>}
+                    {!editMode && <span>{data.role==="ENTERPRISE"? "Ubicado": "Vive"} en {getNameByv(data.location, locations)} - <strong>{data.email}</strong></span>}
                     {/* Edit Mode */}
                     {editMode && <div className="basicinfo_main_details_edit">
                         <InputCombo list={locations} setData={setUpdates} attribute={"location"} data={updates} />

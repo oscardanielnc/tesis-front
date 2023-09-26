@@ -21,15 +21,6 @@ export default function TableInputslogin({setData, data, userSelected}) {
             if(response.success) {
                 const specialtiesPre = response.result;
                 setSpecialties(specialtiesPre)
-                // if(specialtiesPre.length>0) {
-                //     const sp = specialtiesPre[0].value
-                //     console.log(sp)
-                //     setData({
-                //         ...data,
-                //         specialty: sp,
-                //         cycle: 1,
-                //     })
-                // }
             }
             if(response2.success) {
                 setSectors(response2.result)

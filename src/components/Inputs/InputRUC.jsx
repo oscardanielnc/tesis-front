@@ -23,6 +23,7 @@ export default function InputRUC ({data, setData, checkNoVerified=false}) {
                     rucVerified: response.result.exist,
                     enterprise_name: response.result.name,
                     enterprise_photo: response.result.photo,
+                    enterprise_id: response.result.id,
                     icon: -1
                 })
             } else {
@@ -32,6 +33,7 @@ export default function InputRUC ({data, setData, checkNoVerified=false}) {
                     rucVerified: false,
                     enterprise_name: '',
                     enterprise_photo: '',
+                    enterprise_id: '',
                     icon: -1
                 })
             }

@@ -8,11 +8,13 @@ import InputRange from "../Inputs/InputRange";
 import InputRUC from "../Inputs/InputRUC";
 import InputTextarea from "../Inputs/InputTextarea";
 import IconSystem from "../IconSystem";
+import useAuth from "../../hooks/useAuth";
 
 
 
 function ModalCerfiticates({show, setShow, type, camp, item}) { 
     const [form, setForm] = useState({});
+    const {user} = useAuth()
 
     useEffect(() => {
         setForm({
@@ -27,11 +29,13 @@ function ModalCerfiticates({show, setShow, type, camp, item}) {
         if(camp.includes("xperien")) {
             body = {
                 ...form,
+                idUser: user.id,
                 type: 1
             }
         } else {
             body = {
                 ...form,
+                idUser: user.id,
                 type: 2
             }
             listName = 'certificates'
@@ -44,7 +48,7 @@ function ModalCerfiticates({show, setShow, type, camp, item}) {
                 }
             } else if(type==='add') {
                 const response = await setMyCertificateApi(body)
-                if(response.success && response.result.success) {
+                if(response.success && response.result) {
                     window.location.reload()
                 }
             }
@@ -102,7 +106,7 @@ function ModalCerfiticates({show, setShow, type, camp, item}) {
             <div className="modal-certificates_right">
                 <InputText attribute={"title"} data={form} setData={setForm} maxLength={40} placeholder="Nombre del puesto de trabajo"/>
                 <InputRange attribute1={"date_init"} attribute2={"date_end"} data={form} setData={setForm} type="date"/>
-                <InputTextarea cols={50} rows={6} attribute={"description"} data={form} setData={setForm} />
+                <InputTextarea cols={50} rows={6} attribute={"descripcion"} data={form} setData={setForm} />
             </div>
         </div>
       </ModalBasic>

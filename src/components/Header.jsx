@@ -5,10 +5,11 @@ import "./scss/Header.scss"
 import { useEffect, useState } from "react";
 import { ToastContainer } from 'react-toastify';
 
-export default function Header ({type = 'none', idUser='', photo='', idEnterprise=''}) {
+export default function Header ({type = 'none', idUser='', photo='', idEnterprise='',employedNoVerified=false}) {
     const [ops, setOps] = useState([])
+    console.log(photo)
     useEffect(()=> {
-        setOps(getDataHeader(type, idUser, idEnterprise))
+        setOps(getDataHeader(type, idUser, idEnterprise,employedNoVerified))
     }, [])
 
     return (
@@ -34,7 +35,7 @@ export default function Header ({type = 'none', idUser='', photo='', idEnterpris
                 <div className="header_right_photo">
                     {type!=='admin' && type!=='none' &&
                         <figure className="header_right_photo_profile">
-                            <img src={photo !== ''? photo: nouser} alt="user" />
+                            <img src={photo && photo != ''? photo: nouser} alt="user" />
                         </figure>
                     }
                 </div>
@@ -43,7 +44,7 @@ export default function Header ({type = 'none', idUser='', photo='', idEnterpris
     )
 }
 
-function getDataHeader (type, idUser, idEnterprise) {
+function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
     const options = {
         none: [],
         admin: [
@@ -131,5 +132,9 @@ function getDataHeader (type, idUser, idEnterprise) {
             },
         ],
     }
+    if(employedNoVerified) return [{
+        name: "Perfil",
+        link: `/profile/employed/${idUser}`
+    }]
     return options[type]
 }

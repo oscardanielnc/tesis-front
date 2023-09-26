@@ -13,9 +13,10 @@ import OptionsIcon from "../../components/OptionsIcon";
 import { signInApi } from "../../api/auth";
 import ModalLanguage from "../../components/Modals/ModalLanguage";
 import ModalCerfiticates from "../../components/Modals/ModalCertificates";
-import { deleteItemOfArray } from "../../utils/generical-functions";
+import { deleteItemOfArray, getDateByNumber } from "../../utils/generical-functions";
 import ModalBasic from "../../components/Modals/ModalBasic";
 import { deleteMyCertificateApi, deleteMyLenguageApi } from "../../api/sysData";
+import invokeToast from "../../utils/invokeToast";
 
 const detailsDummy = {
     experience: [],
@@ -32,7 +33,7 @@ const dummyCert = {
     icon: -1,
     date_init: "",
     date_end: "",
-    description: "",
+    descripcion: "",
     enterprise_id: '',
     enterprise_photo: '',
     ruc: '',
@@ -57,11 +58,13 @@ export default function ProfileStudent () {
     useEffect(() => {
         async function fetchData() {
             //data = perfil del que observo
-            if(idUser!==user.id) {
+            if(idUser!=user.id) {
                 setMySelf(false)
                 const dataResponse = await signInApi({attr: 'id', value: idUser, photo: ''});
                 if(dataResponse.success) {
                     setData(dataResponse.result[0])
+                } else {
+                    invokeToast("error", dataResponse.message)
                 }
             }
 
@@ -69,13 +72,16 @@ export default function ProfileStudent () {
             const response = await studentDataApi(idUser);
             if(response.success) {
                 setDetails(response.result)
+            }else {
+                invokeToast("error", response.message)
             }
         }
         fetchData();
       }, []);
 
     const getTimeTo = (dateInit, dateEnd) => {
-        return `${dateInit} - ${dateEnd} · ${"1 mes"}`;
+
+        return `Desde ${getDateByNumber(dateInit)} hasta ${dateEnd!=''? getDateByNumber(dateEnd): 'la actualidad'}`;
     }
 
     const handleModalLanguage = (item=null) => {
@@ -104,6 +110,10 @@ export default function ProfileStudent () {
     }
 
     const showModalDelete = (arr, item, islanguage) => {
+        if(islanguage && arr.length<=1) {
+            invokeToast("warning", "Si elimina este elemento se quedará sin idiomas asociados a su perfil")
+            return;
+        }
         setAttrsToDelete({arr, item, islanguage})
         setModalDelete(true)
     }
@@ -118,18 +128,23 @@ export default function ProfileStudent () {
                     languages: nLangs
                 })
                 window.location.reload()
-            }
+                invokeToast("success", "Elemento eliminado")
+            } else invokeToast("error", response.message)
+            
         } else {
+            console.log({id: attrsToDelete.item.id})
             const response = await deleteMyCertificateApi({id: attrsToDelete.item.id}) 
             if(response.success && response.result) {
                 window.location.reload()
-            }
+                invokeToast("success", "Elemento eliminado")
+            } else invokeToast("error", response.message)
         }
     }
 
     return (
         <div className="profile">
-            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} idEnterprise={user.enterprise_id}></Header>
+            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
+                idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
             <div className="profile_container">
                 <div className="profile_container_principal">
                     <BasicInfo data={data} myself={mySelf}/> 
@@ -141,7 +156,7 @@ export default function ProfileStudent () {
                                     text1={item.title}
                                     text2={item.enterprise_name}
                                     text3={getTimeTo(item.date_init, item.date_end)}
-                                    text4={item.description}
+                                    text4={item.descripcion}
                                     userId={item.enterprise_id!==''? item.enterprise_id: undefined}
                                     profile={"enterprise"}
                                     photo={item.enterprise_photo}
@@ -168,7 +183,7 @@ export default function ProfileStudent () {
                                     text1={item.title}
                                     text2={item.enterprise_name}
                                     text3={getTimeTo(item.date_init, item.date_end)}
-                                    text4={item.description}
+                                    text4={item.descripcion}
                                     userId={item.enterprise_id!==''? item.enterprise_id: undefined}
                                     photo={item.enterprise_photo}
                                     icon={item.icon}
@@ -215,7 +230,7 @@ export default function ProfileStudent () {
                                     listIcons={mySelf? [{icon: 'bi bi-download'},{icon: 'bi bi-cloud-upload'}]: [{icon: 'bi bi-download'}]} 
                                 />
                         </MiniCard>}
-                        {(data.cv_path==='' || !data.cv_path) && <MiniCard icon={"bi bi-file-earmark-text"} text={`Sin CV`}>
+                        {(data.cv_path==='' || !data.cv_path) && <MiniCard text={`Sin CV`}>
                                 {
                                     mySelf && <OptionsIcon listIcons={[{icon: 'bi bi-cloud-upload'}]}/> 
                                 }
@@ -223,7 +238,7 @@ export default function ProfileStudent () {
                     </Section>
                     <Section title={"Convenios"} shadow>
                         {
-                            details.agreements.length===0 && <MiniCard icon={"bi bi-file-earmark-text"} text={`Sin Convenio`}></MiniCard>
+                            details.agreements.length===0 && <MiniCard text={`Sin Convenio`}></MiniCard>
                         }
                         {
                             details.agreements.map((item, index) => (
@@ -238,6 +253,9 @@ export default function ProfileStudent () {
                     </Section>
                     {mySelf && <Section title={"Anuncios guardados"} shadow>
                         {
+                            details.ads.length===0 && <MiniCard text={`Sin postulaciones`}></MiniCard>
+                        }
+                        {
                             details.ads.map((item, index) => (
                                 <MiniCard key={index} icon={"bi bi-calendar-week"} 
                                     text={`${item.job_title} - ${item.enterprise_name} (${item.date_end})`}>
@@ -250,6 +268,9 @@ export default function ProfileStudent () {
                         }
                     </Section>}
                     <Section title={"Opiniones"} shadow>
+                        {
+                            details.opinions.length===0 && <MiniCard text={`Sin opiniones`}></MiniCard>
+                        }
                         {
                             details.opinions.map((item, index) => (
                                 <Opinion key={index} 

@@ -26,7 +26,6 @@ export default function SysDataAdmin () {
     const [showSig, setShowSig] = useState(false)
 
     const search = async () => {
-        console.log(form)
         const response = await getSignatoriesApi(form);
         if(response.success) {
             setData(response.result)
@@ -60,7 +59,8 @@ export default function SysDataAdmin () {
 
     return (
         <div className="psp">
-            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} idEnterprise={user.enterprise_id}></Header>
+            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
+                idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
             <div className="single-cont">
                 <Section title={"Buscar miembros de la institución educativa"}>
                     <div className="box-to-search">

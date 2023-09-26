@@ -110,7 +110,6 @@ export default function Login () {
     }
 
     const validateInputs = () => {
-        console.log(data)
         if(data.email === '-') 
             {invokeToast("warning", "Es necesario registrar un correo"); return false}
         if(data.role==='STUDENT' && data.email.split('@')[1] !== sysConf.domain) 

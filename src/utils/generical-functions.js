@@ -46,3 +46,15 @@ export function modifyItemOfArray (arr, item, attribute) {
     }
     return newArray
 }
+
+export function getDateByNumber(de) {
+    console.log(de)
+    const d = new Date(de)
+    const arr = d.toLocaleDateString().split('/')
+
+    return `${cifNum(Number(arr[0]))}/${cifNum(Number(arr[1]))}/${cifNum(Number(arr[2]))}`
+}
+function cifNum(num) {
+    if(num<10) return `0${num}`;
+    return `${num}`
+}

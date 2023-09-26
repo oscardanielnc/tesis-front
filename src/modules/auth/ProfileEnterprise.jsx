@@ -16,6 +16,7 @@ import ModalBasic from "../../components/Modals/ModalBasic";
 import { deleteMyLenguageApi } from "../../api/sysData";
 import { deleteItemOfArray } from "../../utils/generical-functions";
 import ModalOpinion from "../../components/Modals/ModalOpinion";
+import invokeToast from "../../utils/invokeToast";
 
 const detailsDummy = {
     ads: [],
@@ -51,11 +52,13 @@ export default function ProfileEnterprise () {
     useEffect(() => {
         async function fetchData() {
             //data = perfil del que observo
-            if(idUser!==user.id) {
+            if(idUser!=user.id) {
                 setMySelf(false)
                 const dataResponse = await signInApi({attr: 'id', value: idUser, photo: ''});
                 if(dataResponse.success) {
                     setData(dataResponse.result[0])
+                }else {
+                    invokeToast("error", dataResponse.message)
                 }
             }
 
@@ -63,6 +66,8 @@ export default function ProfileEnterprise () {
             const response = await enterpriseDataApi(idUser);
             if(response.success) {
                 setDetails(response.result)
+            }else {
+                invokeToast("error", response.message)
             }
         }
         fetchData();
@@ -80,6 +85,10 @@ export default function ProfileEnterprise () {
     }
 
     const showModalDelete = (arr, item) => {
+        if(arr.length<=1) {
+            invokeToast("warning", "Si elimina este elemento se quedará sin idiomas asociados a su perfil")
+            return;
+        }
         setAttrsToDelete({arr, item})
         setModalDelete(true)
     }
@@ -93,7 +102,8 @@ export default function ProfileEnterprise () {
                 languages: nLangs
             })
             window.location.reload()
-        }
+            invokeToast("success", "Elemento eliminado")
+        }else invokeToast("error", response.message)
     }
     
     const showModalOpinion = (item=null) => {
@@ -117,12 +127,16 @@ export default function ProfileEnterprise () {
 
     return (
         <div className="profile">
-            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} idEnterprise={user.enterprise_id}></Header>
+            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
+            idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
             <div className="profile_container">
                 <div className="profile_container_principal">
                     <BasicInfo data={data} myself={mySelf}/>
                     <Section icon={"bi bi-briefcase-fill"}
                         title={"Anuncios laborales próximos a terminar"}>
+                        {
+                            details.ads.length===0 && <span>Esta empresa no tiene ofertas laborales vigentes...</span>
+                        }
                         {
                             details.ads.map((item, index) => (
                                 <Card key={index} 
@@ -173,6 +187,9 @@ export default function ProfileEnterprise () {
                                 handleClick={()=>showModalOpinion()}
                             />
                         </div>}
+                        {
+                            details.opinions.length===0 && <span>Ningún estudiante ha comentado su experiencia en esta empresa...</span>
+                        }
                         {
                             details.opinions.map((item, index) => (
                                 <Opinion key={index} 

@@ -55,7 +55,8 @@ function ModalLanguage({show, setShow, type, myData, lanEdit={value: '', level: 
                         languages: modifyListOfLans(myData, form.value, form.level)
                     })
                     window.location.reload()
-                }
+                    invokeToast("success", "Idioma actualizado")
+                }else invokeToast("error", response.message)
             } else if(type==='add') {
                 const response = await setMyLenguageApi({idUser: user.id, idLanguage: form.value, level: form.level})
                 if(response.success && response.result) {
@@ -70,7 +71,8 @@ function ModalLanguage({show, setShow, type, myData, lanEdit={value: '', level: 
                         languages: newdata
                     })
                     window.location.reload()
-                }
+                    invokeToast("success", "Idioma añadido")
+                }else invokeToast("error", response.message)
             }
         } else {
             invokeToast("warning", "Ya tiene registrado todos los idiomas del sistema")

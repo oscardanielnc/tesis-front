@@ -15,6 +15,7 @@ import ModalLanguage from "../../components/Modals/ModalLanguage";
 import ModalBasic from "../../components/Modals/ModalBasic";
 import { deleteMyLenguageApi } from "../../api/sysData";
 import { deleteItemOfArray } from "../../utils/generical-functions";
+import invokeToast from "../../utils/invokeToast";
 
 const detailsDummy = {
     agreements: [],
@@ -36,25 +37,33 @@ export default function ProfileEmployed () {
 
     useEffect(() => {
         async function fetchData() {
+            let dataResponse = null
             //data = perfil del que observo
-            if(idUser!==user.id) {
+            if(idUser!=user.id) {
                 setMySelf(false)
-                const dataResponse = await signInApi({attr: 'id', value: idUser, photo: ''});
+                dataResponse = await signInApi({attr: 'id', value: idUser, photo: ''});
                 if(dataResponse.success) {
                     setData(dataResponse.result[0])
+                }else {
+                    invokeToast("error", dataResponse.message)
                 }
             }
 
             //details
-            const response = await employedDataApi(idUser);
-            if(response.success) {
-                setDetails(response.result)
+            if(dataResponse) {
+                const response = await employedDataApi(idUser,dataResponse.result[0].enterprise_id);
+                if(response.success) {
+                    setDetails(response.result)
+                }else {
+                    invokeToast("error", response.message)
+                }
             }
         }
         fetchData();
       }, []);
 
     const handleModalLanguage = (item=null) => {
+        console.log(item)
         let elem = {value: '', level: 'Básico'}
         if(item) {
             elem = item
@@ -67,6 +76,10 @@ export default function ProfileEmployed () {
     }
 
     const showModalDelete = (arr, item) => {
+        if(arr.length<=1) {
+            invokeToast("warning", "Si elimina este elemento se quedará sin idiomas asociados a su perfil")
+            return;
+        }
         setAttrsToDelete({arr, item})
         setModalDelete(true)
     }
@@ -80,17 +93,22 @@ export default function ProfileEmployed () {
                 languages: nLangs
             })
             window.location.reload()
-        }
+            invokeToast("success", "Elemento eliminado")
+        }else invokeToast("error", response.message)
     }
 
     return (
         <div className="profile">
-            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} idEnterprise={user.enterprise_id}></Header>
+            <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
+                idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
             <div className="profile_container">
                 <div className="profile_container_principal">
                     <BasicInfo data={data} myself={mySelf}/>
                     <Section icon={"bi bi-briefcase-fill"}
                         title={"Anuncios laborales próximos a terminar"}>
+                        {
+                            details.ads.length===0 && <span>La empresa de este usuario no tiene ofertas laborales vigentes...</span>
+                        }
                         {
                             details.ads.map((item, index) => (
                                 <Card key={index} 
@@ -152,6 +170,9 @@ export default function ProfileEmployed () {
                         </div>
                     </Section>
                     <Section title={"Convenios firmados"} shadow>
+                        {
+                            details.agreements.length===0 && <span>Este usuario no ha firmado ningún convenio...</span>
+                        }
                         {
                             details.agreements.map((item, index) => (
                                 <MiniCard key={index} icon={"bi bi-file-earmark-text"} 

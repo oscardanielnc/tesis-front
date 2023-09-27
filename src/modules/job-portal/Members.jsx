@@ -12,7 +12,7 @@ import { changePrivToEmployedApi, getEmployeesApi } from "../../api/employed";
 import CardProfile from "../../components/CardProfile";
 import ModalBasic from "../../components/Modals/ModalBasic";
 import invokeToast from "../../utils/invokeToast";
-import { modifyItemOfArray } from "../../utils/generical-functions";
+import { getDateByDate, modifyItemOfArray } from "../../utils/generical-functions";
 
 const formDummy = {
     name: '',
@@ -20,6 +20,7 @@ const formDummy = {
     reader: false,
     signatory: false,
     recruiter: false,
+    flag: false,
 }
 
 export default function SearchJob () {
@@ -95,6 +96,9 @@ export default function SearchJob () {
         if(response.success && response.result) {
             setData(modifyItemOfArray(data, employedPriv, 'user_id'))
             setModalPriv(false)
+            invokeToast("success", "Privilegio actualizado")
+        } else {
+            invokeToast("error", response.message)
         }
     }
 
@@ -124,6 +128,10 @@ export default function SearchJob () {
                                 states={[{icon: 'bi bi-file-earmark-richtext-fill', color: '#699BF7', text: 'Firmante'},
                                         {icon: 'bi bi-file-earmark-richtext-fill', color: '#666', text: 'Firmante'}]}
                             />
+                            <InputCheck withInput data={form} setData={setForm} attribute={"flag"} 
+                                states={[{text: 'Mostrar los que coincidan con las selecciones'},
+                                        {text: 'Ocultar los que coincidan con las selecciones'}]}
+                            />
                         </div>
                     </Section>
                     
@@ -135,11 +143,14 @@ export default function SearchJob () {
                     <Section icon={"bi bi-briefcase-fill"}
                         title={"Resultados"}>
                         {
+                            data.length===0 && <span>...</span>
+                        }
+                        {
                             data.map((item, index) => (
                                 <Card key={index} 
                                     text1={`${item.name}`}
                                     text2={`${item.job}`}
-                                    text3={`Actualización de privilegios: ${item.date_update}`}
+                                    text3={`Actualización de privilegios: ${getDateByDate(item.date_update)}`}
                                     userId={item.user_id}
                                     photo={item.user_photo}
                                     circleState={-2}

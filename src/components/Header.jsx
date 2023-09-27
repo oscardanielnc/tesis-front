@@ -7,7 +7,6 @@ import { ToastContainer } from 'react-toastify';
 
 export default function Header ({type = 'none', idUser='', photo='', idEnterprise='',employedNoVerified=false}) {
     const [ops, setOps] = useState([])
-    console.log(photo)
     useEffect(()=> {
         setOps(getDataHeader(type, idUser, idEnterprise,employedNoVerified))
     }, [])

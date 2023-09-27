@@ -6,9 +6,11 @@ import Section from "../../components/Section";
 import Button from "../../components/Inputs/Button";
 import CardProfile from "../../components/CardProfile";
 
-import {applyJobApi, getJobByCodeApi} from "../../api/job"
+import {applyJobApi, getJobByCodeApi, noApplyJobApi} from "../../api/job"
 import { useNavigate, useParams } from "react-router-dom";
 import EditJob from "./EditJob";
+import invokeToast from "../../utils/invokeToast";
+import { getTime5h, nowTime } from "../../utils/generical-functions";
 
 export default function Job () {
     const {user} = useAuth();
@@ -20,20 +22,31 @@ export default function Job () {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getJobByCodeApi(code);
+            const response = await getJobByCodeApi(code,user.id,user.role==='STUDENT');
             if(response.success) {
                 setData(response.result)
                 if(user.role==='ENTERPRISE') setIsMyEnterprise(user.id===response.result.enterprise_id)
                 else if(user.role==='EMPLOYED') setIsMyEnterprise(user.enterprise_id===response.result.enterprise_id && user.reader)
+            } else {
+                invokeToast("error", response.message)
             }
         }
         fetchData();
     }, [])
 
     const handleClick = async () => {
-        const response = await applyJobApi({idUser: user.id, code});
+
+        let fnExecute = applyJobApi
+        if(data.alredy_applied) fnExecute = noApplyJobApi
+        else if(data.max_applicants<=data.registered) {
+            invokeToast("warning", "Ya se ha llegado al máximo de postulantes registrados")
+            return;
+        }
+        const response = await fnExecute({idUser: user.id, code});
         if(response.success && response.result) {
             window.location.reload()
+        }else {
+            invokeToast("error", response.message)
         }
     }
 
@@ -50,15 +63,15 @@ export default function Job () {
                     </Section>
                     
                     <Section shadow>
-                        {user.role === "STUDENT" && (new Date(data.date_end) < new Date()) && 
+                        {user.role === "STUDENT" && (getTime5h(data.date_end) > nowTime()) && 
                             <Button variant={data.alredy_applied? "danger":"primary"} center handleClick={handleClick}
                             icon={data.alredy_applied? "bi bi-bookmark-x-fill": "bi bi-bookmark-check-fill"} 
                             title={data.alredy_applied? "Cancelar postulación": "Postular"}/>}
-                        {!isMyEnterprise && (new Date(data.date_end) > new Date()) && 
-                            <span>Oferta laboral finalizada</span>}
+                        {!isMyEnterprise && (getTime5h(data.date_end) < nowTime()) && 
+                            <span>Oferta laboral finalizada...</span>}
                         <div style={{display: 'flex', justifyContent: 'center', gap: '16px'}}>
-                            {isMyEnterprise && (user.role === "EMPLOYED" && !user.recluiter) && !editMode && 
-                                (new Date(data.date_end) < new Date()) && <Button variant={"primary"} title={"Editar"}
+                            {isMyEnterprise && (user.role === "EMPLOYED" && user.recruiter) && !editMode && 
+                                (getTime5h(data.date_end) > nowTime()) && <Button variant={"primary"} title={"Editar"}
                                 handleClick={()=>setEditMode(true)} icon={"bi bi-pencil-fill"}/>}
                             {isMyEnterprise && <Button variant={"primary"} handleClick={()=>navigate(`/job-portal/applicants/${code}`)}
                                 icon={"bi bi-file-text-fill"} 

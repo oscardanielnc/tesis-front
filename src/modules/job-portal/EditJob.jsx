@@ -3,12 +3,14 @@ import "./scss/SearchJob.scss"
 import Section from "../../components/Section";
 import Button from "../../components/Inputs/Button";
 import InputText from "../../components/Inputs/InputText";
+import InputCheck from "../../components/Inputs/InputCheck";
 import InputCombo from "../../components/Inputs/InputCombo";
 import { modalitiesType } from "../../utils/global-consts";
 import InputDate from "../../components/Inputs/InputDate";
 import DescriptionsJob from "../../components/DescriptionsJob";
 import invokeToast from "../../utils/invokeToast";
 import { updateJobApi } from "../../api/job";
+import { getTime5h, nowTime } from "../../utils/generical-functions";
 
 export default function EditJob ({initForm,setEditMode}) {
     // const {user} = useAuth();
@@ -24,11 +26,14 @@ export default function EditJob ({initForm,setEditMode}) {
             const response = await updateJobApi(form)
             if(response.success && response.result) {
                 window.location.reload()
+            } else {
+                invokeToast("error", response.message)
             }
         }
     }
 
     const verify = () => {
+        if(!form.active) return true;
         if(form.job_title==='') {
             invokeToast("warning", "Debe ingresar el nombre del puesto de trabajo"); return false;
         }
@@ -38,7 +43,7 @@ export default function EditJob ({initForm,setEditMode}) {
         if(form.date_end==='') {
             invokeToast("warning", "Debe ingresar la fecha de fin de postulación"); return false;
         }
-        if(new Date(form.date_end) < new Date()) {
+        if(getTime5h(form.date_end) < nowTime()) {
             invokeToast("warning", "La fecha de fin de postulación no puede ser anterior a la fecha actual"); return false;
         }
         if(form.modality==='') {
@@ -82,6 +87,12 @@ export default function EditJob ({initForm,setEditMode}) {
                 <Section title={`Nombre del puesto de trabajo`} small>
                     <InputText data={form} setData={setForm} attribute={"job_title"}/>
                 </Section>
+                <Section title={`Publicación activa`} small>
+                    <div style={{display: 'flex', gap: '16px'}}>
+                        <InputCheck data={form} setData={setForm} attribute={"active"} withInput/>
+                        <span>Advertencia: Si desmarca esta sección la publicación se eliminará</span>
+                    </div>
+                </Section>
                 <div className="create-job_section">
                     <Section title={`Sueldo (soles)`} small>
                         <InputText data={form} setData={setForm} attribute={"salary"} isNumber maxLength={8}/>
@@ -114,7 +125,7 @@ export default function EditJob ({initForm,setEditMode}) {
             </div>
             <div className="div_plus">
                 <Button title="Cancelar" handleClick={()=> setEditMode(false)} variant="danger" icon="bi bi-x"/>
-                <Button title="Registrar" handleClick={udapteJob} variant="primary" icon="bi bi-check"/>
+                <Button title="Guardar" handleClick={udapteJob} variant="primary" icon="bi bi-check"/>
             </div>
         </div>
     )

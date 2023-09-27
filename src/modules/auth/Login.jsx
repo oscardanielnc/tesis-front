@@ -14,7 +14,7 @@ import { signInApi, signUpApi } from "../../api/auth";
 import { getEmailsSystemApi, getLanguagesApi, getLocationsApi } from "../../api/sysData";
 import { usersType } from "../../utils/global-consts";
 import invokeToast from "../../utils/invokeToast";
-import { goToHome } from "../../utils/generical-functions";
+import { getTime5h, goToHome, nowTime } from "../../utils/generical-functions";
 import ModalUsers from "../../components/Modals/ModalUsers";
 
 const userDummy = {
@@ -128,7 +128,7 @@ export default function Login () {
             {invokeToast("warning", `El campo de apellido no puede estar vacío`); return false}
         if(data.date === '') 
             {invokeToast("warning", `Ingrese una fecha de ${data.role==='ENTERPRISE'? 'fundación': 'nacimiento'} válida`); return false}
-        if(new Date(data.date) > new Date()) 
+        if(getTime5h(data.date) > nowTime()) 
             {invokeToast("warning", `La fecha de ${data.role==='ENTERPRISE'? 'fundación': 'nacimiento'} no puede ser mayor a la fecha actual`); return false}
         if(data.role==='STUDENT' && data.code === '') 
             {invokeToast("warning", `El código de estudiante no puede estar vacío`); return false}
@@ -158,7 +158,6 @@ export default function Login () {
     const onLogin = async response => {
         const obj = response.profileObj
         const responseApi = await signInApi({attr: 'email', value: obj.email, photo: obj.imageUrl});
-        console.log(responseApi)
         if(responseApi.success) {
             if(responseApi.result.length===1) {
                 const user = responseApi.result[0];

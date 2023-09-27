@@ -48,13 +48,25 @@ export function modifyItemOfArray (arr, item, attribute) {
 }
 
 export function getDateByNumber(de) {
-    console.log(de)
     const d = new Date(de)
     const arr = d.toLocaleDateString().split('/')
 
     return `${cifNum(Number(arr[0]))}/${cifNum(Number(arr[1]))}/${cifNum(Number(arr[2]))}`
 }
+export function getDateByDate(de) {
+    const arr = de.split('-')
+
+    return `${cifNum(Number(arr[2]))}/${cifNum(Number(arr[1]))}/${cifNum(Number(arr[0]))}`
+}
 function cifNum(num) {
     if(num<10) return `0${num}`;
     return `${num}`
+}
+
+export function nowTime() {
+    const a = new Date()
+    return a.getTime()
+}
+export function getTime5h(date) {
+    return new Date(date).getTime() + 1000*60*60*5
 }

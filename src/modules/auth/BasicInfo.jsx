@@ -63,7 +63,6 @@ export default function BasicInfo ({data, myself=false}) {
         } else {
             invokeToast("error", response.message)
         }
-        console.log(updates)
     }
 
     const getNameByv = (id, arr) => {

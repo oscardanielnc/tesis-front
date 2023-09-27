@@ -132,7 +132,6 @@ export default function ProfileStudent () {
             } else invokeToast("error", response.message)
             
         } else {
-            console.log({id: attrsToDelete.item.id})
             const response = await deleteMyCertificateApi({id: attrsToDelete.item.id}) 
             if(response.success && response.result) {
                 window.location.reload()

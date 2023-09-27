@@ -13,6 +13,7 @@ import InputDate from "../../components/Inputs/InputDate";
 import DescriptionsJob from "../../components/DescriptionsJob";
 import invokeToast from "../../utils/invokeToast";
 import { createJobApi } from "../../api/job";
+import { nowTime } from "../../utils/generical-functions";
 
 const formDummy = {
     job: '',
@@ -33,10 +34,11 @@ export default function CreateJob () {
 
     const registerJob = async () => {
         if(verify()) {
-            const response = await createJobApi(form)
+            const response = await createJobApi({...form, id_enterprise: user.enterprise_id})
             if(response.success && response.result.success) {
                 navigate(`/job-portal/job/${response.result.code}`)
-            }
+                invokeToast("success", "Anuncio laboral publicado")
+            } else invokeToast("error", response.message)
 
         }
     }
@@ -51,7 +53,7 @@ export default function CreateJob () {
         if(form.date_end==='') {
             invokeToast("warning", "Debe ingresar la fecha de fin de postulación"); return false;
         }
-        if(new Date(form.date_end) < new Date()) {
+        if((form.date_end) < nowTime()) {
             invokeToast("warning", "La fecha de fin de postulación no puede ser anterior a la fecha actual"); return false;
         }
         if(form.modality==='') {

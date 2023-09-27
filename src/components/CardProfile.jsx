@@ -18,7 +18,7 @@ export default function CardProfile ({name, score, subTitle='', photo, idUser, p
             </figure>
             <div className="psp-card-profile_title">
                 <span>{name}</span>
-                {score && <Score score={score}/>}
+                {(score || score===0) && <Score score={score}/>}
             </div>
             <span className="psp-card-profile_subtitle">{subTitle}</span>
         </div>

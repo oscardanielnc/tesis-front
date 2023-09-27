@@ -9,6 +9,7 @@ import InputRUC from "../Inputs/InputRUC";
 import InputTextarea from "../Inputs/InputTextarea";
 import IconSystem from "../IconSystem";
 import useAuth from "../../hooks/useAuth";
+import { getTime5h, nowTime } from "../../utils/generical-functions";
 
 
 
@@ -62,7 +63,7 @@ function ModalCerfiticates({show, setShow, type, camp, item}) {
             {invokeToast("warning", "El título de su certificado o experiencia laboral no puede estar vacío"); return false}
         if(form.date_init === '') 
             {invokeToast("warning", "Debe escoger la fecha de inicio de actividades"); return false}
-        if(new Date(form.date_init) > new Date()) 
+        if(getTime5h(form.date_init) > nowTime()) 
             {invokeToast("warning", "La fecha de inicio no puede ser mayor a la fecha actual"); return false}
         if(form.date_end !== '' && (new Date(form.date_init) > new Date(form.date_end))) 
             {invokeToast("warning", "La fecha de inicio no puede ser mayor a la fecha de fin de actividades"); return false}

@@ -1,6 +1,6 @@
 import "./scss/Opinion.scss"
 
-export default function Score ({score, showScore, setData, data}) {
+export default function Score ({score, showScore=false, setData, data}) {
 
     const handleClick = (val) => {
         if(setData && data) {

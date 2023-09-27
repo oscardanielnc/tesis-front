@@ -63,7 +63,6 @@ export default function ProfileEmployed () {
       }, []);
 
     const handleModalLanguage = (item=null) => {
-        console.log(item)
         let elem = {value: '', level: 'Básico'}
         if(item) {
             elem = item
@@ -104,10 +103,11 @@ export default function ProfileEmployed () {
             <div className="profile_container">
                 <div className="profile_container_principal">
                     <BasicInfo data={data} myself={mySelf}/>
-                    <Section icon={"bi bi-briefcase-fill"}
+                    {data.reader && <Section icon={"bi bi-briefcase-fill"}
                         title={"Anuncios laborales próximos a terminar"}>
                         {
-                            details.ads.length===0 && <span>La empresa de este usuario no tiene ofertas laborales vigentes...</span>
+                            details.ads.length===0 &&
+                                <span>La empresa de este usuario no tiene ofertas laborales vigentes...</span>
                         }
                         {
                             details.ads.map((item, index) => (
@@ -130,7 +130,7 @@ export default function ProfileEmployed () {
                         {mySelf && user.recruiter && <div className="profile_container_principal_plus">
                             <i className="bi bi-plus-circle" onClick={()=>navigate(`/job-portal/create`)}></i>
                         </div>}
-                    </Section>
+                    </Section>}
                     <Section icon={"bi bi-briefcase-fill"}
                         title={"Idiomas"}>
                         {

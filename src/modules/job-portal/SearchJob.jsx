@@ -61,7 +61,12 @@ export default function SearchJob () {
     }, [])
 
     const onSearch = async () => {
-        const response = await getJobsApi(form);
+        const req = {
+            ...form,
+            iamEnterprise: user.role==="ENTERPRISE" || user.role==="EMPLOYED",
+            enterprise_id: user.enterprise_id
+        }
+        const response = await getJobsApi(req);
         if(response.success) {
             setData(response.result)
         }
@@ -82,9 +87,9 @@ export default function SearchJob () {
                     {isStudent && <Section title={"Ubicación"} small shadow>
                         <InputCombo list={locations} setData={setForm} attribute={"location"} data={form} />
                     </Section>}
-                    {isStudent && <Section title={"Idiomas de la empresa"} small shadow>
+                    {/* {isStudent && <Section title={"Idiomas de la empresa"} small shadow>
                         <InputMultiSelect list={addingInitArr(languages)} setData={setForm} attribute={"languages"} data={form} />
-                    </Section>}
+                    </Section>} */}
                     <Section title={"Modalidad"} small shadow>
                         <InputCombo list={modalitiesType} setData={setForm} attribute={"modality"} data={form} />
                     </Section>
@@ -103,7 +108,7 @@ export default function SearchJob () {
                 </div>
                 <div className="psp_container_results">
                     <Section icon={"bi bi-briefcase-fill"} title={"Resultados"}>
-                        {user.role==="EMPLOYED" && user.recluiter && 
+                        {user.role==="EMPLOYED" && user.recruiter && 
                         <div className="div_plus">
                             <Button title={"Nueva convocatoria"}
                                 icon={"bi bi-plus"}
@@ -118,7 +123,7 @@ export default function SearchJob () {
                                     text1={`${item.job_title} (${item.code}) - ${item.salary}$`}
                                     text2={`${item.enterprise_name} (${item.location}) • ${item.modality}`}
                                     text3={`Fin de postulación: ${item.date_end}`}
-                                    text4={item.description}
+                                    text4={item.description+'...'}
                                     userId={item.enterprise_id}
                                     profile={"enterprise"}
                                     photo={item.enterprise_photo}

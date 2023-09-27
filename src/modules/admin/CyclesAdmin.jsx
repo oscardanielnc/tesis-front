@@ -8,6 +8,7 @@ import "./scss/Admin.scss"
 import InputDate from "../../components/Inputs/InputDate";
 import ModalBasic from "../../components/Modals/ModalBasic";
 import invokeToast from "../../utils/invokeToast";
+import { getTime5h, nowTime } from "../../utils/generical-functions";
 
 const cycleDummy = {
     can: false,
@@ -39,9 +40,9 @@ export default function SysDataAdmin () {
         const last = arr[0]
 
         const next = getNext(last.id)
-        const endPeriod = new Date(last.cycle_end)
+        const endPeriod = getTime5h(last.cycle_end)
         
-        return {...newCycle, can: new Date() < endPeriod, id: next}//
+        return {...newCycle, can: nowTime() < endPeriod, id: next}//
     }
     const getNext = cycle => {
         let sem = cycle%10;
@@ -72,7 +73,7 @@ export default function SysDataAdmin () {
         if(newCycle.cycle_end === '') {
             invokeToast('warning', "El campo de fin de ciclo no puede estar vacío"); return;
         }
-        if(new Date() > new Date(newCycle.registration_start)) {
+        if(nowTime() > getTime5h(newCycle.registration_start)) {
             invokeToast('warning', "El inicio de la matrícula debe ser mayor a la fecha actual"); return;
         }
         if(new Date(newCycle.registration_start) > new Date(newCycle.cycle_init)) {

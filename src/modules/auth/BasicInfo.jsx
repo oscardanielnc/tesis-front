@@ -40,7 +40,7 @@ export default function BasicInfo ({data, myself=false}) {
 
     const getBasics = (role) => {
         switch (role) {
-            case "STUDENT": return `${data.specialty_name} - ${data.cycle=='-1'? 'Egresado': `${data.cycle}° ciclo`}`;
+            case "STUDENT": return `${data.specialty_name} - ${data.cycle=='100'? 'Egresado': `${data.cycle}° ciclo`}`;
             case "ENTERPRISE": return `${getNameByv(data.sector, sectors)} (${data.numEmployees} empleados) • ${data.phone}`;
             case "PROFESSOR": return `${data.specialty_name}`;
             default: return `${data.enterprise_name} - ${data.job} • ${data.phone}`;
@@ -50,7 +50,7 @@ export default function BasicInfo ({data, myself=false}) {
     const generateCycles = () => {
         const arrNums = generateRange(1,data.max_cycles+1,1);
         const preResult = arrNums.map(item => ({value: `${item}`, name: `${item}`}))
-        preResult.push({value: `${'-1'}`, name: `${'Egresado'}`})
+        preResult.push({value: `${'100'}`, name: `${'Egresado'}`})
         return preResult
     }
 

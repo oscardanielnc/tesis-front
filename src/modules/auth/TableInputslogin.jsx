@@ -56,7 +56,7 @@ function LoginStudent({specialties, setData, data}) {
     const generateCycles = () => {
         const arrNums = generateRange(1,getCyclesSpecialty(data.specialty)+1,1);
         const preResult = arrNums.map(item => ({value: `${item}`, name: `${item}`}))
-        preResult.push({value: `${'-1'}`, name: `${'Egresado'}`})
+        preResult.push({value: `${'100'}`, name: `${'Egresado'}`})
         return preResult
     }
 

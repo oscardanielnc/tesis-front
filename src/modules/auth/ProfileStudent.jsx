@@ -257,7 +257,7 @@ export default function ProfileStudent () {
                         {
                             details.ads.map((item, index) => (
                                 <MiniCard key={index} icon={"bi bi-calendar-week"} 
-                                    text={`${item.job_title} - ${item.enterprise_name} (${item.date_end})`}>
+                                    text={`${item.job_title} - ${item.enterprise_name} (${getDateByNumber(item.date_end)})`}>
                                         <OptionsIcon visibleText
                                             listIcons={[{icon: 'bi bi-box-arrow-in-right', text: 'Ver',
                                                         fn: ()=> navigate(`/job-portal/job/${item.code}`)}]} 

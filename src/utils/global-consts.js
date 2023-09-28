@@ -84,15 +84,15 @@ export const agreementStatesType = [
 
 export const typeOfApplicants = [
     {
-        value: '1',
+        value: '',
         name: 'Mostrar todos',
     },
     {
-        value: '2',
+        value: 'C',
         name: 'Mostrar contratados',
     },
     {
-        value: '3',
+        value: 'P',
         name: 'No mostrar contratados',
     },
 ]

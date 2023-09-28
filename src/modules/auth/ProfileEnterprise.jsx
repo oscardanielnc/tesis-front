@@ -140,7 +140,7 @@ export default function ProfileEnterprise () {
                         {
                             details.ads.map((item, index) => (
                                 <Card key={index} 
-                                    text1={`${item.job_title} (${item.code})`}
+                                    text1={`${item.job_title} (C${item.code})`}
                                     text2={item.enterprise_name}
                                     text3={`Fin de postulación: ${item.date_end}`}
                                     text4={item.description}

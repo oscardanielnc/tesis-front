@@ -38,8 +38,8 @@ export default function InputMultiSelect ({list, setData, data, attribute}) {
             <div className="input-ms_taps">
                 {
                     data[attribute].map((item, key) => (
-                        <div className="input-ms_taps_item">
-                            <span key={key}>{getItem(item, list)}</span>
+                        <div className="input-ms_taps_item" key={key}>
+                            <span>{getItem(item, list)}</span>
                             <i className="bi bi-x" onClick={()=> deleteItem(item)}></i>
                         </div>
                     ))

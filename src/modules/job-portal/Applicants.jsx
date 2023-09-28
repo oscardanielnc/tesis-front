@@ -48,13 +48,6 @@ export default function Applicants () {
             if(response.success) {
                 const specialtiesPre = response.result;
                 setSpecialties(specialtiesPre)
-                if(specialtiesPre.length>0) {
-                    setForm({
-                        ...form,
-                        specialty: specialtiesPre[0].value,
-                        cycle: 1,
-                    })
-                }
             }
         }
         fetchData();
@@ -65,7 +58,7 @@ export default function Applicants () {
             const response = await getJobByCodeApi(code);
             if(response.success) {
                 setData(response.result)
-            }
+            } else invokeToast("error", response.message)
         }
         fetchData();
     }, [])
@@ -75,21 +68,22 @@ export default function Applicants () {
             const response1 = await getLocationsApi({name: '', active:true});
             if(response1.success) {
                 setLocations(response1.result)
-            }
+            }else invokeToast("error", response1.message)
             //languages
             const response2 = await getLanguagesApi({name: '', active: true});
             if(response2.success) {
                 setLanguages(response2.result)
-            }
+            }else invokeToast("error", response2.message)
         }
         fetchData();
     }, [])
 
     const onSearch = async () => {
-        const response = await getStudentsApi(form);
+        const response = await getStudentsApi({...form,code});
         if(response.success) {
             setRDetails(response.result)
-        }
+        } else invokeToast("error", response.message)
+        console.log({...form,code})
     }
     const getStrLanguages = (arr) => {
         let str = '';
@@ -139,11 +133,20 @@ export default function Applicants () {
         }
     }
     const contractStudent = async () => {
-        const response = await contractStudentApi({student: studentCont.id, enterprise: data.enterprise_id})
+        const req = {
+            name: data.job_title, 
+            id_student: studentCont.id,
+            id_enterprise: data.enterprise_id, 
+            code: data.code,
+            init_date: data.job_start,
+            end_date: data.job_end
+        }
+        const response = await contractStudentApi(req)
         if(response.success && response.result) {
             setRDetails(modifyItemOfArray(rDetails, {...studentCont, hired: true}, 'id'))
             setModalContract(false)
-        }
+            invokeToast("success", "Estudiante contratado")
+        } else invokeToast("error", response.message);
     }
 
     return (
@@ -163,7 +166,7 @@ export default function Applicants () {
                         <InputMultiSelect list={addingInitArr(languages)} setData={setForm} attribute={"languages"} data={form} />
                     </Section>
                     <Section title={"Ubicación"} small shadow>
-                        <InputCombo list={locations} setData={setForm} attribute={"location"} data={form} />
+                        <InputCombo list={addingInitArr(locations)} setData={setForm} attribute={"location"} data={form} />
                     </Section>
                     <Section title={"Especialidad"} small shadow>
                         <InputCombo list={addingInitArr(specialties)} setData={setForm} attribute={"specialty"} data={form} />
@@ -179,7 +182,7 @@ export default function Applicants () {
                     </Section>
                 </div>
                 <div className="psp_container_results">
-                    <Section title={`${data.job_title} (${data.code})`}>
+                    <Section title={`${data.job_title} (C${data.code})`}>
                         <div className="job_description">
                             <div className="job_description_place">
                                 <div><strong>Sueldo:</strong> <span>{data.salary}$</span></div>
@@ -197,9 +200,9 @@ export default function Applicants () {
                                 rDetails.map((item, index) => (
                                     <Card key={index} 
                                         text1={`${item.name}`}
-                                        text2={`${item.specialty} - ${item.cycle}° ciclo`}
+                                        text2={`${item.specialty} - ${item.cycle!=100? `${item.cycle}° ciclo`: 'Egresado'}`}
                                         text3={`Idiomas: ${getStrLanguages(item.languages)}`}
-                                        text4={`Última modificación de CV: ${item.cv_update}`}
+                                        text4={`Última modificación de CV: ${item.cv_update!=''? item.cv_update: 'No tiene'}`}
                                         photo={item.photo}
                                         circleState={-2}
                                     >

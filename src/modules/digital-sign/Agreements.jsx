@@ -127,7 +127,7 @@ export default function Agreements () {
                         {
                             data.map((item, index) => (
                                 <Card key={index} 
-                                    text1={`${item.job_title} (${item.code}) - ${item.salary}$`}
+                                    text1={`${item.job_title} (C${item.code}) - ${item.salary}$`}
                                     text2={`${item.user_name} ${item.location!==''? `(${item.location})`: ''}`}
                                     text3={`desde ${item.job_start} al ${item.job_end}`}
                                     text4={`(${item.state})`}

@@ -63,24 +63,31 @@ export default function Job () {
                     </Section>
                     
                     <Section shadow>
+                        {user.role === "STUDENT" && data.contracted && 
+                            <span>Usted ya ha sido contratado para este trabajo.</span>
+                        }
                         {user.role === "STUDENT" && (getTime5h(data.date_end) > nowTime()) && 
                             <Button variant={data.alredy_applied? "danger":"primary"} center handleClick={handleClick}
                             icon={data.alredy_applied? "bi bi-bookmark-x-fill": "bi bi-bookmark-check-fill"} 
-                            title={data.alredy_applied? "Cancelar postulación": "Postular"}/>}
-                        {!isMyEnterprise && (getTime5h(data.date_end) < nowTime()) && 
-                            <span>Oferta laboral finalizada...</span>}
+                            title={data.alredy_applied? "Cancelar postulación": "Postular"}/>
+                        }
+                        {!isMyEnterprise && (getTime5h(data.date_end) < nowTime()) && !data.contracted && 
+                            <span>Oferta laboral finalizada.</span>
+                        }
                         <div style={{display: 'flex', justifyContent: 'center', gap: '16px'}}>
                             {isMyEnterprise && (user.role === "EMPLOYED" && user.recruiter) && !editMode && 
                                 (getTime5h(data.date_end) > nowTime()) && <Button variant={"primary"} title={"Editar"}
-                                handleClick={()=>setEditMode(true)} icon={"bi bi-pencil-fill"}/>}
+                                handleClick={()=>setEditMode(true)} icon={"bi bi-pencil-fill"}/>
+                            }
                             {isMyEnterprise && <Button variant={"primary"} handleClick={()=>navigate(`/job-portal/applicants/${code}`)}
                                 icon={"bi bi-file-text-fill"} 
-                                title={"Ver postulates"}/>}
+                                title={"Ver postulates"}/>
+                            }
                         </div>
                     </Section>
                 </div>
                 <div className="psp_container_results">
-                    {!editMode && <Section title={`${data.job_title} (${data.code})`}>
+                    {!editMode && <Section title={`${data.job_title} (C${data.code})`}>
                         <div className="job_description">
                             <div className="job_description_place">
                                 <div><strong>Sueldo:</strong> <span>{data.salary}$</span></div>

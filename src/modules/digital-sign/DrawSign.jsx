@@ -43,7 +43,7 @@ export default function DrawSign () {
                         photo={data.student_photo} profile={"student"} idUser={data.student_id}/>}
                     </Section>
                     
-                    <Section shadow title={`${data.job_title} (${data.code})`}>
+                    <Section shadow title={`${data.job_title} (C${data.code})`}>
                         <div className="job_description_place">
                             <div><strong>Sueldo:</strong> <span>{data.salary}$</span></div>
                             <div><strong>Modalidad:</strong> <span>{data.modality}</span></div>

@@ -50,13 +50,15 @@ export default function ProfileEmployed () {
             }
 
             //details
-            if(dataResponse) {
-                const response = await employedDataApi(idUser,dataResponse.result[0].enterprise_id);
-                if(response.success) {
-                    setDetails(response.result)
-                }else {
-                    invokeToast("error", response.message)
-                }
+            let myIdEnt = ''
+            if(dataResponse) myIdEnt = dataResponse.result[0].enterprise_id
+            else myIdEnt = user.enterprise_id
+
+            const response = await employedDataApi(idUser,myIdEnt);
+            if(response.success) {
+                setDetails(response.result)
+            }else {
+                invokeToast("error", response.message)
             }
         }
         fetchData();
@@ -112,11 +114,11 @@ export default function ProfileEmployed () {
                         {
                             details.ads.map((item, index) => (
                                 <Card key={index} 
-                                    text1={`${item.job_title} (${item.code})`}
-                                    text2={item.enterprise_name}
+                                    text1={`${item.job_title} (C${item.code})`}
+                                    text2={data.enterprise_name}
                                     text3={`Fin de postulación: ${item.date_end}`}
                                     text4={item.description}
-                                    photo={data.photo}
+                                    photo={item.enterprise_photo}
                                     userId={item.enterprise_id}
                                     profile={"enterprise"}
                                     circleState={-2}

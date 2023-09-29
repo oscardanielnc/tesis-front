@@ -10,6 +10,7 @@ import Header from "../../components/Header";
 import ModalBasic from "../../components/Modals/ModalBasic";
 import { modifyItemOfArray } from "../../utils/generical-functions";
 import { useNavigate } from "react-router-dom";
+import invokeToast from "../../utils/invokeToast";
 
 export default function EnterprisesAdmin () {
     const {user} = useAuth()
@@ -48,7 +49,8 @@ export default function EnterprisesAdmin () {
         if(response.success && response.result) {
             setData(modifyItemOfArray(data, newElem, 'id'))
             setShow(false)
-        }
+            invokeToast('success',  `Se ha actualizado el estado de la empresa`)
+        } else invokeToast("error", response.message)
     }
 
     return (

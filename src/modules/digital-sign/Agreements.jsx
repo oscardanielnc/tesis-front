@@ -13,6 +13,7 @@ import Button from "../../components/Inputs/Button";
 import InputRange from "../../components/Inputs/InputRange";
 import { getAgreementsApi } from "../../api/agreement";
 import { useNavigate } from "react-router-dom";
+import invokeToast from "../../utils/invokeToast"
 
 const formDummy = {
     job: '',
@@ -34,24 +35,30 @@ export default function Agreements () {
     const navigate = useNavigate();
     const [data, setData] = useState([])
     const [form, setForm] = useState(formDummy)
-    const [locations, setLocations] = useState([]);
+    // const [locations, setLocations] = useState([]);
 
-    useEffect(() => {
-        async function fetchData() {
-            //locations
-            const response1 = await getLocationsApi({name: '', active:true});
-            if(response1.success) {
-                setLocations(response1.result)
-            }
-        }
-        fetchData();
-    }, [])
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         //locations
+    //         const response1 = await getLocationsApi({name: '', active:true});
+    //         if(response1.success) {
+    //             setLocations(response1.result)
+    //         }
+    //     }
+    //     fetchData();
+    // }, [])
 
     const onSearch = async () => {
-        const response = await getAgreementsApi(form);
+        const req = {
+            ...form,
+            iam: user.role==='EMPLOYED'? "ENTERPRISE": user.role,
+            myId: user.role==='EMPLOYED'? user.enterprise_id: user.id,
+        }
+        console.log(req)
+        const response = await getAgreementsApi(req);
         if(response.success) {
             setData(response.result)
-        }
+        } else invokeToast("error", response.message)
     }
 
     const getOptions = item => {
@@ -63,7 +70,7 @@ export default function Agreements () {
         const sign = {
             icon: 'bi bi-file-earmark-richtext-fill',
             text: 'Firmar',
-            fn: ()=>navigate(`/digital-sign/draw/${item.code}`),
+            fn: ()=>navigate(`/digital-sign/draw/${item.id_agreement}`),
         }
         const upload = {
             icon: 'bi bi-cloud-upload',
@@ -72,16 +79,20 @@ export default function Agreements () {
         }
         const arr = []
 
-        if(user.role==="EMPLOYED" && user.signatory && item.state!=='Vigente' && item.state!=='Vencido') {
+        if(user.role==="EMPLOYED" && user.signatory && (item.state_id==3 || item.state_id==4 || item.state_id==5 || item.state_id==6)) {
             arr.push(upload)
         }
-        if(item.state!=='Sin convenio') {
+        if(item.doc_path && item.doc_path!='') {
             arr.push(download)
         }
-        if(item.state==='Falta firmar' && (user.role==="STUDENT" || user.role==="PROFESSOR" || (user.role==="EMPLOYED" && user.signatory ))) {
+        if(item.doc_path && item.doc_path!='') {
             arr.push(sign)
         }
         return arr
+    }
+    const getSubName = (item) => {
+        if(user.role==='SIGNATORY') return ` con ${item.enterprise_name}`
+        return item.location && item.location!=''? `(${item.location})`: ''
     }
 
     return (
@@ -93,18 +104,18 @@ export default function Agreements () {
                     <Section title={"Puesto de trabajo o código"} small shadow>
                         <InputText data={form} setData={setForm} attribute={"job"}/>
                     </Section>
-                    {isStudent && <Section title={"Empresa"} small shadow>
+                    {(user.role==='STUDENT' || user.role==='SIGNATORY') && <Section title={"Empresa"} small shadow>
                         <InputText data={form} setData={setForm} attribute={"enterprise"}/>
                     </Section>}
-                    {!isStudent && <Section title={"Nombre del postulante"} small shadow>
+                    {(user.role==='EMPLOYED' || user.role==='ENTERPRISE') && <Section title={"Nombre del postulante"} small shadow>
                         <InputText data={form} setData={setForm} attribute={"student"}/>
                     </Section>}
-                    {!isStudent && <Section title={"Firmante de la empresa"} small shadow>
+                    {/* {!isStudent && <Section title={"Firmante de la empresa"} small shadow>
                         <InputText data={form} setData={setForm} attribute={"employed"}/>
-                    </Section>}
-                    {isStudent && <Section title={"Ubicación"} small shadow>
+                    </Section>} */}
+                    {/* {isStudent && <Section title={"Ubicación"} small shadow>
                         <InputCombo list={locations} setData={setForm} attribute={"location"} data={form} />
-                    </Section>}
+                    </Section>} */}
                     <Section title={"Estado del convenio"} small shadow>
                         <InputCombo list={agreementStatesType} setData={setForm} attribute={"state"} data={form} />
                     </Section>
@@ -114,9 +125,9 @@ export default function Agreements () {
                     <Section title={"Rango salarial"} small shadow>
                         <InputRange data={form} setData={setForm} attribute1={"salary_min"} attribute2={"salary_max"}/>
                     </Section>
-                    {!isStudent && <Section title={"Fecha de fin de postulación"} small shadow>
+                    <Section title={"Perido de trabajo"} small shadow>
                         <InputRange data={form} setData={setForm} attribute1={"date_init"} attribute2={"date_end"} type="date"/>
-                    </Section>}
+                    </Section>
                     <Section shadow>
                         <Button variant={"primary"} icon={"bi bi-search"} title={"Buscar"} center handleClick={onSearch}/>
                     </Section>
@@ -128,13 +139,13 @@ export default function Agreements () {
                             data.map((item, index) => (
                                 <Card key={index} 
                                     text1={`${item.job_title} (C${item.code}) - ${item.salary}$`}
-                                    text2={`${item.user_name} ${item.location!==''? `(${item.location})`: ''}`}
+                                    text2={`${item.user_name} ${getSubName(item)}`}
                                     text3={`desde ${item.job_start} al ${item.job_end}`}
                                     text4={`(${item.state})`}
                                     userId={item.user_id}
                                     photo={item.user_photo}
                                     profile={user.role==="STUDENT"? "enterprise": "student"}
-                                    circleState={item.state_id}
+                                    circleState={item.state_id==2 || item.state_id==6? -1: item.state_id}
                                 >
                                     <OptionsIcon listIcons={getOptions(item)} visibleText verticalIcons size='20px'/>
                                 </Card>

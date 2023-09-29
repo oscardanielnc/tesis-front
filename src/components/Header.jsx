@@ -7,9 +7,16 @@ import { ToastContainer } from 'react-toastify';
 
 export default function Header ({type = 'none', idUser='', photo='', idEnterprise='',employedNoVerified=false}) {
     const [ops, setOps] = useState([])
+    const [view, setView] = useState(false)
+
     useEffect(()=> {
         setOps(getDataHeader(type, idUser, idEnterprise,employedNoVerified))
     }, [])
+
+    const logout = () => {
+        localStorage.removeItem("ACCESS_TOKEN")
+        window.location.href = '/'
+    }
 
     return (
         <div className="header">
@@ -32,10 +39,18 @@ export default function Header ({type = 'none', idUser='', photo='', idEnterpris
                 </div>
                 <ToastContainer />
                 <div className="header_right_photo">
-                    {type!=='admin' && type!=='none' &&
-                        <figure className="header_right_photo_profile">
+                    {type!=='none' &&
+                        <figure className="header_right_photo_profile" onClick={()=>setView(!view)}>
                             <img src={photo && photo != ''? photo: nouser} alt="user" />
                         </figure>
+                    }
+                    {
+                        view && 
+                        <div className="header_right_photo_menu">
+                            <div className="header_right_photo_menu_item" onClick={logout}>
+                                <span>Cerrar sesión</span>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>
@@ -66,6 +81,12 @@ function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
             {
                 name: "Comité de PSP",
                 link: `/admin/committee`
+            },
+        ],
+        signatory: [
+            {
+                name: "Convenios",
+                link: `/digital-sign/agreements`
             },
         ],
         student: [

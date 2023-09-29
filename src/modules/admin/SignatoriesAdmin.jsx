@@ -22,7 +22,7 @@ export default function SysDataAdmin () {
     const [show, setShow] = useState(false)
     const [data, setData] = useState([])
     const [elem, setElem] = useState(null)
-    const [newSig, setNewSig] = useState({name:'', last_name:'', email:'', role: 'FIRMANTE'})
+    const [newSig, setNewSig] = useState({name:'', last_name:'', email:'', role: 'SIGNATORY'})
     const [showSig, setShowSig] = useState(false)
 
     const search = async () => {
@@ -39,7 +39,7 @@ export default function SysDataAdmin () {
             setData(modifyItemOfArray(data, newElem, 'id'))
             setShow(false)
             invokeToast('success',  `Se ha actualizado el estado de ${newElem.name}`)
-        }
+        } else invokeToast("error", response.message)
     }
     const sendInvitation = async () => {
         if(newSig.name==='') {
@@ -54,7 +54,8 @@ export default function SysDataAdmin () {
         const response = await addSignatoryApi(newSig)
         if(response.success && response.result) {
             window.location.reload()
-        }
+        }else invokeToast("error", response.message)
+        console.log(newSig)
     }
 
     return (
@@ -79,7 +80,7 @@ export default function SysDataAdmin () {
                         {
                             data.map((item, index) => (
                                 <Card key={index} 
-                                    text1={`${item.name} ${item.last_name} (${item.role})`}
+                                    text1={`${item.name} ${item.last_name} (${item.role==='SIGNATORY'? 'FIRMANTE': 'EVALUADOR'})`}
                                     text2={`Correo: ${item.email}`}
                                     text3={`Actualización de privilegios: ${item.update_date}`}
                                     text4={item.active? '(Activo)': '(Inactivo)'}

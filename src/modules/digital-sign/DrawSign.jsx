@@ -11,6 +11,7 @@ import { getAgreementStateApi } from "../../api/agreement";
 import Card from "../../components/Card";
 import OptionsIcon from "../../components/OptionsIcon";
 import DrawFunction from "./DrawFunction";
+import invokeToast from "../../utils/invokeToast";
 
 export default function DrawSign () {
     const {user} = useAuth();
@@ -21,10 +22,11 @@ export default function DrawSign () {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getAgreementStateApi(code);
+            const iam = user.role==='EMPLOYED'? "ENTERPRISE": user.role
+            const response = await getAgreementStateApi(code,iam);
             if(response.success) {
                 setData(response.result)
-            }
+            } else invokeToast("error", response.message)
         }
         fetchData();
     }, [])
@@ -47,10 +49,10 @@ export default function DrawSign () {
                         <div className="job_description_place">
                             <div><strong>Sueldo:</strong> <span>{data.salary}$</span></div>
                             <div><strong>Modalidad:</strong> <span>{data.modality}</span></div>
-                            <div><span>{data.description}</span></div>
                         </div>
                     </Section>
                     <Section shadow title={`Listado de firmas`}>
+                        {(!data.list || data.list.length===0) && <span>Sin firmas</span>}
                         {data.list &&
                             data.list.map((item, key) => (
                                 <Card key={key} 

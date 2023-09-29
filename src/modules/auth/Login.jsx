@@ -148,8 +148,9 @@ export default function Login () {
             const responseApi = await signUpApi(data);
             if(responseApi.success) {
                 const user = responseApi.result;
-                localStorage.setItem("ACCESS_TOKEN", JSON.stringify(user));
-                window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
+                goToHome(user)
+                // localStorage.setItem("ACCESS_TOKEN", JSON.stringify(user));
+                // window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
             } else {
                 invokeToast("error", responseApi.message)
             }

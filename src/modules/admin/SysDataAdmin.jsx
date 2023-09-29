@@ -7,7 +7,8 @@ import Section from "../../components/Section";
 import useAuth from "../../hooks/useAuth";
 import { optionsToSysConfig } from "../../utils/global-consts";
 import Card from "../../components/Card";
-import { getEmailsSystemApi, getLanguagesApi, getLocationsApi, getSectorsApi, maintenanceSysDataApi, updateEmailsSystemApi } from "../../api/sysData";
+import { getEmailsSystemApi, getLanguagesApi, getLocationsApi, 
+    getSectorsApi, maintenanceSysDataApi, updateEmailsSystemApi } from "../../api/sysData";
 import OptionsIcon from "../../components/OptionsIcon";
 import ModalBasic from "../../components/Modals/ModalBasic"
 import IconSystem from "../../components/IconSystem";
@@ -36,7 +37,11 @@ export default function SysDataAdmin () {
         async function fetchData() {
             const response = await getEmailsSystemApi();
             if(response.success) {
-                setConfig(response.result)
+                let configuration = {}
+                for(let item of response.result) {
+                    configuration[item.attr] = item.value
+                }
+                setConfig(configuration)
             }
         }
         fetchData();
@@ -48,11 +53,12 @@ export default function SysDataAdmin () {
 
     const onSearchSave = async () => {
         let fnSearch = updateEmailsSystemApi;
+        let req = form
         if(form.option==='UBICACIONES') fnSearch = getLocationsApi;
         else if (form.option==='IDIOMAS') fnSearch = getLanguagesApi;
         else if (form.option==='SECTORES') fnSearch = getSectorsApi;
-        const response = await fnSearch(form);
-        
+        else if (form.option==='PARÁMETROS') req = config;
+        const response = await fnSearch(req);
         if(form.option==='PARÁMETROS' && response.success && response.result) {
             invokeToast('success', 'Se han actualizado los parámetros del sistema')
             return;
@@ -62,6 +68,8 @@ export default function SysDataAdmin () {
             setData(response.result)
             return;
         }
+
+        invokeToast("error", response.message)
     }
 
     const getOptionsItem = item => {

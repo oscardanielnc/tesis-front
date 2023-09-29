@@ -40,6 +40,7 @@
             }
         }
         &_photo {
+            position: relative;
             &_profile {
                 border-radius: 999px;
                 border: 1px solid #c9c9c9;
@@ -47,10 +48,34 @@
                 width: 48px;
                 height: 48px;
                 margin: 0;
+                cursor: pointer;
 
                 img {
                     height: 48px;
                 } 
+            }
+            &_menu {
+                display: grid;
+                gap: 0;
+                padding: 12px 8px 10px 16px;
+                width: 300px;
+                background-color: white;
+                position: absolute;
+                right: 0;
+                border: 1px solid #e7e7e7;
+                top: 56px;
+                border-top: none;
+                box-shadow: 2px 3px 4px 1px #e7e7e7;
+    
+                &_item {
+                    font-weight: 600;
+                    cursor: pointer;
+                    border-bottom: 0.5px solid #929292;
+
+                    &:hover {
+                        color: #699BF7;
+                    }
+                }
             }
         }
     }

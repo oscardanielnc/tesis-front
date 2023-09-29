@@ -78,7 +78,15 @@ export const agreementStatesType = [
     },
     {
         value: '5',
-        name: 'Sin convenio',
+        name: 'Falta subir convenio',
+    },
+    {
+        value: '6',
+        name: 'Observado',
+    },
+    {
+        value: '7',
+        name: 'Periodo no iniciado',
     },
 ]
 
@@ -144,11 +152,11 @@ export const optionsToSysConfig = [
 ]
 export const rolesByProfessor = [
     {
-        value: 'FIRMANTE',
+        value: 'SIGNATORY',
         name: 'FIRMANTE',
     },
     {
-        value: 'EVALUADOR',
+        value: 'EVALUATOR',
         name: 'EVALUADOR',
     },
 ]

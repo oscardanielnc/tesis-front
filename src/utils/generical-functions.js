@@ -2,10 +2,12 @@ export function goToHome(user) {
     localStorage.setItem("ACCESS_TOKEN", JSON.stringify(user));
     if(user.role === "ADMIN") {
         window.location.href = `/admin/sys-data`;
+    } else if(user.role === "SIGNATORY") {
+        window.location.href = `/digital-sign/agreements`;
     } else {
         window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
     }
-}
+} 
 
 export function generateRange(a, b, step) {
     const arr = [];

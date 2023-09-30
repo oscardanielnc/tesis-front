@@ -55,7 +55,6 @@ export default function SysDataAdmin () {
         if(response.success && response.result) {
             window.location.reload()
         }else invokeToast("error", response.message)
-        console.log(newSig)
     }
 
     return (

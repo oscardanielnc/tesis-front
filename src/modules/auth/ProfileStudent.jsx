@@ -17,6 +17,7 @@ import { deleteItemOfArray, getDateByNumber } from "../../utils/generical-functi
 import ModalBasic from "../../components/Modals/ModalBasic";
 import { deleteMyCertificateApi, deleteMyLenguageApi } from "../../api/sysData";
 import invokeToast from "../../utils/invokeToast";
+import { uploadCVApi } from "../../api/doc";
 
 const detailsDummy = {
     experience: [],
@@ -140,6 +141,21 @@ export default function ProfileStudent () {
         }
     }
 
+    const uploadMyCV = async list => {
+        const response = await uploadCVApi(list,user.id)
+        if(response.success && response.result) {
+            updateUser({
+                ...user,
+                cv_path: response.result
+            })
+            invokeToast("success", "CV actualizado")
+        } else invokeToast("error", response.message)
+    }
+
+    const getNameCv = () => {
+        return `${data.name.split(' ')[0]} ${data.lastname.split(' ')[0]} - CV (${data.uploadDateCV})`
+    }
+
     return (
         <div className="profile">
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
@@ -223,15 +239,16 @@ export default function ProfileStudent () {
                 </div>
                 <div className="profile_container_secondary">
                     <Section title={"CV"} shadow>
-                        {(data.cv_path && data.cv_path!=='') && <MiniCard icon={"bi bi-file-earmark-text"} 
-                            text={`${data.name.split(' ')[0]} ${data.lastname.split(' ')[0]} - CV (${data.uploadDateCV})`}>
-                                <OptionsIcon 
-                                    listIcons={mySelf? [{icon: 'bi bi-download'},{icon: 'bi bi-cloud-upload'}]: [{icon: 'bi bi-download'}]} 
+                        {(data.cv_path && data.cv_path!='') && <MiniCard icon={"bi bi-file-earmark-text"} 
+                            text={getNameCv()}>
+                                <OptionsIcon  
+                                    listIcons={mySelf? [{icon: 'down', fn: ()=> `${user.cv_path}/${getNameCv()}`},
+                                    {icon: 'up', fn: (list)=> uploadMyCV(list)}]: [{icon: 'down'}]} 
                                 />
                         </MiniCard>}
-                        {(data.cv_path==='' || !data.cv_path) && <MiniCard text={`Sin CV`}>
+                        {(data.cv_path=='' || !data.cv_path) && <MiniCard text={`Sin CV`}>
                                 {
-                                    mySelf && <OptionsIcon listIcons={[{icon: 'bi bi-cloud-upload'}]}/> 
+                                    mySelf && <OptionsIcon listIcons={[{icon: 'up', fn: (list)=> uploadMyCV(list)}]}/> 
                                 }
                         </MiniCard>}
                     </Section>
@@ -242,9 +259,10 @@ export default function ProfileStudent () {
                         {
                             details.agreements.map((item, index) => (
                                 <MiniCard key={index} icon={"bi bi-file-earmark-text"} 
-                                    text={`${item.job_title} en ${item.enterprise_name} (vigente)`}>
+                                    text={`${item.job_title} en ${item.enterprise_name} (${item.state})`}>
                                         <OptionsIcon visibleText
-                                            listIcons={[{icon: 'bi bi-download'}]} 
+                                            listIcons={[{icon: 'bi bi-box-arrow-in-right', text: "Ver",
+                                            fn: ()=> navigate(`/digital-sign/draw/${item.id}`)}]} 
                                         />
                                 </MiniCard>
                             ))

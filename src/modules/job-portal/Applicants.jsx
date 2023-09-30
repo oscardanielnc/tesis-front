@@ -83,7 +83,6 @@ export default function Applicants () {
         if(response.success) {
             setRDetails(response.result)
         } else invokeToast("error", response.message)
-        console.log({...form,code})
     }
     const getStrLanguages = (arr) => {
         let str = '';

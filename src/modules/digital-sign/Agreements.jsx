@@ -54,7 +54,6 @@ export default function Agreements () {
             iam: user.role==='EMPLOYED'? "ENTERPRISE": user.role,
             myId: user.role==='EMPLOYED'? user.enterprise_id: user.id,
         }
-        console.log(req)
         const response = await getAgreementsApi(req);
         if(response.success) {
             setData(response.result)

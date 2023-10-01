@@ -106,8 +106,9 @@ export default function Applicants () {
             },
             {
                 text: 'Descargar CV',
-                icon: 'bi bi-download',
-                color: '#666'
+                icon: 'down',
+                color: '#666',
+                fn: () => getCV(student.name, student.cv_path)
             },
             {
                 text: 'Ver perfil',
@@ -146,6 +147,11 @@ export default function Applicants () {
             setModalContract(false)
             invokeToast("success", "Estudiante contratado")
         } else invokeToast("error", response.message);
+    }
+
+    const getCV = (name, cv_path) => {
+        if(cv_path && cv_path!='') return `${cv_path}/${name} - CV`
+        else return ''
     }
 
     return (

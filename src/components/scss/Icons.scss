@@ -76,10 +76,29 @@
     border: none;
     color: #666666;
     background-color: white;
+    font-weight: 500;
     
     a {
         color: #666666;
         text-decoration: none;
 
+    }
+}
+.vertical a, .nodoc {
+    display: grid;
+    justify-items: center;
+}
+
+.document-psp_link {
+    display: flex;
+    gap: 12px;
+    color: #666;
+    margin-top: 16px;
+
+    i {
+        font-size: 20px;
+    }
+    &:hover {
+        color: #4882eb;
     }
 }

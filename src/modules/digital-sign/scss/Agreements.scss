@@ -11,5 +11,29 @@
 
     i {
         font-size: 18px;
+        cursor: pointer;
+    
+        &:hover {
+            color: #4882eb;
+        }
+    }
+
+}
+
+.draw-function {
+    display: grid;
+    gap: 24px;
+    padding: 16px;
+    background-color: white;
+
+    &_canva {
+        height: 200px;
+        border: 1px solid #666;
+        border-radius: 4px;
+    }
+    &_options {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
     }
 }

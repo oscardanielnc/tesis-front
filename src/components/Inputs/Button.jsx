@@ -1,6 +1,6 @@
 import "../scss/Button.scss"
 
-export default function Button ({title, handleClick, icon, variant, circle=false, center=false, disabled=false}) {
+export default function Button ({title, handleClick, icon, variant="primary", circle=false, center=false, disabled=false}) {
     
     return (
     <button className={`button-psp ${variant} ${circle && "circle"} ${disabled && "disabled"}`} style={{margin: center? "auto": ''}}

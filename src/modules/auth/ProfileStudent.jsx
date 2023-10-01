@@ -243,7 +243,8 @@ export default function ProfileStudent () {
                             text={getNameCv()}>
                                 <OptionsIcon  
                                     listIcons={mySelf? [{icon: 'down', fn: ()=> `${user.cv_path}/${getNameCv()}`},
-                                    {icon: 'up', fn: (list)=> uploadMyCV(list)}]: [{icon: 'down'}]} 
+                                    {icon: 'up', fn: (list)=> uploadMyCV(list)}]: 
+                                    [{icon: 'down', fn: ()=> `${user.cv_path}/${getNameCv()}`}]} 
                                 />
                         </MiniCard>}
                         {(data.cv_path=='' || !data.cv_path) && <MiniCard text={`Sin CV`}>

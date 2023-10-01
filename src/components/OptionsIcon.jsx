@@ -1,6 +1,7 @@
 import { useState } from "react"
 import "./scss/Icons.scss"
 import { API_VERSION, BASE_PATH } from "../config"
+import invokeToast from "../utils/invokeToast"
 
 export default function OptionsIcon (props) {
     const {listIcons, vertical=false, size='24px', visibleText=false, verticalIcons=false, reverse=false, onlyRead=false} = props
@@ -26,6 +27,10 @@ function IconFn({item, size, visibleText, verticalIcons, reverse, onlyRead}) {
         }
     }
 
+    const noDocFn = () => {
+        invokeToast("warning", "No existe el documento")
+    }
+
     if(item.icon==='up') return (
         <div>
             <button id='doc_button' onClick={()=> document.getElementById('doc_upload').click()} 
@@ -41,12 +46,17 @@ function IconFn({item, size, visibleText, verticalIcons, reverse, onlyRead}) {
 
     if(item.icon==='down') return (
         <div className={`options-icon_file options-icon_icon ${verticalIcons && 'vertical'} ${reverse && 'reverse'} ${onlyRead && 'onlyRead'}`} >
-            <a href={`http://${BASE_PATH}/api/${API_VERSION}/doc/${item.fn()}`}>
+            {item.fn()!='' ? <a href={`http://${BASE_PATH}/api/${API_VERSION}/doc/${item.fn()}`}>
                 {visibleText && <span>{item.text}</span>}
                 <i className={"bi bi-download"}
                     style={{color: item.color, fontSize: size}}>
                 </i>
-            </a>
+            </a>: <div onClick={noDocFn} className="nodoc">
+                    {visibleText && <span>{item.text}</span>}
+                    <i className={"bi bi-download"}
+                        style={{color: item.color, fontSize: size}}>
+                    </i>
+                </div>}
         </div>
     )
 

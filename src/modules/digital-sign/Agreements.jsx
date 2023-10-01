@@ -14,6 +14,7 @@ import InputRange from "../../components/Inputs/InputRange";
 import { getAgreementsApi } from "../../api/agreement";
 import { useNavigate } from "react-router-dom";
 import invokeToast from "../../utils/invokeToast"
+import { uploadAgreementApi } from "../../api/doc";
 
 const formDummy = {
     job: '',
@@ -31,7 +32,6 @@ const formDummy = {
 
 export default function Agreements () {
     const {user} = useAuth();
-    const [isStudent, setIsStudent] = useState(user.role === 'STUDENT')
     const navigate = useNavigate();
     const [data, setData] = useState([])
     const [form, setForm] = useState(formDummy)
@@ -62,19 +62,19 @@ export default function Agreements () {
 
     const getOptions = item => {
         const download = {
-            icon: 'bi bi-download',
+            icon: 'down',
             text: 'Descargar',
-            fn: ()=> {},
+            fn: ()=> getAgree(item.doc_path, item.job_title, item.user_name),
         }
         const sign = {
             icon: 'bi bi-file-earmark-richtext-fill',
-            text: 'Firmar',
+            text: 'Ver Firmas',
             fn: ()=>navigate(`/digital-sign/draw/${item.id_agreement}`),
         }
         const upload = {
-            icon: 'bi bi-cloud-upload',
+            icon: 'up',
             text: 'Subir Conv.',
-            fn: ()=> {},
+            fn: (list)=> uploadMyAgreement(list,item.id_agreement),
         }
         const arr = []
 
@@ -92,6 +92,19 @@ export default function Agreements () {
     const getSubName = (item) => {
         if(user.role==='SIGNATORY') return ` con ${item.enterprise_name}`
         return item.location && item.location!=''? `(${item.location})`: ''
+    }
+
+    const uploadMyAgreement = async (list,id) => {
+        const response = await uploadAgreementApi(list,id,user.id)
+        if(response.success && response.result) {
+            invokeToast("success", "Convenio actualizado")
+            navigate(`/digital-sign/draw/${id}`)
+        } else invokeToast("error", response.message)
+    }
+
+    const getAgree = (doc_path, job_title, user_name) => {
+        if(doc_path && doc_path!='') return `${doc_path}/Convenio ${job_title} - ${user_name}`
+        else return ''
     }
 
     return (

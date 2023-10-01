@@ -180,7 +180,7 @@ export default function ProfileEmployed () {
                                 <MiniCard key={index} icon={"bi bi-file-earmark-text"} 
                                     text={`${item.job_title} (${item.date_sign})`}>
                                         <OptionsIcon visibleText
-                                            listIcons={[{icon: 'bi bi-download'}]} 
+                                            listIcons={[{icon: 'down', fn: ()=> `${item.document_path}/${item.job_title}}`}]} 
                                         />
                                 </MiniCard>
                             ))

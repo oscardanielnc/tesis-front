@@ -16,6 +16,7 @@ import { usersType } from "../../utils/global-consts";
 import invokeToast from "../../utils/invokeToast";
 import { getTime5h, goToHome, nowTime } from "../../utils/generical-functions";
 import ModalUsers from "../../components/Modals/ModalUsers";
+import Loading from "../../components/Loading";
 
 const userDummy = {
     role: "STUDENT",

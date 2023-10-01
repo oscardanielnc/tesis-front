@@ -13,20 +13,24 @@ import OptionsIcon from "../../components/OptionsIcon";
 import DrawFunction from "./DrawFunction";
 import invokeToast from "../../utils/invokeToast";
 import Document from "../../components/Document";
+import Loading from "../../components/Loading";
 
 export default function DrawSign () {
     const {user} = useAuth();
     const {code} = useParams();
     const [data, setData] = useState([])
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true)
             const iam = user.role==='EMPLOYED'? "ENTERPRISE": user.role
             const response = await getAgreementStateApi(code,iam);
             if(response.success) {
                 setData(response.result)
             } else invokeToast("error", response.message)
+            setLoading(false)
         }
         fetchData();
     }, [])
@@ -48,10 +52,10 @@ export default function DrawSign () {
         <div className="psp">
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
                 idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
-            <div className="psp_container">
+            {!loading && <div className="psp_container">
                 <div className="psp_container_form">
-                    <Section title={(user.role==='STUDENT' || user.role==='PROFESSOR')? `Empresa`: "Estudiante"} small shadow>
-                        {(user.role==='STUDENT' || user.role==='PROFESSOR') && <CardProfile name={data.enterprise_name} 
+                    <Section title={(user.role==='STUDENT' || user.role==='SIGNATORY')? `Empresa`: "Estudiante"} small shadow>
+                        {(user.role==='STUDENT' || user.role==='SIGNATORY') && <CardProfile name={data.enterprise_name} 
                         score={data.enterprise_score} photo={data.enterprise_photo} profile={"enterprise"} 
                         subTitle={`${data.enterprise_sector}, ubicado en ${data.enterprise_location}`} idUser={data.enterprise_id}/>}
                         {(user.role==='ENTERPRISE' || user.role==='EMPLOYED') && <CardProfile name={data.student_name} 
@@ -112,7 +116,8 @@ export default function DrawSign () {
                                 <p>{data.observation_student}</p>}
                     </Section>
                 </div>
-            </div>
+            </div>}
+            {loading && <Loading size={250} />}
         </div>
     )
 }

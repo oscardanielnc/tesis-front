@@ -13,6 +13,7 @@ import OptionsIcon from "../../components/OptionsIcon";
 import ModalBasic from "../../components/Modals/ModalBasic"
 import IconSystem from "../../components/IconSystem";
 import invokeToast from "../../utils/invokeToast"
+import Loading from "../../components/Loading";
 
 const formDummy = {
     option: 'IDIOMAS',
@@ -32,6 +33,7 @@ export default function SysDataAdmin () {
     const [executeType, setExecuteType] = useState("edit")
     const [show, setShow] = useState(false)
     const {user} = useAuth()
+    const [loading, setLoading] = useState(false)
 
     useEffect(()=> {
         async function fetchData() {
@@ -52,6 +54,7 @@ export default function SysDataAdmin () {
     }, [form.option])
 
     const onSearchSave = async () => {
+        setLoading(true)
         let fnSearch = updateEmailsSystemApi;
         let req = form
         if(form.option==='UBICACIONES') fnSearch = getLocationsApi;
@@ -61,15 +64,18 @@ export default function SysDataAdmin () {
         const response = await fnSearch(req);
         if(form.option==='PARÁMETROS' && response.success && response.result) {
             invokeToast('success', 'Se han actualizado los parámetros del sistema')
+            setLoading(false)
             return;
         }
 
         if(response.success) {
             setData(response.result)
+            setLoading(false)
             return;
         }
 
         invokeToast("error", response.message)
+        setLoading(false)
     }
 
     const getOptionsItem = item => {
@@ -133,7 +139,7 @@ export default function SysDataAdmin () {
                                 handleClick={()=>activateOptions('add', elemDummy)}
                             />
                         </div>
-                        {
+                        {!loading && 
                             data.map((item, index) => (
                                 <Card key={index} 
                                     text1={`${item.name}`}
@@ -144,6 +150,7 @@ export default function SysDataAdmin () {
                                 </Card>
                             ))
                         }
+                        {loading && <Loading size={180} />}
                     </Section>}
                     {form.option==='PARÁMETROS' && <Section icon={"bi bi-justify-left"}
                         title={"Parámetros del sistema"}>

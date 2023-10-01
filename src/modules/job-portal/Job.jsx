@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import EditJob from "./EditJob";
 import invokeToast from "../../utils/invokeToast";
 import { getTime5h, nowTime } from "../../utils/generical-functions";
+import Loading from "../../components/Loading";
 
 export default function Job () {
     const {user} = useAuth();
@@ -19,9 +20,11 @@ export default function Job () {
     const [isMyEnterprise, setIsMyEnterprise] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true)
             const response = await getJobByCodeApi(code,user.id,user.role==='STUDENT');
             if(response.success) {
                 setData(response.result)
@@ -30,6 +33,7 @@ export default function Job () {
             } else {
                 invokeToast("error", response.message)
             }
+            setLoading(false)
         }
         fetchData();
     }, [])
@@ -55,7 +59,7 @@ export default function Job () {
         <div className="psp">
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
                 idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
-            <div className="psp_container">
+            {!loading && <div className="psp_container">
                 <div className="psp_container_form">
                     <Section title={`Empresa`} small shadow>
                         <CardProfile name={data.enterprise_name} score={data.enterprise_score} photo={data.enterprise_photo} profile={"enterprise"}
@@ -112,7 +116,8 @@ export default function Job () {
                     </Section>}
                     {editMode && <EditJob initForm={data} setEditMode={setEditMode}/>}
                 </div>
-            </div>
+            </div>}
+            {loading && <Loading size={250} />}
         </div>
     )
 }

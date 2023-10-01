@@ -13,6 +13,7 @@ import invokeToast from "../../utils/invokeToast";
 import { addSignatoryApi, getSignatoriesApi, updateSignatoryApi } from "../../api/signatory";
 import Button from "../../components/Inputs/Button";
 import { rolesByProfessor } from "../../utils/global-consts";
+import Loading from "../../components/Loading";
 
 
 
@@ -24,12 +25,15 @@ export default function SysDataAdmin () {
     const [elem, setElem] = useState(null)
     const [newSig, setNewSig] = useState({name:'', last_name:'', email:'', role: 'SIGNATORY'})
     const [showSig, setShowSig] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const search = async () => {
+        setLoading(true)
         const response = await getSignatoriesApi(form);
         if(response.success) {
             setData(response.result)
-        }
+        } else invokeToast("error", response.message)
+        setLoading(false)
     }
 
     const changeState = async () => {
@@ -76,7 +80,7 @@ export default function SysDataAdmin () {
                         />
                     </div>
                     <div className="box-to-result">
-                        {
+                        {!loading && 
                             data.map((item, index) => (
                                 <Card key={index} 
                                     text1={`${item.name} ${item.last_name} (${item.role==='SIGNATORY'? 'FIRMANTE': 'EVALUADOR'})`}
@@ -95,6 +99,7 @@ export default function SysDataAdmin () {
                                 </Card>
                             ))
                         }
+                        {loading && <Loading size={180} />}
                     </div>
                 </Section>
                 <ModalBasic handleClick={changeState} setShow={setShow} show={show} title={"Modificar estado del firmante"}>

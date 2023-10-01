@@ -15,6 +15,7 @@ import { getAgreementsApi } from "../../api/agreement";
 import { useNavigate } from "react-router-dom";
 import invokeToast from "../../utils/invokeToast"
 import { uploadAgreementApi } from "../../api/doc";
+import Loading from "../../components/Loading";
 
 const formDummy = {
     job: '',
@@ -35,6 +36,7 @@ export default function Agreements () {
     const navigate = useNavigate();
     const [data, setData] = useState([])
     const [form, setForm] = useState(formDummy)
+    const [loading, setLoading] = useState(false)
     // const [locations, setLocations] = useState([]);
 
     // useEffect(() => {
@@ -49,6 +51,7 @@ export default function Agreements () {
     // }, [])
 
     const onSearch = async () => {
+        setLoading(true)
         const req = {
             ...form,
             iam: user.role==='EMPLOYED'? "ENTERPRISE": user.role,
@@ -58,6 +61,7 @@ export default function Agreements () {
         if(response.success) {
             setData(response.result)
         } else invokeToast("error", response.message)
+        setLoading(false)
     }
 
     const getOptions = item => {
@@ -147,7 +151,7 @@ export default function Agreements () {
                 <div className="psp_container_results">
                     <Section icon={"bi bi-briefcase-fill"}
                         title={"Resultados"}>
-                        {
+                        {!loading && 
                             data.map((item, index) => (
                                 <Card key={index} 
                                     text1={`${item.job_title} (C${item.code}) - ${item.salary}$`}
@@ -163,6 +167,7 @@ export default function Agreements () {
                                 </Card>
                             ))
                         }
+                        {loading && <Loading size={180} />}
                     </Section>
                 </div>
             </div>

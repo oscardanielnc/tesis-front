@@ -3,8 +3,9 @@ import "../scss/Modal.scss"
 import ModalBasic from "./ModalBasic";
 import invokeToast from "../../utils/invokeToast"
 import { goToHome } from "../../utils/generical-functions";
+import Loading from "../Loading";
 
-export default function ModalUsers({show,setShow,arrUsers}) { 
+export default function ModalUsers({show,setShow,arrUsers,loading}) { 
     const [indexSelected, setIndexSelected] = useState(-1)
 
     const handleClick = () => {
@@ -17,15 +18,17 @@ export default function ModalUsers({show,setShow,arrUsers}) {
     }
 
   return (
-      <ModalBasic title={`Seleccione el perfil con el que desea ingresar`} show={show} setShow={setShow} handleClick={handleClick}>
-        <div className="modal-users">
+      <ModalBasic title={`Seleccione el perfil con el que desea ingresar`} show={show || loading} 
+        setShow={setShow} handleClick={handleClick} noButtons={loading}>
+        {!loading && <div className="modal-users">
             {
                 arrUsers.map((item, key)=> (
                     <CardUser user={item} key={key} myIndex={key} 
                         indexSelected={indexSelected} setIndexSelected={setIndexSelected}/>
                 ))
             }
-        </div>
+        </div>}
+        {loading && <Loading size={180}/>}
       </ModalBasic>
   );
 }

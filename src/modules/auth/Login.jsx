@@ -50,6 +50,7 @@ export default function Login () {
     const [sysConf, setSysConf] = useState([]);
     const [arrUsers, setArrUsers] = useState([])
     const [show, setShow] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         // localStorage.removeItem("ACCESS_TOKEN")
@@ -158,17 +159,21 @@ export default function Login () {
         }
     }
     const onLogin = async response => {
+        setLoading(true)
         const obj = response.profileObj
         const responseApi = await signInApi({attr: 'email', value: obj.email, photo: obj.imageUrl});
         if(responseApi.success) {
             if(responseApi.result.length===1) {
                 const user = responseApi.result[0];
+                setLoading(false)
                 goToHome(user)
             } else {
                 setArrUsers(responseApi.result)
+                setLoading(false)
                 setShow(true)
             }
         } else {
+            setLoading(false)
             invokeToast("error", responseApi.message)
         }
     }
@@ -225,7 +230,7 @@ export default function Login () {
                             </div>
                         </div>
                     </Section>
-                    <ModalUsers arrUsers={arrUsers} setShow={setShow} show={show} />
+                    <ModalUsers arrUsers={arrUsers} setShow={setShow} show={show} loading={loading}/>
                 </div>
             </div>
         </div>

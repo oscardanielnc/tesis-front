@@ -12,6 +12,7 @@ import invokeToast from "../../utils/invokeToast";
 import Button from "../../components/Inputs/Button";
 import { createSpecialtyApi, getSpecialtiesApi, updateSpecialtyApi } from "../../api/specialty";
 import { updateProfessorApi } from "../../api/professor";
+import Loading from "../../components/Loading";
 
 const speDummy = {
     value: '',
@@ -29,12 +30,15 @@ export default function SpecialtiesAdmin () {
     const [execute, setExecute] = useState("edit")
     const [showSpe, setShowSpe] = useState(false)
     const [spe, setSpe] = useState(speDummy)
+    const [loading, setLoading] = useState(false)
 
     const search = async () => {
+        setLoading(true)
         const response = await getSpecialtiesApi(form);
         if(response.success) {
             setData(response.result)
-        }
+        } else invokeToast("error", response.message)
+        setLoading(false)
     }
 
     const getOptions = (prof) => {
@@ -109,7 +113,7 @@ export default function SpecialtiesAdmin () {
                         />
                     </div>
                     <div className="box-to-result">
-                        {
+                        {!loading && 
                             data.map((item, key)=> (
                                 <div className="specialty-admin" key={key}>
                                     <div className="specialty-admin_title">
@@ -141,6 +145,7 @@ export default function SpecialtiesAdmin () {
                                 </div>
                             ))
                         }
+                        {loading && <Loading size={180} />}
                     </div>
                 </Section>
                 {elem && <ModalBasic handleClick={fnExecute} setShow={setShow} show={show} title={`Modificar estado de ${elem.name} ${elem.last_name}`}>

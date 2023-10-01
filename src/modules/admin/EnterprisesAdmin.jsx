@@ -11,6 +11,7 @@ import ModalBasic from "../../components/Modals/ModalBasic";
 import { modifyItemOfArray } from "../../utils/generical-functions";
 import { useNavigate } from "react-router-dom";
 import invokeToast from "../../utils/invokeToast";
+import Loading from "../../components/Loading";
 
 export default function EnterprisesAdmin () {
     const {user} = useAuth()
@@ -19,12 +20,15 @@ export default function EnterprisesAdmin () {
     const [show, setShow] = useState(false)
     const [elem, setElem] = useState(null)
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
 
     const search = async () => {
+        setLoading(true)
         const response = await getEnterprisesApi(form);
         if(response.success) {
             setData(response.result)
-        }
+        } else invokeToast("error", response.message)
+        setLoading(false)
     }
 
     const getOptions = item => {
@@ -64,7 +68,7 @@ export default function EnterprisesAdmin () {
                         <i className="bi bi-search" onClick={search}></i>
                     </div>
                     <div className="box-to-result">
-                        {
+                        {!loading && 
                             data.map((item, index) => (
                                 <Card key={index} 
                                     text1={item.name}
@@ -82,6 +86,7 @@ export default function EnterprisesAdmin () {
                                 </Card>
                             ))
                         }
+                        {loading && <Loading size={180} />}
                     </div>
                 </Section>
                 <ModalBasic handleClick={changeState} setShow={setShow} show={show} title={"Modificar estado de la empresa"}>

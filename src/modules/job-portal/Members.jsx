@@ -13,6 +13,7 @@ import CardProfile from "../../components/CardProfile";
 import ModalBasic from "../../components/Modals/ModalBasic";
 import invokeToast from "../../utils/invokeToast";
 import { getDateByDate, modifyItemOfArray } from "../../utils/generical-functions";
+import Loading from "../../components/Loading";
 
 const formDummy = {
     name: '',
@@ -29,12 +30,15 @@ export default function SearchJob () {
     const [form, setForm] = useState(formDummy)
     const [modalPriv, setModalPriv] = useState(false);
     const [employedPriv, setEmployedPriv] = useState({});
+    const [loading, setLoading] = useState(false)
 
     const onSearch = async () => {
+        setLoading(true)
         const response = await getEmployeesApi(form);
         if(response.success) {
             setData(response.result)
-        }
+        } else invokeToast("error", response.message)
+        setLoading(false)
     }
 
     const getPrivilegies = (employed) => {
@@ -142,10 +146,7 @@ export default function SearchJob () {
                 <div className="psp_container_results">
                     <Section icon={"bi bi-briefcase-fill"}
                         title={"Resultados"}>
-                        {
-                            data.length===0 && <span>...</span>
-                        }
-                        {
+                        {!loading && 
                             data.map((item, index) => (
                                 <Card key={index} 
                                     text1={`${item.name}`}
@@ -159,6 +160,7 @@ export default function SearchJob () {
                                 </Card>
                             ))
                         }
+                        {loading && <Loading size={180} />}
                     </Section>
                     <ModalBasic setShow={setModalPriv} show={modalPriv} 
                         handleClick={changePrivToEmployed} title={"Cambiar privilegios"}>

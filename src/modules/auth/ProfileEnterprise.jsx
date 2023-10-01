@@ -17,6 +17,7 @@ import { deleteMyLenguageApi } from "../../api/sysData";
 import { deleteItemOfArray } from "../../utils/generical-functions";
 import ModalOpinion from "../../components/Modals/ModalOpinion";
 import invokeToast from "../../utils/invokeToast";
+import Loading from "../../components/Loading";
 
 const detailsDummy = {
     ads: [],
@@ -47,10 +48,11 @@ export default function ProfileEnterprise () {
     const [attrsToDelete, setAttrsToDelete] = useState({arr: [], item: {}})
     const [modeModal, setModeModal] = useState("edit");
     const [elementToEdit, setElementToEdit] = useState(opinionDummy);
-
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true)
             //data = perfil del que observo
             if(idUser!=user.id) {
                 setMySelf(false)
@@ -69,6 +71,7 @@ export default function ProfileEnterprise () {
             }else {
                 invokeToast("error", response.message)
             }
+            setLoading(false)
         }
         fetchData();
       }, []);
@@ -129,7 +132,7 @@ export default function ProfileEnterprise () {
         <div className="profile">
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
             idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
-            <div className="profile_container">
+            {!loading && <div className="profile_container">
                 <div className="profile_container_principal">
                     <BasicInfo data={data} myself={mySelf}/>
                     <Section icon={"bi bi-briefcase-fill"}
@@ -212,7 +215,8 @@ export default function ProfileEnterprise () {
                     </ModalBasic>
                     <ModalOpinion opinion={elementToEdit} setShow={setModalOpinion} show={modalOpinion} type={modeModal} photo={data.photo}/>
                 </div>
-            </div>
+            </div>}
+            {loading && <Loading size={250} />}
         </div>
     )
 }

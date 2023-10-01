@@ -15,6 +15,8 @@ import { addingInitArr } from "../../utils/generical-functions";
 import InputRange from "../../components/Inputs/InputRange";
 import { getJobsApi } from "../../api/job";
 import { useNavigate } from "react-router-dom";
+import invokeToast from "../../utils/invokeToast";
+import Loading from "../../components/Loading";
 
 const formDummy = {
     job: '',
@@ -38,6 +40,7 @@ export default function SearchJob () {
     const [locations, setLocations] = useState([]);
     const [languages, setLanguages] = useState([]);
     const [sectors, setSectors] = useState([])
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchData() {
@@ -47,10 +50,10 @@ export default function SearchJob () {
                 setLocations(response1.result)
             }
             //languages
-            const response2 = await getLanguagesApi({name: '', active: true});
-            if(response2.success) {
-                setLanguages(response2.result)
-            }
+            // const response2 = await getLanguagesApi({name: '', active: true});
+            // if(response2.success) {
+            //     setLanguages(response2.result)
+            // }
             //sector
             const response3 = await getSectorsApi({name: '', active: true});
             if(response3.success) {
@@ -61,6 +64,7 @@ export default function SearchJob () {
     }, [])
 
     const onSearch = async () => {
+        setLoading(true)
         const req = {
             ...form,
             iamEnterprise: user.role==="ENTERPRISE" || user.role==="EMPLOYED",
@@ -69,7 +73,8 @@ export default function SearchJob () {
         const response = await getJobsApi(req);
         if(response.success) {
             setData(response.result)
-        }
+        } else invokeToast("error", response.message)
+        setLoading(false)
     }
 
     return (
@@ -117,7 +122,7 @@ export default function SearchJob () {
                                 handleClick={()=> navigate('/job-portal/create')}
                             />
                         </div>}
-                        {
+                        {!loading && 
                             data.map((item, index) => (
                                 <Card key={index} 
                                     text1={`${item.job_title} (C${item.code}) - ${item.salary}$`}
@@ -134,6 +139,7 @@ export default function SearchJob () {
                                 </Card>
                             ))
                         }
+                        {loading && <Loading size={180} />}
                     </Section>
                 </div>
             </div>

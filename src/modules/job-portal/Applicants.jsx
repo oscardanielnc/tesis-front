@@ -19,6 +19,7 @@ import { contractStudentApi, getStudentsApi } from "../../api/student";
 import Card from "../../components/Card";
 import OptionsIcon from "../../components/OptionsIcon";
 import invokeToast from "../../utils/invokeToast";
+import Loading from "../../components/Loading";
 
 const formDummy = {
     student: '',
@@ -40,6 +41,8 @@ export default function Applicants () {
     const [languages, setLanguages] = useState([]);
     const [modalContract, setModalContract] = useState(false);
     const [studentCont, setStudentCont] = useState({});
+    const [loading, setLoading] = useState(false)
+    const [loadingSearch, setLoadingSearch] = useState(false)
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -55,10 +58,12 @@ export default function Applicants () {
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true)
             const response = await getJobByCodeApi(code);
             if(response.success) {
                 setData(response.result)
             } else invokeToast("error", response.message)
+            setLoading(false)
         }
         fetchData();
     }, [])
@@ -79,10 +84,12 @@ export default function Applicants () {
     }, [])
 
     const onSearch = async () => {
+        setLoadingSearch(true)
         const response = await getStudentsApi({...form,code});
         if(response.success) {
             setRDetails(response.result)
         } else invokeToast("error", response.message)
+        setLoadingSearch(false)
     }
     const getStrLanguages = (arr) => {
         let str = '';
@@ -158,7 +165,7 @@ export default function Applicants () {
         <div className="psp">
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
                 idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
-            <div className="psp_container">
+            {!loading && <div className="psp_container">
                 <div className="psp_container_form">
                     <Section title={`Empresa`} small shadow>
                         <CardProfile name={data.enterprise_name} score={data.enterprise_score} photo={data.enterprise_photo} profile={"enterprise"}
@@ -201,7 +208,7 @@ export default function Applicants () {
                             </div>
                         </div>
                         <Section title={"Resultados"}>
-                            { 
+                            { !loadingSearch && 
                                 rDetails.map((item, index) => (
                                     <Card key={index} 
                                         text1={`${item.name}`}
@@ -215,6 +222,7 @@ export default function Applicants () {
                                     </Card>
                                 ))
                             }
+                            {loadingSearch && <Loading size={180} />}
                         </Section>
                         <ModalBasic setShow={setModalContract} show={modalContract} 
                             handleClick={contractStudent} title={"Contratar estudiante"}>
@@ -223,7 +231,8 @@ export default function Applicants () {
                         </ModalBasic>
                     </Section>
                 </div>
-            </div>
+            </div>}
+            {loading && <Loading size={250} />}
         </div>
     )
 }

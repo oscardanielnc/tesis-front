@@ -15,7 +15,8 @@ export default function DrawFunction ({id, list}) {
         const req = {
             id_agreement: id,
             iam: user.role, 
-            myId: user.id
+            myId: user.id,
+            completed: (!!list && list.length===2)
         }
         const response = await signAgreementApi(req)
         if(response.success && response.result) {

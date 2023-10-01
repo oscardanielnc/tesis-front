@@ -16,6 +16,7 @@ import ModalBasic from "../../components/Modals/ModalBasic";
 import { deleteMyLenguageApi } from "../../api/sysData";
 import { deleteItemOfArray } from "../../utils/generical-functions";
 import invokeToast from "../../utils/invokeToast";
+import Loading from "../../components/Loading";
 
 const detailsDummy = {
     agreements: [],
@@ -34,9 +35,11 @@ export default function ProfileEmployed () {
     const [attrsToDelete, setAttrsToDelete] = useState({arr: [], item: {}})
     const [modeModal, setModeModal] = useState("edit");
     const [elemToEdit, setElementToEdit] = useState({})
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true)
             let dataResponse = null
             //data = perfil del que observo
             if(idUser!=user.id) {
@@ -60,6 +63,7 @@ export default function ProfileEmployed () {
             }else {
                 invokeToast("error", response.message)
             }
+            setLoading(false)
         }
         fetchData();
       }, []);
@@ -102,7 +106,7 @@ export default function ProfileEmployed () {
         <div className="profile">
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
                 idEnterprise={user.enterprise_id} employedNoVerified={user.role==='EMPLOYED' && !user.reader}></Header>
-            <div className="profile_container">
+            {!loading && <div className="profile_container">
                 <div className="profile_container_principal">
                     <BasicInfo data={data} myself={mySelf}/>
                     {data.reader && <Section icon={"bi bi-briefcase-fill"}
@@ -192,7 +196,8 @@ export default function ProfileEmployed () {
                         <span>{`Idioma ${attrsToDelete.item.name}`}</span>
                     </ModalBasic>
                 </div>
-            </div>
+            </div>}
+            {loading && <Loading size={250} />}
         </div>
     )
 }

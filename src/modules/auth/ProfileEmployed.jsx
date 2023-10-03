@@ -127,8 +127,9 @@ export default function ProfileEmployed () {
                                     profile={"enterprise"}
                                     circleState={-2}
                                 >
-                                    {mySelf && <OptionsIcon vertical size="22px"
-                                        listIcons={[{icon: 'bi bi-pencil-fill', fn: ()=> navigate(`/job-portal/job/${item.code}`)}]} 
+                                    {mySelf && <OptionsIcon vertical size="22px" visibleText
+                                        listIcons={[{icon: 'bi bi-box-arrow-in-right', 
+                                        text: 'Ver', fn: ()=> navigate(`/job-portal/job/${item.code}`)}]} 
                                     />}
                                 </Card>
                             ))

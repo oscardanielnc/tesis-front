@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth"
 import invokeToast from "../../utils/invokeToast"
 import "./scss/Agreements.scss"
 
-export default function DrawFunction ({id, list}) {
+export default function DrawFunction ({id, list, setLoading}) {
     const {user} = useAuth()
 
     const newSign = () => {
@@ -12,6 +12,7 @@ export default function DrawFunction ({id, list}) {
     }
 
     const executeSign = async () => {
+        setLoading(true)
         const req = {
             id_agreement: id,
             iam: user.role, 
@@ -22,6 +23,7 @@ export default function DrawFunction ({id, list}) {
         if(response.success && response.result) {
             window.location.reload()
         } else invokeToast("error", response.message)
+        setLoading(false)
     }
 
     const signed = () => {

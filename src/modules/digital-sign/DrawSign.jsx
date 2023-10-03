@@ -36,6 +36,7 @@ export default function DrawSign () {
     }, [])
 
     const saveChanges = async () => {
+        setLoading(true)
         const req = {
             observation_ie: data.observation_ie,
             observation_student: data.observation_student,
@@ -46,6 +47,7 @@ export default function DrawSign () {
         if(response.success) {
             window.location.reload()
         } else invokeToast("error", response.message)
+        setLoading(false)
     }
 
     return (
@@ -90,7 +92,7 @@ export default function DrawSign () {
 
                 </div>
                 <div className="psp_container_results">
-                    <DrawFunction id={code} list={data.list}/>
+                    <DrawFunction id={code} list={data.list} setLoading={setLoading}/>
 
                     <Section small title={`Observaciones de la institución educativa`} icon={"bi bi-justify-left"}>
                         <div className="draw-sign_date">

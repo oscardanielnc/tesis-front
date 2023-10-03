@@ -31,6 +31,7 @@ export default function SearchJob () {
     const [modalPriv, setModalPriv] = useState(false);
     const [employedPriv, setEmployedPriv] = useState({});
     const [loading, setLoading] = useState(false)
+    const [loadingPriv, setLoadingPriv] = useState(false)
 
     const onSearch = async () => {
         setLoading(true)
@@ -96,6 +97,7 @@ export default function SearchJob () {
         setModalPriv(true)
     }
     const changePrivToEmployed = async () => {
+        setLoadingPriv(true)
         const response = await changePrivToEmployedApi(employedPriv)
         if(response.success && response.result) {
             setData(modifyItemOfArray(data, employedPriv, 'user_id'))
@@ -104,6 +106,7 @@ export default function SearchJob () {
         } else {
             invokeToast("error", response.message)
         }
+        setLoadingPriv(false)
     }
 
     return (
@@ -162,9 +165,9 @@ export default function SearchJob () {
                         }
                         {loading && <Loading size={180} />}
                     </Section>
-                    <ModalBasic setShow={setModalPriv} show={modalPriv} 
+                    <ModalBasic setShow={setModalPriv} show={modalPriv} noButtons={loadingPriv}
                         handleClick={changePrivToEmployed} title={"Cambiar privilegios"}>
-                            <div style={{display: 'grid', gap: '16px', gridTemplateColumns: '1fr 1fr'}}>
+                            {!loadingPriv && <div style={{display: 'grid', gap: '16px', gridTemplateColumns: '1fr 1fr'}}>
                                 <CardProfile idUser={employedPriv.user_id} name={employedPriv.name} profile={"employed"}
                                     photo={employedPriv.user_photo} subTitle={employedPriv.job}/>
                                 <div>
@@ -182,7 +185,8 @@ export default function SearchJob () {
                                                 {icon: 'bi bi-file-earmark-richtext-fill', color: '#666', text: 'Firmante'}]}
                                     />
                                 </div>
-                            </div>
+                            </div>}
+                            {loadingPriv && <Loading size={150} />}
                     </ModalBasic>
                 </div>
             </div>

@@ -43,6 +43,7 @@ export default function Applicants () {
     const [studentCont, setStudentCont] = useState({});
     const [loading, setLoading] = useState(false)
     const [loadingSearch, setLoadingSearch] = useState(false)
+    const [loadingPriv, setLoadingPriv] = useState(false)
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -140,6 +141,7 @@ export default function Applicants () {
         }
     }
     const contractStudent = async () => {
+        setLoadingPriv(true)
         const req = {
             name: data.job_title, 
             id_student: studentCont.id,
@@ -154,6 +156,7 @@ export default function Applicants () {
             setModalContract(false)
             invokeToast("success", "Estudiante contratado")
         } else invokeToast("error", response.message);
+        setLoadingPriv(false)
     }
 
     const getCV = (name, cv_path) => {
@@ -224,10 +227,11 @@ export default function Applicants () {
                             }
                             {loadingSearch && <Loading size={180} />}
                         </Section>
-                        <ModalBasic setShow={setModalContract} show={modalContract} 
+                        <ModalBasic setShow={setModalContract} show={modalContract} noButtons={loadingPriv}
                             handleClick={contractStudent} title={"Contratar estudiante"}>
-                                <CardProfile idUser={studentCont.id} name={studentCont.name} profile={"student"}
-                                    photo={studentCont.photo} subTitle="Esta acción es irreversible"/>
+                                {!loadingPriv && <CardProfile idUser={studentCont.id} name={studentCont.name} profile={"student"}
+                                    photo={studentCont.photo} subTitle="Esta acción es irreversible"/>}
+                                {loadingPriv && <Loading size={150} />}
                         </ModalBasic>
                     </Section>
                 </div>

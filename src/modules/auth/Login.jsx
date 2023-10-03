@@ -78,7 +78,11 @@ export default function Login () {
                 setLanguages(response2.result)
             }
             if(response3.success) {
-                setSysConf(response3.result)
+                let configuration = {}
+                for(let item of response3.result) {
+                    configuration[item.attr] = item.value
+                }
+                setSysConf(configuration)
             }
             if(response1.success && response2.success) {
                 setData({

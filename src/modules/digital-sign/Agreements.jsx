@@ -99,11 +99,13 @@ export default function Agreements () {
     }
 
     const uploadMyAgreement = async (list,id) => {
+        setLoading(true)
         const response = await uploadAgreementApi(list,id,user.id)
         if(response.success && response.result) {
             invokeToast("success", "Convenio actualizado")
             navigate(`/digital-sign/draw/${id}`)
         } else invokeToast("error", response.message)
+        setLoading(false)
     }
 
     const getAgree = (doc_path, job_title, user_name) => {

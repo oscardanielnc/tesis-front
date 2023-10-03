@@ -104,9 +104,9 @@ export default function SearchJob () {
                     <Section title={"Rango salarial"} small shadow>
                         <InputRange data={form} setData={setForm} attribute1={"salary_min"} attribute2={"salary_max"}/>
                     </Section>
-                    {!isStudent && <Section title={"Fecha de fin de postulación"} small shadow>
+                    <Section title={"Fecha de fin de postulación"} small shadow>
                         <InputRange data={form} setData={setForm} attribute1={"date_init"} attribute2={"date_end"} type="date"/>
-                    </Section>}
+                    </Section>
                     <Section shadow>
                         <Button variant={"primary"} icon={"bi bi-search"} title={"Buscar"} center handleClick={onSearch}/>
                     </Section>

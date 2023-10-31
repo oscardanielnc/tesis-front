@@ -4,6 +4,10 @@ export function setMyOpinionApi (body) {
     const url = `opinion`
     return httpConsult(url, 'POST', body)
 }
+export function getOpinionsApi (body) {
+    const url = `opinions`
+    return httpConsult(url, 'POST', body)
+}
 export function updateMyOpinionApi (body) {
     const url = `opinion`
     return httpConsult(url, 'PUT', body)

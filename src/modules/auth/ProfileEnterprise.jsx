@@ -156,9 +156,9 @@ export default function ProfileEnterprise () {
                                 </Card>
                             ))
                         }
-                        {mySelf && <div className="profile_container_principal_plus">
+                        {/* {mySelf && <div className="profile_container_principal_plus">
                             <i className="bi bi-plus-circle" onClick={()=>navigate(`/job-portal/create`)}></i>
-                        </div>}
+                        </div>} */}
                     </Section>
                     <Section icon={"bi bi-briefcase-fill"}
                         title={"Idiomas"}>

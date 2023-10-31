@@ -10,9 +10,10 @@ import ModalBasic from "../../components/Modals/ModalBasic";
 import invokeToast from "../../utils/invokeToast";
 import { getTime5h, nowTime } from "../../utils/generical-functions";
 
+const fisrtPeriodSys = 20231
 const cycleDummy = {
     can: false,
-    id: 0,
+    id: fisrtPeriodSys,
     cycle_end: '',
     cycle_init: '',
     registration_start: ''
@@ -23,6 +24,7 @@ export default function SysDataAdmin () {
     const [data, setData] = useState([])
     const [show, setShow] = useState(false)
     const [newCycle, setNewCycle] = useState(cycleDummy)
+    console.log()
 
     useEffect(()=> {
         async function fetchData() {
@@ -36,13 +38,13 @@ export default function SysDataAdmin () {
     }, [])
 
     const getNextCycle = arr => {
-        if(arr.length < 1) return {can: false, id: 0}
+        if(arr.length < 1) return {...cycleDummy, can: false, id: fisrtPeriodSys}
         const last = arr[0]
 
         const next = getNext(last.id)
         const endPeriod = getTime5h(last.cycle_end)
         
-        return {...newCycle, can: nowTime() < endPeriod, id: next}//
+        return {...cycleDummy, can: nowTime() < endPeriod, id: next}//
     }
     const getNext = cycle => {
         let sem = cycle%10;
@@ -64,6 +66,10 @@ export default function SysDataAdmin () {
     } 
 
     const initYear = async () => {
+        const num_registration_start = getTime5h(newCycle.registration_start)
+        const num_cycle_init = getTime5h(newCycle.cycle_init)
+        const num_cycle_end = getTime5h(newCycle.cycle_end)
+
         if(newCycle.registration_start === '') {
             invokeToast('warning', "El campo de inicio de matrícula no puede estar vacío"); return;
         }
@@ -73,19 +79,25 @@ export default function SysDataAdmin () {
         if(newCycle.cycle_end === '') {
             invokeToast('warning', "El campo de fin de ciclo no puede estar vacío"); return;
         }
-        if(nowTime() > getTime5h(newCycle.registration_start)) {
-            invokeToast('warning', "El inicio de la matrícula debe ser mayor a la fecha actual"); return;
-        }
-        if(new Date(newCycle.registration_start) > new Date(newCycle.cycle_init)) {
+        // if(nowTime() > num_registration_start) {
+        //     invokeToast('warning', "El inicio de la matrícula debe ser mayor a la fecha actual"); return;
+        // }
+        if(num_registration_start > num_cycle_init) {
             invokeToast('warning', "El inicio de ciclo debe ser mayor al inicio de la matrícula"); return;
         }
-        if(new Date(newCycle.cycle_init) > new Date(newCycle.cycle_end)) {
+        if(num_cycle_init > num_cycle_end) {
             invokeToast('warning', "El fin de ciclo debe ser mayor al inicio"); return;
         }
-        const response = await createPeriodApi();
+        const req = {
+            id: newCycle.id, 
+            registration_start: num_registration_start, 
+            cycle_init: num_cycle_init, 
+            cycle_end: num_cycle_end, 
+        }
+        const response = await createPeriodApi(req);
         if(response.success && response.result) {
             window.location.reload()
-        }
+        } else invokeToast("error", response.message)
     }
 
     return (

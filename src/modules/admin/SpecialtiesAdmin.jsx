@@ -70,10 +70,16 @@ export default function SpecialtiesAdmin () {
 
     const fnExecute = async () => {
         if(execute==='coor' || execute==='act' ) {
-            const response = await updateProfessorApi(elem)
+            const req = {
+                active: execute==='act'? !elem.active: elem.active, 
+                coordinator: execute==='coor', 
+                id: elem.id,
+                specialty: elem.id_specialty
+            }
+            const response = await updateProfessorApi(req)
             if(response.success && response.result) {
                 window.location.reload()
-            }
+            } else invokeToast("error", response.message)
         } else {
             if(spe.name==='') {
                 invokeToast('warning', 'El nombre no puede ser un campo vacío'); return;
@@ -85,12 +91,12 @@ export default function SpecialtiesAdmin () {
                 const response = await updateSpecialtyApi(spe)
                 if(response.success && response.result) {
                     window.location.reload()
-                }
+                } else invokeToast("error", response.message)
             } else if (execute==='add' ) {
                 const response = await createSpecialtyApi(spe)
                 if(response.success && response.result) {
                     window.location.reload()
-                }
+                } else invokeToast("error", response.message)
             }
         }
     }

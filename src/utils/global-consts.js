@@ -160,3 +160,97 @@ export const rolesByProfessor = [
         name: 'EVALUADOR',
     },
 ]
+export const registrationStatuses = [
+    {
+        value: '',
+        name: 'Todos',
+    },
+    {
+        value: 'Aprobado',
+        name: 'Aprobado',
+    },
+    {
+        value: 'Desaprobado',
+        name: 'Desaprobado',
+    },
+    {
+        value: 'Matriculado',
+        name: 'Matriculado',
+    },
+    {
+        value: 'No Matriculado',
+        name: 'No Matriculado',
+    },
+]
+export const opinionsOptions = [
+    {
+        value: '',
+        name: 'No ordenar',
+    },
+    {
+        value: 'vp',
+        name: 'Valoración promedio',
+    },
+    {
+        value: 'co',
+        name: 'Cantidad de opiniones',
+    },
+]
+export const opinionsVerifications = [
+    {
+        value: '',
+        name: 'Mostrar todos',
+    },
+    {
+        value: '1',
+        name: 'Falta verificar',
+    },
+    {
+        value: '2',
+        name: 'Verificados',
+    },
+    {
+        value: '3',
+        name: 'Observados',
+    },
+]
+export const opinionsOrder = [
+    {
+        value: '',
+        name: 'Elegir',
+    },
+    {
+        value: 'update_date',
+        name: 'Fecha de actualización',
+    },
+    {
+        value: 'score',
+        name: 'Puntuación',
+    },
+]
+export const opinionsScore = [
+    {
+        value: '',
+        name: 'Elegir',
+    },
+    {
+        value: '1',
+        name: '1',
+    },
+    {
+        value: '2',
+        name: '2',
+    },
+    {
+        value: '3',
+        name: '3',
+    },
+    {
+        value: '4',
+        name: '4',
+    },
+    {
+        value: '5',
+        name: '5',
+    },
+]

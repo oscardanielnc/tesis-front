@@ -58,6 +58,7 @@ export default function Agreements () {
             myId: user.role==='EMPLOYED'? user.enterprise_id: user.id,
         }
         const response = await getAgreementsApi(req);
+        console.log(response)
         if(response.success) {
             setData(response.result)
         } else invokeToast("error", response.message)
@@ -99,13 +100,18 @@ export default function Agreements () {
     }
 
     const uploadMyAgreement = async (list,id) => {
-        setLoading(true)
-        const response = await uploadAgreementApi(list,id,user.id)
-        if(response.success && response.result) {
-            invokeToast("success", "Convenio actualizado")
-            navigate(`/digital-sign/draw/${id}`)
-        } else invokeToast("error", response.message)
-        setLoading(false)
+        const srrname = list[0].name.split('.')
+        if(srrname[srrname.length-1]==='pdf') {
+            setLoading(true)
+            const response = await uploadAgreementApi(list,id,user.id)
+            if(response.success && response.result) {
+                invokeToast("success", "Convenio actualizado")
+                navigate(`/digital-sign/draw/${id}`)
+            } else invokeToast("error", response.message)
+            setLoading(false)
+        } else {
+            invokeToast("warning", "Debe subir un documento pdf")
+        }
     }
 
     const getAgree = (doc_path, job_title, user_name) => {

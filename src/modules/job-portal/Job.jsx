@@ -46,7 +46,7 @@ export default function Job () {
             invokeToast("warning", "Ya se ha llegado al máximo de postulantes registrados")
             return;
         }
-        const response = await fnExecute({idUser: user.id, code});
+        const response = await fnExecute({idUser: user.id, code, id_enterprise: data.enterprise_id});
         if(response.success && response.result) {
             window.location.reload()
         }else {
@@ -94,7 +94,7 @@ export default function Job () {
                     {!editMode && <Section title={`${data.job_title} (C${data.code})`}>
                         <div className="job_description">
                             <div className="job_description_place">
-                                <div><strong>Sueldo:</strong> <span>{data.salary}$</span></div>
+                                <div><strong>Sueldo:</strong> <span>{data.salary} S/.</span></div>
                                 <div><strong>Modalidad:</strong> <span>{data.modality}</span></div>
                                 <div><strong>Vacantes:</strong> <span>{data.vacancies>0? data.vacancies: 'No especificado'}</span></div>
                             </div>

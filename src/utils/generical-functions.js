@@ -2,6 +2,8 @@ export function goToHome(user) {
     localStorage.setItem("ACCESS_TOKEN", JSON.stringify(user));
     if(user.role === "ADMIN") {
         window.location.href = `/admin/sys-data`;
+    } else if(user.role === "PROFESSOR") {
+        window.location.href = `/practices/students`;
     } else if(user.role === "SIGNATORY") {
         window.location.href = `/digital-sign/agreements`;
     } else {

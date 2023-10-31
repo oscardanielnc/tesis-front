@@ -10,6 +10,13 @@
         gap: 12px;
         font-size: 16px;
         font-weight: 600;
+
+        &_ts {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: center;
+        }
     }
     &_bottom {
         font-size: 14px;

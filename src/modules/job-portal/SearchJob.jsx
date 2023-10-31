@@ -125,7 +125,7 @@ export default function SearchJob () {
                         {!loading && 
                             data.map((item, index) => (
                                 <Card key={index} 
-                                    text1={`${item.job_title} (C${item.code}) - ${item.salary}$`}
+                                    text1={`${item.job_title} (C${item.code}) - ${item.salary} S/.`}
                                     text2={`${item.enterprise_name} (${item.location}) • ${item.modality}`}
                                     text3={`Fin de postulación: ${item.date_end}`}
                                     text4={item.description+'...'}

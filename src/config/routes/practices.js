@@ -1,12 +1,24 @@
-import Login from "../../modules/auth/Login";
+import EnterprisesOpinions from "../../modules/practices/EnterprisesOpinions"
+import Opinions from "../../modules/practices/Opinions"
+import Students from "../../modules/practices/Students"
 
 const ROUTE = "/practices"
 
 export const routes = [ 
     // General
     {
-        path: `${ROUTE}`,
+        path: `${ROUTE}/students`,
         exact: true,
-        component: Login,
+        component: Students,
+    },
+    {
+        path: `${ROUTE}/enterprises`,
+        exact: true,
+        component: EnterprisesOpinions,
+    },
+    {
+        path: `${ROUTE}/opinions/:idEnterprise`,
+        exact: true,
+        component: Opinions,
     },
 ]

@@ -150,9 +150,11 @@ export default function ProfileStudent () {
         if(response.success && response.result) {
             updateUser({
                 ...user,
-                cv_path: response.result
+                cv_path: response.result,
+                uploadDateCV: new Date().toLocaleDateString()
             })
             invokeToast("success", "CV actualizado")
+            window.location.reload()
         } else invokeToast("error", response.message)
     }
 

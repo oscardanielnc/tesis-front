@@ -2,12 +2,14 @@ import "./scss/Card.scss"
 import Score from "../components/Score"
 import { useNavigate } from "react-router-dom";
 
-export default function CardProfile ({name, score, subTitle='', photo, idUser, profile}) {
+export default function CardProfile ({name, score, subTitle='', photo, idUser, profile, thrTitle, isOpinion=false}) {
     const navigate = useNavigate();
 
     const redirectToProfile = () => {
         if(idUser && profile) {
-            navigate(`/profile/${profile.toLowerCase()}/${idUser}`)
+            if(!isOpinion) {
+                navigate(`/profile/${profile.toLowerCase()}/${idUser}`)
+            } else navigate(`/practices/opinions/${idUser}`)
         }
     }
     return (
@@ -21,6 +23,7 @@ export default function CardProfile ({name, score, subTitle='', photo, idUser, p
                 {(score || score===0) && <Score score={score}/>}
             </div>
             <span className="psp-card-profile_subtitle">{subTitle}</span>
+            {thrTitle && <span className="psp-card-profile_subtitle">{thrTitle}</span>}
         </div>
     )
 }

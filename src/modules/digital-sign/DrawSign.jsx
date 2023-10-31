@@ -14,6 +14,7 @@ import DrawFunction from "./DrawFunction";
 import invokeToast from "../../utils/invokeToast";
 import Document from "../../components/Document";
 import Loading from "../../components/Loading";
+import Button from "../../components/Inputs/Button";
 
 export default function DrawSign () {
     const {user} = useAuth();
@@ -50,6 +51,12 @@ export default function DrawSign () {
         setLoading(false)
     }
 
+    // const gotoPDF = () => {
+    //     const pre = window.location.href.split("/draw/")[0]
+    //     const win = window.open(`${pre}/pdf/${code}`, '_blank');
+    //     win.focus()
+    // }
+
     return (
         <div className="psp">
             <Header type={user.role.toLowerCase()} photo={user.photo} idUser={user.id} 
@@ -66,10 +73,14 @@ export default function DrawSign () {
                     
                     <Section shadow title={`${data.job_title} (C${data.code})`}>
                         <div className="job_description_place">
-                            <div><strong>Sueldo:</strong> <span>{data.salary}$</span></div>
+                            <div><strong>Sueldo:</strong> <span>{data.salary} S/.</span></div>
                             <div><strong>Modalidad:</strong> <span>{data.modality}</span></div>
                         </div>
                         <Document name={`Convenio ${data.job_title} - ${data.student_name}`} path={data.doc_path} placeholder="Sin convenio..." />
+                        {data && data.list && data.list.length===3 && data.doc_path &&
+                         <div style={{marginTop: '16px'}}>
+                            {/* <Button handleClick={gotoPDF} icon={'bi bi-eye'} title={'Ver documento con firmas'} center/> */}
+                        </div>}
                     </Section>
                     <Section shadow title={`Listado de firmas`}>
                         {(!data.list || data.list.length===0) && <span>Sin firmas</span>}
@@ -92,7 +103,7 @@ export default function DrawSign () {
 
                 </div>
                 <div className="psp_container_results">
-                    <DrawFunction id={code} list={data.list} setLoading={setLoading}/>
+                    <DrawFunction id={code} list={data.list} setLoading={setLoading} enterprise_name={data.enterprise_name} job_title={data.job_title}/>
 
                     <Section small title={`Observaciones de la institución educativa`} icon={"bi bi-justify-left"}>
                         <div className="draw-sign_date">

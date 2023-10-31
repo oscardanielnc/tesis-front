@@ -89,6 +89,12 @@ function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
                 link: `/digital-sign/agreements`
             },
         ],
+        professor: [
+            {
+                name: "Alumnos",
+                link: `/practices/students`
+            },
+        ],
         student: [
             {
                 name: "Perfil",
@@ -107,8 +113,8 @@ function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
                 link: `/practices/assessment`
             },
             {
-                name: "Discusión",
-                link: `/practices/discussion`
+                name: "Empresas",
+                link: `/practices/enterprises`
             },
         ],
         enterprise: [

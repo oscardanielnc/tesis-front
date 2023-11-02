@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import IconSystem from "./IconSystem";
 import "./scss/Card.scss"
+import Score from "./Score";
 
 export default function Card (props) {
-    const {icon,userId,photo,circleState=-2,text1=null,text2=null,text3=null,text4=null,children, profile} = props;
+    const {icon,userId,photo,circleState=-2,text1=null,text2=null,text3=null,text4=null,
+        children, profile, noBorder=false, background,score=-1} = props;
     const navigate = useNavigate();
 
     const redirectToProfile = () => {
@@ -12,7 +14,7 @@ export default function Card (props) {
         }
     }
     return (
-        <div className="psp-card">
+        <div className={`psp-card ${noBorder && 'noBorder'}`} style={background? {background}: {}}>
             <div className="psp-card_img">
                 {photo && photo!==''? 
                     <figure className="psp-card_img_fig">
@@ -23,7 +25,9 @@ export default function Card (props) {
                 }
             </div>
             <div className="psp-card_details">
-                {text1 && <div className="psp-card_details_text1">{text1}</div>}
+                {text1 && <div className="psp-card_details_text1"><span>{text1}</span>
+                    {score!=-1 && <Score score={score} showScore small/>}
+                </div>}
                 {text2 && <div className="psp-card_details_text2">{text2}</div>}
                 {text3 && <div className="psp-card_details_text3">{text3}</div>}
                 {text4 && <div className="psp-card_details_text4">

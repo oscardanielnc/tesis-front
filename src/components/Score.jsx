@@ -1,6 +1,6 @@
 import "./scss/Opinion.scss"
 
-export default function Score ({score, showScore=false, setData, data}) {
+export default function Score ({score, showScore=false, setData, data,small=false}) {
 
     const handleClick = (val) => {
         if(setData && data) {
@@ -13,7 +13,7 @@ export default function Score ({score, showScore=false, setData, data}) {
 
     return (
         <div className="score_container">
-            <div className={`score_box ${setData&&data? 'input': ''}`}>
+            <div className={`score_box ${setData&&data? 'input': ''} ${small && 'small'}`}>
                 {
                     getArrStars(score).map((item, key) => (
                         <i className={`bi bi-star-fill`} key={key} onClick={()=> handleClick(item.index)}
@@ -29,6 +29,7 @@ export default function Score ({score, showScore=false, setData, data}) {
 
 function getArrStars(score) {
     const arr = []
+
     for (let index = 1; index <= 5; index++) {
         let color = '#929292';
         if(index <= score) color = '#ffc107';

@@ -72,6 +72,19 @@ export default function BasicInfo ({data, myself=false}) {
         return '?'
     }
 
+    const getStudentExtraData = () => {
+        let a=0
+        if(data.date && data.date!='') {
+            const d = new Date() - new Date(data.date)
+            a = Math.floor(d/(1000*60*60*24*365))
+        }
+
+        const age = a!=0? `Edad: ${a} años`: ''
+        const tel = data.phone!=''? `, Teléfono: ${data.phone}`: ''
+        const dni = data.dni!=''? `, DNI: ${data.dni}`: ''
+        return `${age}${tel}${dni}`
+    }
+
     return (
         <div className="basicinfo">
             <div className="basicinfo_main">
@@ -109,6 +122,12 @@ export default function BasicInfo ({data, myself=false}) {
                         <InputCombo list={locations} setData={setUpdates} attribute={"location"} data={updates} />
                         {data.role==="ENTERPRISE" && <InputCombo list={numEmployees} setData={setUpdates} attribute={"numEmployees"} data={updates} />}
                         {data.role==="STUDENT" && <InputCombo list={generateCycles()} setData={setUpdates} attribute={"cycle"} data={updates} />}
+                    </div>}
+
+                    {!editMode && data.role==="STUDENT" && <span>{getStudentExtraData()}</span>}
+                    {editMode && data.role==="STUDENT" && <div className="basicinfo_main_details_edit">
+                        <InputText data={updates} setData={setUpdates} attribute={"phone"} placeholder={"Número de teléfono"}/>
+                        <InputText data={updates} setData={setUpdates} attribute={"dni"} placeholder={"DNI"}/>
                     </div>}
                 </div>
                 <figure className="basicinfo_main_photo">

@@ -4,7 +4,10 @@ import { API_VERSION, BASE_PATH } from "../config"
 export default function Document({path,name, placeholder="Sin documento..."}) {
 
     if(!path && path=='') return (
-        <span>{placeholder}</span>
+        <div className={`document-psp`} >
+            <i className={"bi bi-file-earmark-text-fill"}></i>
+            <span style={{marginLeft: '12px'}}>{placeholder}</span>
+        </div>
     )
     const getName = () => {
         if(!path || path=='') return ''

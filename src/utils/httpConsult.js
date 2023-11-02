@@ -39,12 +39,21 @@ export default function httpConsult(url, method, body=null) {
         })
 }
 
-export function uploadDocs(files, url) {
+export function uploadDocs(files, url, body=null) {
 
     const formData = new FormData();
 
     for(const i in files) {
         formData.append(`file${i}`, files[i]);
+    }
+
+    if(body) {          
+          const claves = Object.keys(body)
+          for(let i=0; i< claves.length; i++) {
+            const clave = claves[i];
+            const valor = body[clave];
+            formData.append(clave, valor);
+          }
     }
     
     const params = {

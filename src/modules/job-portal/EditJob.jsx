@@ -40,11 +40,23 @@ export default function EditJob ({initForm,setEditMode}) {
         if(form.salary==='') {
             invokeToast("warning", "El salario no puede ser un campo vacío"); return false;
         }
+        if(form.max==='') {
+            invokeToast("warning", "Debe ingresar el número máximo de postulantes"); return false;
+        }
+        if(form.vacancies==='') {
+            invokeToast("warning", "Debe ingresar el número de vacantes"); return false;
+        }
+        if(form.date_init==='') {
+            invokeToast("warning", "Debe ingresar la fecha de inicio de postulación"); return false;
+        }
         if(form.date_end==='') {
             invokeToast("warning", "Debe ingresar la fecha de fin de postulación"); return false;
         }
         if(getTime5h(form.date_end) < nowTime()) {
             invokeToast("warning", "La fecha de fin de postulación no puede ser anterior a la fecha actual"); return false;
+        }
+        if(new Date(form.date_end) < new Date(form.date_init)) {
+            invokeToast("warning", "La fecha de fin de postulación no puede ser anterior a la fecha de inicio"); return false;
         }
         if(form.modality==='') {
             invokeToast("warning", "Debe ingresar una modalidad de trabajo"); return false;
@@ -96,6 +108,9 @@ export default function EditJob ({initForm,setEditMode}) {
                 <div className="create-job_section">
                     <Section title={`Sueldo (soles)`} small>
                         <InputText data={form} setData={setForm} attribute={"salary"} isNumber maxLength={8}/>
+                    </Section>
+                    <Section title={`Fecha de inicio de postulación`} small>
+                        <InputDate data={form} setData={setForm} attribute={"date_init"}/>
                     </Section>
                     <Section title={`Fecha de fin de postulación`} small>
                         <InputDate data={form} setData={setForm} attribute={"date_end"}/>

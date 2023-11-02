@@ -50,6 +50,10 @@
     &.input i:hover {
         transform: scale(1.2);
     }
+
+    &.small {
+        font-size: 12px;
+    }
 }
 .score_span {
     display: flex;

@@ -25,5 +25,18 @@
             background-color: $primary-color;
             color: white;
         }
+
+        &.fitCont {
+            width: fit-content;
+            padding: 4px 16px;
+        }
+    }
+    &.vertical {
+        display: grid;
+        gap: 6px;
+
+        & .selectorTabs_item {
+            border: 2px solid #699BF7;
+        }
     }
 }

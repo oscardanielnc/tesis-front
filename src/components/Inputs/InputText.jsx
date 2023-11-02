@@ -1,7 +1,7 @@
 import {FormControl} from 'react-bootstrap';
 import "../scss/InputText.scss"
 
-export default function InputText ({data, attribute, setData, maxLength=36, isNumber=false, placeholder='', disabled=false}) {
+export default function InputText ({data, attribute, setData, maxLength=256, isNumber=false, placeholder='', disabled=false}) {
     
     const handleChange = e => {
         const value = e.target.value

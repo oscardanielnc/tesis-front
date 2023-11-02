@@ -20,6 +20,7 @@ import Card from "../../components/Card";
 import OptionsIcon from "../../components/OptionsIcon";
 import invokeToast from "../../utils/invokeToast";
 import Loading from "../../components/Loading";
+import CardApplicant from "../../components/CardApplicant";
 
 const formDummy = {
     student: '',
@@ -39,11 +40,11 @@ export default function Applicants () {
     const [specialties, setSpecialties] = useState([])
     const [locations, setLocations] = useState([]);
     const [languages, setLanguages] = useState([]);
-    const [modalContract, setModalContract] = useState(false);
-    const [studentCont, setStudentCont] = useState({});
+    // const [modalContract, setModalContract] = useState(false);
+    // const [studentCont, setStudentCont] = useState({});
     const [loading, setLoading] = useState(false)
     const [loadingSearch, setLoadingSearch] = useState(false)
-    const [loadingPriv, setLoadingPriv] = useState(false)
+    // const [loadingPriv, setLoadingPriv] = useState(false)
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -92,77 +93,9 @@ export default function Applicants () {
         } else invokeToast("error", response.message)
         setLoadingSearch(false)
     }
-    const getStrLanguages = (arr) => {
-        let str = '';
-        let start = true;
-        for (let elem of arr) {
-            if(!start) {
-                str+=', '
-            }
-            str += `${elem.name} (${elem.level})`
-            start = false
-        }
-        return str;
-    }
-    const getOptions = (student) => {
-        return [
-            {
-                text: student.hired? 'Contratado': 'Contratar',
-                icon: 'bi bi-briefcase-fill',
-                color: student.hired? '#198754': '#666',
-                fn: () => showModalContract(student)
-            },
-            {
-                text: 'Descargar CV',
-                icon: 'down',
-                color: '#666',
-                fn: () => getCV(student.name, student.cv_path)
-            },
-            {
-                text: 'Ver perfil',
-                icon: 'bi bi-person-fill',
-                color: '#666',
-                fn: () => navigate(`/profile/student/${student.id}`)
-            },
-        ]
-    }
 
-    const showModalContract = (student) => {
-        if(student.hired) {
-            invokeToast("warning", "Este estudiante ya fue contratado")
-            return;
-        } else if(user.role!=='EMPLOYED' || !user.signatory) {
-            invokeToast("warning", "Solo pueden contratar los empleados con privilegio de Firmante")
-            return;
-        }
-        else if(!student.hired) {
-            setStudentCont(student)
-            setModalContract(true)
-        }
-    }
-    const contractStudent = async () => {
-        setLoadingPriv(true)
-        const req = {
-            name: data.job_title, 
-            id_student: studentCont.id,
-            id_enterprise: data.enterprise_id, 
-            code: data.code,
-            init_date: data.job_start,
-            end_date: data.job_end
-        }
-        const response = await contractStudentApi(req)
-        if(response.success && response.result) {
-            setRDetails(modifyItemOfArray(rDetails, {...studentCont, hired: true}, 'id'))
-            setModalContract(false)
-            invokeToast("success", "Estudiante contratado")
-        } else invokeToast("error", response.message);
-        setLoadingPriv(false)
-    }
-
-    const getCV = (name, cv_path) => {
-        if(cv_path && cv_path!='') return `${cv_path}/${name} - CV`
-        else return ''
-    }
+    
+    
 
     return (
         <div className="psp">
@@ -177,7 +110,7 @@ export default function Applicants () {
                     <Section title={`Nombre del postulante`} small shadow>
                         <InputText data={form} setData={setForm} attribute={"student"}/>
                     </Section>
-                    <Section title={"Idiomas de la empresa"} small shadow>
+                    <Section title={"Idiomas que domina"} small shadow>
                         <InputMultiSelect list={addingInitArr(languages)} setData={setForm} attribute={"languages"} data={form} />
                     </Section>
                     <Section title={"Ubicación"} small shadow>
@@ -186,7 +119,7 @@ export default function Applicants () {
                     <Section title={"Especialidad"} small shadow>
                         <InputCombo list={addingInitArr(specialties)} setData={setForm} attribute={"specialty"} data={form} />
                     </Section>
-                    <Section title={"Tipo de postulantes"} small shadow>
+                    <Section title={"Estado del postulante"} small shadow>
                         <InputCombo list={typeOfApplicants} setData={setForm} attribute={"type"} data={form} />
                     </Section>
                     <Section title={"Ordenar por"} small shadow>
@@ -213,26 +146,12 @@ export default function Applicants () {
                         <Section title={"Resultados"}>
                             { !loadingSearch && 
                                 rDetails.map((item, index) => (
-                                    <Card key={index} 
-                                        text1={`${item.name}`}
-                                        text2={`${item.specialty} - ${item.cycle!=100? `${item.cycle}° ciclo`: 'Egresado'}`}
-                                        text3={`Idiomas: ${getStrLanguages(item.languages)}`}
-                                        text4={`Última modificación de CV: ${item.cv_update!=''? item.cv_update: 'No tiene'}`}
-                                        photo={item.photo}
-                                        circleState={-2}
-                                    >
-                                        <OptionsIcon listIcons={getOptions(item)} visibleText verticalIcons/>
-                                    </Card>
+                                    <CardApplicant item={item} key={index} data={data} setRDetails={setRDetails} rDetails={rDetails}/>
                                 ))
                             }
                             {loadingSearch && <Loading size={180} />}
                         </Section>
-                        <ModalBasic setShow={setModalContract} show={modalContract} noButtons={loadingPriv}
-                            handleClick={contractStudent} title={"Contratar estudiante"}>
-                                {!loadingPriv && <CardProfile idUser={studentCont.id} name={studentCont.name} profile={"student"}
-                                    photo={studentCont.photo} subTitle="Esta acción es irreversible"/>}
-                                {loadingPriv && <Loading size={150} />}
-                        </ModalBasic>
+                        
                     </Section>
                 </div>
             </div>}

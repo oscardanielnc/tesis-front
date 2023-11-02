@@ -94,6 +94,20 @@ function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
                 name: "Alumnos",
                 link: `/practices/students`
             },
+            {
+                name: "Entregables",
+                link: `/practices/deliverables`
+            },
+            {
+                name: "Lista Negra",
+                link: `/practices/black-list`
+            },
+        ],
+        evaluator: [
+            {
+                name: "Lista Negra",
+                link: `/practices/black-list`
+            },
         ],
         student: [
             {
@@ -110,7 +124,7 @@ function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
             },
             {
                 name: "Entregables",
-                link: `/practices/assessment`
+                link: `/practices/deliverables`
             },
             {
                 name: "Empresas",
@@ -133,6 +147,10 @@ function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
             {
                 name: "Convenios",
                 link: `/digital-sign/agreements`
+            },
+            {
+                name: "Lista Negra",
+                link: `/practices/black-list/enterprise/${idUser}`
             },
         ],
         employed: [

@@ -6,12 +6,11 @@ import OptionsIcon from "../../components/OptionsIcon";
 import Section from "../../components/Section";
 import Card from "../../components/Card";
 import InputText from "../../components/Inputs/InputText";
-import InputMultiSelect from "../../components/Inputs/InputMultiSelect";
 import InputCombo from "../../components/Inputs/InputCombo";
 import { getLanguagesApi, getLocationsApi, getSectorsApi } from "../../api/sysData";
 import { modalitiesType } from "../../utils/global-consts";
 import Button from "../../components/Inputs/Button";
-import { addingInitArr } from "../../utils/generical-functions";
+import { addingInitArr, getDateByDate } from "../../utils/generical-functions";
 import InputRange from "../../components/Inputs/InputRange";
 import { getJobsApi } from "../../api/job";
 import { useNavigate } from "react-router-dom";
@@ -127,7 +126,7 @@ export default function SearchJob () {
                                 <Card key={index} 
                                     text1={`${item.job_title} (C${item.code}) - ${item.salary} S/.`}
                                     text2={`${item.enterprise_name} (${item.location}) • ${item.modality}`}
-                                    text3={`Fin de postulación: ${item.date_end}`}
+                                    text3={`Postulación: desde el ${getDateByDate(item.date_init)} hasta el ${getDateByDate(item.date_end)}`}
                                     text4={item.description+'...'}
                                     userId={item.enterprise_id}
                                     profile={"enterprise"}

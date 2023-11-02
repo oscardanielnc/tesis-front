@@ -96,12 +96,20 @@ export const typeOfApplicants = [
         name: 'Mostrar todos',
     },
     {
-        value: 'C',
-        name: 'Mostrar contratados',
+        value: 'P',
+        name: 'Postulante',
     },
     {
-        value: 'P',
-        name: 'No mostrar contratados',
+        value: 'R',
+        name: 'Precalificado',
+    },
+    {
+        value: 'C',
+        name: 'Contratado',
+    },
+    {
+        value: 'N',
+        name: 'CV no apto',
     },
 ]
 export const orderByApplicants = [
@@ -252,5 +260,38 @@ export const opinionsScore = [
     {
         value: '5',
         name: '5',
+    },
+]
+
+export const deliverablesOptions = [
+    {
+        value: 'docs',
+        name: 'DOCUMENTOS',
+    },
+    {
+        value: 'dev',
+        name: 'ENTREGABLES',
+    },
+    {
+        value: 'form',
+        name: 'FORMULARIO DE ACTIVIDADES',
+    },
+]
+export const blacklistStates = [
+    {
+        value: '',
+        name: 'Todos...',
+    },
+    {
+        value: 'A',
+        name: 'Activo',
+    },
+    {
+        value: 'B',
+        name: 'En lista negra',
+    },
+    {
+        value: 'N',
+        name: 'En análisis',
     },
 ]

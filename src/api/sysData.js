@@ -52,7 +52,7 @@ export function createPeriodApi (body) {
     const url = `sys-data/period`
     return httpConsult(url, 'POST', body)
 }
-export function getPeriodsApi () {
-    const url = `sys-data/periods`
+export function getPeriodsApi (id='x') {
+    const url = `sys-data/periods/${id}`
     return httpConsult(url, 'GET')
 }

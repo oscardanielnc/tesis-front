@@ -6,6 +6,8 @@ export function goToHome(user) {
         window.location.href = `/practices/students`;
     } else if(user.role === "SIGNATORY") {
         window.location.href = `/digital-sign/agreements`;
+    }else if(user.role === "EVALUATOR") {
+        window.location.href = `/practices/black-list`;
     } else {
         window.location.href = `/profile/${user.role.toLowerCase()}/${user.id}`;
     }

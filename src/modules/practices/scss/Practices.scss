@@ -44,3 +44,51 @@
         box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     }
 }
+
+.table-docdeliv-docs {
+    display: flex;
+    width: fit-content;
+    gap: 16px;
+    align-items: center;
+}
+.deliverable-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 12px;
+    border-top: 0.5px solid #929292;
+    border-bottom: 0.5px solid #929292;
+
+    &-comment {
+        display: grid;
+        margin-top: 4px;
+
+        strong {
+            color: #929292;
+            font-size: 15px;
+        }
+    }
+    &-button {
+        margin-top: 12px;
+        display: grid;
+        justify-content: flex-end;
+    }
+}
+
+.black-list-only {
+    display: grid;
+    justify-content: center;
+}
+
+.tag-state-bl {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    align-items: center;
+    i {
+        font-size: 24px;
+    }
+}

@@ -10,7 +10,7 @@ import {applyJobApi, getJobByCodeApi, noApplyJobApi} from "../../api/job"
 import { useNavigate, useParams } from "react-router-dom";
 import EditJob from "./EditJob";
 import invokeToast from "../../utils/invokeToast";
-import { getTime5h, nowTime } from "../../utils/generical-functions";
+import { getDateByDate, getTime5h, nowTime } from "../../utils/generical-functions";
 import Loading from "../../components/Loading";
 
 export default function Job () {
@@ -70,7 +70,7 @@ export default function Job () {
                         {user.role === "STUDENT" && data.contracted && 
                             <span>Usted ya ha sido contratado para este trabajo.</span>
                         }
-                        {user.role === "STUDENT" && (getTime5h(data.date_end) > nowTime()) && 
+                        {user.role === "STUDENT" && (getTime5h(data.date_end) > nowTime()) && (getTime5h(data.date_init) < nowTime()) && 
                             <Button variant={data.alredy_applied? "danger":"primary"} center handleClick={handleClick}
                             icon={data.alredy_applied? "bi bi-bookmark-x-fill": "bi bi-bookmark-check-fill"} 
                             title={data.alredy_applied? "Cancelar postulación": "Postular"}/>
@@ -79,7 +79,7 @@ export default function Job () {
                             <span>Oferta laboral finalizada.</span>
                         }
                         <div style={{display: 'flex', justifyContent: 'center', gap: '16px'}}>
-                            {isMyEnterprise && (user.role === "EMPLOYED" && user.recruiter) && !editMode && 
+                            {isMyEnterprise && (user.role === "EMPLOYED" && user.recruiter) && !editMode && (getTime5h(data.date_init) < nowTime()) && 
                                 (getTime5h(data.date_end) > nowTime()) && <Button variant={"primary"} title={"Editar"}
                                 handleClick={()=>setEditMode(true)} icon={"bi bi-pencil-fill"}/>
                             }
@@ -98,11 +98,11 @@ export default function Job () {
                                 <div><strong>Modalidad:</strong> <span>{data.modality}</span></div>
                                 <div><strong>Vacantes:</strong> <span>{data.vacancies>0? data.vacancies: 'No especificado'}</span></div>
                             </div>
-                            <div className="job_description_place">
-                                <div><strong>Fin de postulación:</strong> <span>{data.date_end}</span></div>
+                            {data.date_init && <div className="job_description_place">
+                                <div><strong>Postulación:</strong> <span>desde el {getDateByDate(data.date_init)} hasta el {getDateByDate(data.date_end)}</span></div>
                                 <div><strong>Postulantes registrados:</strong> <span>{data.registered} {data.max_applicants>0? `/ ${data.max_applicants}`: ''}</span></div>
-                                <div><strong>Periodo laboral:</strong> <span>desde el {data.job_start} hasta el {data.job_end}</span></div>
-                            </div>
+                                <div><strong>Periodo laboral:</strong> <span>desde el {getDateByDate(data.job_start)} hasta el {getDateByDate(data.job_end)}</span></div>
+                            </div>}
                         </div>
                         <div className="job_benefits">
                             { data.sections && 

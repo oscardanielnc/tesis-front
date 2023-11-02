@@ -16,12 +16,20 @@ export function getAlredySignedApi (idEnterprise, idUser) {
     const url = `enterprise-signed/${idEnterprise}/${idUser}`
     return httpConsult(url, 'GET')
 }
+export function getEnterpriseBlackListApi (idEnterprise) {
+    const url = `enterprise-bl/${idEnterprise}`
+    return httpConsult(url, 'GET')
+}
 export function getEnterprisesOpinionsApi (body) {
     const url = `enterprises-opinions`
     return httpConsult(url, 'POST',body)
 }
 export function getEnterprisesApi (body) {
     const url = `enterprises`
+    return httpConsult(url, 'POST',body)
+}
+export function getEnterprisesBLApi (body) {
+    const url = `enterprises-bl`
     return httpConsult(url, 'POST',body)
 }
 export function updateEnterpriseApi (body) {

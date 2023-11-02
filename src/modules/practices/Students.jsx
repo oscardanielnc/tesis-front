@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import invokeToast from "../../utils/invokeToast"
 import Loading from "../../components/Loading";
 import { addingInitArr, modifyItemOfArray } from "../../utils/generical-functions";
-import { getStudentsProfessorApi, getSupervisorsApi, registrationApi } from "../../api/professor";
+import { assignScoreApi, getStudentsProfessorApi, getSupervisorsApi, noRegistrationApi, registrationApi } from "../../api/professor";
 import ModalBasic from "../../components/Modals/ModalBasic";
 import ModalSupervisors from "../../components/Modals/ModalSupervisors";
 
@@ -21,7 +21,7 @@ const formDummy = {
     cycle: '',
     name: '',
     supervisor: '',
-    state: '',
+    state: ''
 }
 
 export default function Students () {
@@ -31,15 +31,17 @@ export default function Students () {
     const [form, setForm] = useState(formDummy)
     const [loading, setLoading] = useState(false)
     const [modalRegister, setModalRegister] = useState(false)
+    const [modalScore, setModalScore] = useState(false)
     const [modalSupervisor, setModalSupervisor] = useState(false)
     const [student, setStudent] = useState(null)
     const [supervisor, setSupervisors] = useState([])
     const [cycles, setCycles] = useState([])
     const [actualCycle, setActualCycle] = useState(null)
+    const [formScore, setFormScore] = useState({score: ''})
 
     useEffect(()=> {
         async function fetchData() {
-            const response = await getSupervisorsApi('1');
+            const response = await getSupervisorsApi(user.specialty);
             if(response.success) {
                 setSupervisors(response.result)
             }
@@ -61,7 +63,17 @@ export default function Students () {
 
     const onSearch = async () => {
         setLoading(true)
-        const response = await getStudentsProfessorApi(form);
+        let req = {
+            ...form, 
+            specialty: user.specialty
+        }
+        if(!user.coordinator) {
+            req = {
+                ...req, 
+                supervisor: user.id
+            }
+        }
+        const response = await getStudentsProfessorApi(req);
         if(response.success) {
             setData(response.result)
         } else invokeToast("error", response.message)
@@ -85,14 +97,26 @@ export default function Students () {
             text: 'Cambiar Sup.',
             fn: ()=> openModal(item, 'supervisor'),
         }
-        const arr = [register,profile,change]
+        const score = {
+            icon: 'bi bi-file-binary',
+            text: 'Asig. Nota',
+            fn: ()=> openModal(item, 'score'),
+        }
+        const arr = (user.coordinator)? [register,profile,change]: [score, profile]
         return arr
     }
 
     const openModal = (item, name) => {
+        //supervisor y register, durante matricula actual
+        // score, durante el ciclo actual
+        if(name==='supervisor' && !item.enrollment) {
+            invokeToast("warning", "Debe matricular al alumno antes de asignar un supervisor")
+            return
+        }
         setStudent(item)
         if(name==='register') setModalRegister(true)
         else if(name==='supervisor') setModalSupervisor(true)
+        else if(name==='score') setModalScore(true)
     }
 
     const registration = async () => {
@@ -101,14 +125,37 @@ export default function Students () {
             enrollment: !student.enrollment,
             state: !student.enrollment? 'Matriculado': 'No Matriculado'
         }
+        const req = {specialty: user.specialty, cycle: actualCycle.id, student: student.id}
         setLoading(true)
-        const response = await registrationApi({specialty: user.specialty, cycle: actualCycle.id, student: student.id});
+        let fnExecute = registrationApi
+        if(!stud.enrollment) fnExecute = noRegistrationApi
+        const response = await fnExecute(req);
         if(response.success) {
             invokeToast("success", "Matrícula modificada!")
             setData(modifyItemOfArray(data,stud, 'id'))
             setModalRegister(false)
         } else invokeToast("error", response.message)
         setLoading(false)
+    }
+
+    const asignScore = async () => {
+        if(formScore.score && formScore.score!='') {
+            const s = Number(formScore.score)
+            const stud = {
+                ...student,
+                score: s,
+                state: s<=10? "Desaprobado": "Aprobado"
+            }
+            setLoading(true)
+            const response = await assignScoreApi({specialty: user.specialty, cycle: actualCycle.id, student: student.id, score: s});
+            if(response.success) {
+                invokeToast("success", "Nota asignada!")
+                setData(modifyItemOfArray(data,stud, 'id'))
+                setModalScore(false)
+            } else invokeToast("error", response.message)
+            setLoading(false)
+            setFormScore({score: ''})
+        } else invokeToast("warning", "Falta ingresar la nota")
     }
 
 
@@ -124,9 +171,9 @@ export default function Students () {
                     <Section title={"Nombre del estudiante o código"} small shadow>
                         <InputText data={form} setData={setForm} attribute={"name"}/>
                     </Section>
-                    <Section title={"Supervisor"} small shadow>
+                    {user.coordinator && <Section title={"Supervisor"} small shadow>
                         <InputCombo list={addingInitArr(supervisor)} setData={setForm} attribute={"supervisor"} data={form} />
-                    </Section>
+                    </Section>}
                     <Section title={"Estado de matrícula"} small shadow>
                         <InputCombo list={registrationStatuses} setData={setForm} attribute={"state"} data={form} />
                     </Section>
@@ -141,8 +188,8 @@ export default function Students () {
                             data.map((item, index) => (
                                 <Card key={index} 
                                     text1={`${item.name} (${item.code})`}
-                                    text2={`Supervisor: ${item.supervisor}`}
-                                    text3={`Nota: ${item.score===-1? "Sin calificar": item.score}`}
+                                    text2={`Supervisor: ${item.supervisor!=''? item.supervisor: 'Sin asignar'}`}
+                                    text3={`Nota: ${!item.score? "Sin calificar": item.score}`}
                                     text4={`(${item.state})`}
                                     userId={item.id}
                                     photo={item.photo}
@@ -163,6 +210,11 @@ export default function Students () {
                 </ModalBasic>}
                 {student && <ModalSupervisors setShow={setModalSupervisor} show={modalSupervisor} arrSups={supervisor} 
                     actualCycle={actualCycle} student={student} setArrStudents={setData} arrStudents={data}/>}
+                {student && <ModalBasic handleClick={asignScore} setShow={setModalScore} show={modalScore} title={`Asignar nota a ${student.name}`}>
+                    <div>
+                        <InputText setData={setFormScore} attribute={'score'} data={formScore} isNumber maxLength={2} placeholder="Nota del curso" />
+                    </div>
+                </ModalBasic>}
             </div>
         </div>
     )

@@ -2,8 +2,8 @@ import "./scss/Card.scss";
 
 const icons = [
     {
-        img: "bi bi-bug-fill",
-        color: "#13128B",
+        img: "bi bi-globe2",
+        color: "#000",
         value: 0
     },
     {

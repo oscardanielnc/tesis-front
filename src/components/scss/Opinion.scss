@@ -62,3 +62,25 @@
     font-size: 14px !important;
     font-weight: 400 !important;
 }
+
+.input-survey {
+    display: flex;
+
+    &-item {
+        padding: 0px 8px;
+        border: 2px solid #699BF7;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+
+        &:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+        &:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+    }
+    &.disabled &-item {
+        cursor: default;
+    }
+}

@@ -1,6 +1,6 @@
 import "../scss/InputText.scss"
 
-export default function InputTextarea({cols, rows, attribute, data, setData}) { 
+export default function InputTextarea({cols, rows, attribute, data, setData, placeholder=''}) { 
     const handleChange = e => {
         const value = e.target.value
         setData({
@@ -10,7 +10,7 @@ export default function InputTextarea({cols, rows, attribute, data, setData}) {
     }
 
   return (
-        <textarea cols={cols} rows={rows} className="input-textarea" style={{width: !cols? "100%": ''}}
+        <textarea cols={cols} rows={rows} className="input-textarea" style={{width: !cols? "100%": ''}} placeholder={placeholder}
             value={data[attribute]} onChange={handleChange}>
         </textarea>
   );

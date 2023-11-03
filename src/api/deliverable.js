@@ -16,8 +16,24 @@ export function insertCommentDelivApi (body) {
     const url = `deliv/comment`
     return httpConsult(url, 'POST', body)
 }
+export function registerEnterpriseFormApi (body) {
+    const url = `deliv/enterprise-form`
+    return httpConsult(url, 'POST', body)
+}
 export function getAssessmentDataApi (body) {
     const url = `deliv/assessment-data`
+    return httpConsult(url, 'POST', body)
+}
+export function getMyFormOpinionApi (body) {
+    const url = `deliv/my-form`
+    return httpConsult(url, 'POST', body)
+}
+export function getFormOpinionsApi (body) {
+    const url = `deliv/opinions-form`
+    return httpConsult(url, 'POST', body)
+}
+export function sendSurveyApi (body) {
+    const url = `deliv/survey`
     return httpConsult(url, 'POST', body)
 }
 export function getAssessmentsCycleApi (cycle,specialty,student) {

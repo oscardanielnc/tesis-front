@@ -126,10 +126,10 @@ function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
                 name: "Entregables",
                 link: `/practices/deliverables`
             },
-            {
-                name: "Empresas",
-                link: `/practices/enterprises`
-            },
+            // {
+            //     name: "Empresas",
+            //     link: `/practices/enterprises`
+            // },
         ],
         enterprise: [
             {

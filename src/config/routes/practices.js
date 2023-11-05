@@ -3,8 +3,10 @@ import Deliverable from "../../modules/practices/Deliverable"
 import DocsDeliverables from "../../modules/practices/DocsDeliverables"
 import EnterpriseBlackList from "../../modules/practices/EnterpriseBlackList"
 import EnterprisesOpinions from "../../modules/practices/EnterprisesOpinions"
+import FormsByStudent from "../../modules/practices/FormsByStudent"
 import Opinions from "../../modules/practices/Opinions"
 import Students from "../../modules/practices/Students"
+import StudentsOpinions from "../../modules/practices/StudentsOpinions"
 
 const ROUTE = "/practices"
 
@@ -44,5 +46,15 @@ export const routes = [
         path: `${ROUTE}/black-list/enterprise/:id`,
         exact: true,
         component: EnterpriseBlackList,
+    },
+    {
+        path: `${ROUTE}/professor/forms/:cycle/:idStudent`,
+        exact: true,
+        component: FormsByStudent,
+    },
+    {
+        path: `${ROUTE}/enterprise/forms/:idStudent`,
+        exact: true,
+        component: StudentsOpinions,
     },
 ]

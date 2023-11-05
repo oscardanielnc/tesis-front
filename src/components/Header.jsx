@@ -152,6 +152,10 @@ function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
                 name: "Lista Negra",
                 link: `/practices/black-list/enterprise/${idUser}`
             },
+            {
+                name: "Estudiantes",
+                link: `/practices/enterprise/forms/x`
+            },
         ],
         employed: [
             {
@@ -173,6 +177,10 @@ function getDataHeader (type, idUser, idEnterprise,employedNoVerified) {
             {
                 name: "Convenios",
                 link: `/digital-sign/agreements`
+            },
+            {
+                name: "Estudiantes",
+                link: `/practices/enterprise/forms/x`
             },
         ],
     }

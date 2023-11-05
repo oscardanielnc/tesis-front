@@ -34,13 +34,11 @@ export default function TableDocDevForm ({option, cycle}) {
             }
             if(user.role==='STUDENT') {
                 const response3 = await getMyFormOpinionApi(req);
-                console.log(response3)
                 if(response3.success) {
                     setMyForm(response3.result)
                 }
             } else {
                 const response3 = await getFormOpinionsApi(req);
-                console.log(response3)
                 if(response3.success) {
                     setListOpinions(response3.result)
                 }

@@ -44,10 +44,10 @@ export default function ProfileEnterprise () {
     const [details, setDetails] = useState(detailsDummy);
     const [modalLanguage, setModalLanguage] = useState(false)
     const [modalDelete, setModalDelete] = useState(false)
-    const [modalOpinion, setModalOpinion] = useState(false)
+    // const [modalOpinion, setModalOpinion] = useState(false)
     const [attrsToDelete, setAttrsToDelete] = useState({arr: [], item: {}})
-    const [modeModal, setModeModal] = useState("edit");
-    const [elementToEdit, setElementToEdit] = useState(opinionDummy);
+    // const [modeModal, setModeModal] = useState("edit");
+    // const [elementToEdit, setElementToEdit] = useState(opinionDummy);
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -76,16 +76,16 @@ export default function ProfileEnterprise () {
         fetchData();
       }, []);
 
-    const alredySigned = (studentId, opinions) => {
-        if (opinions) {
-            for (let element of opinions) {
-                if(element.student_id === studentId) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
+    // const alredySigned = (studentId, opinions) => {
+    //     if (opinions) {
+    //         for (let element of opinions) {
+    //             if(element.student_id === studentId) {
+    //                 return true
+    //             }
+    //         }
+    //     }
+    //     return false
+    // }
 
     const showModalDelete = (arr, item) => {
         if(arr.length<=1) {
@@ -109,24 +109,24 @@ export default function ProfileEnterprise () {
         }else invokeToast("error", response.message)
     }
     
-    const showModalOpinion = (item=null) => {
-        let elem = {
-            ...opinionDummy,
-            id: '-',
-            enterprise_name: data.name,
-            student: user.name,
-            student_id: data.id,
-            ruc: data.ruc
-        }
-        if(item) {
-            elem = item
-            setModeModal("edit")
-        }else {
-            setModeModal("add")
-        }
-        setElementToEdit(elem)
-        setModalOpinion(true)
-    }
+    // const showModalOpinion = (item=null) => {
+    //     let elem = {
+    //         ...opinionDummy,
+    //         id: '-',
+    //         enterprise_name: data.name,
+    //         student: user.name,
+    //         student_id: data.id,
+    //         ruc: data.ruc
+    //     }
+    //     if(item) {
+    //         elem = item
+    //         setModeModal("edit")
+    //     }else {
+    //         setModeModal("add")
+    //     }
+    //     setElementToEdit(elem)
+    //     setModalOpinion(true)
+    // }
 
     return (
         <div className="profile">
@@ -180,7 +180,13 @@ export default function ProfileEnterprise () {
                     </Section>
                 </div>
                 <div className="profile_container_secondary">
-                    <Section title={"Opiniones"} shadow>
+                    <Section>
+                        <span>
+                            Sección reservada para futuros componentes...
+                        </span>
+
+                    </Section>
+                    {/* <Section title={"Opiniones"} shadow>
                         {user.role==="STUDENT" && alredySigned(user.id, details.opinions) && 
                         <div className="profile_container_principal_plus">
                             <Button title={"Escribe tu opinión"}
@@ -208,12 +214,12 @@ export default function ProfileEnterprise () {
                                 />
                             ))
                         }
-                    </Section>
+                    </Section> */}
                     <ModalLanguage show={modalLanguage} setShow={setModalLanguage} type={"add"} myData={user.languages} isEnterprise/>
                     <ModalBasic title={`Eliminar elemento`} show={modalDelete} setShow={setModalDelete} handleClick={deleteItemModal}>
                         <span>{`Idioma ${attrsToDelete.item.name}`}</span>
                     </ModalBasic>
-                    <ModalOpinion opinion={elementToEdit} setShow={setModalOpinion} show={modalOpinion} type={modeModal} photo={data.photo}/>
+                    {/* <ModalOpinion opinion={elementToEdit} setShow={setModalOpinion} show={modalOpinion} type={modeModal} photo={data.photo}/> */}
                 </div>
             </div>}
             {loading && <Loading size={250} />}

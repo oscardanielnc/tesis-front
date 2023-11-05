@@ -57,20 +57,21 @@ export default function Survey({opinion,person}) {
                             <div className="survey-form-box-item" key={key}>
                                 <li>{item.text}</li>
                                 <InputSurvey attribute={`${person}${item.value}`} data={form} setData={setForm} 
-                                    disabled={form[`${person==='s'? 'student': 'enterprise'}_date`]!=0} />
+                                    disabled={form[`${person==='s'? 'student': 'enterprise'}_date`]!=0 || 
+                                    user.id!=opinion[`${person==='s'? 'id_creator': 'id_enterprise'}`]} />
                             </div>
                         ))
                     }
                 </div>
                 <div className="survey-form-comments">
-                    {form[`${person==='s'? 'student': 'enterprise'}_date`]==0 &&
-                    <InputTextarea attribute={`comment_${person==='s'? "student": "entersprise"}`} rows={4} 
+                    {form[`${person==='s'? 'student': 'enterprise'}_date`]==0 && user.id==opinion[`${person==='s'? 'id_creator': 'id_enterprise'}`] &&
+                    <InputTextarea attribute={`comment_${person==='s'? "student": "enterprise"}`} rows={4} 
                         data={form} setData={setForm} placeholder="Comentario libre..."/>}
                     {form[`${person==='s'? 'student': 'enterprise'}_date`]!=0 &&
                         <span className="survey-form-comments_span">
-                            {form[`comment_${person==='s'? "student": "entersprise"}`]}
+                            {form[`comment_${person==='s'? "student": "enterprise"}`]}
                         </span>}
-                    {form[`${person==='s'? 'student': 'enterprise'}_date`]==0 && 
+                    {form[`${person==='s'? 'student': 'enterprise'}_date`]==0 && user.id==opinion[`${person==='s'? 'id_creator': 'id_enterprise'}`] &&
                         <div style={{display: "flex", justifyContent: 'end'}}>
                             <Button handleClick={openModal} title={"Guardar"}/>
                     </div>}

@@ -291,7 +291,7 @@ export default function ProfileStudent () {
                             ))
                         }
                     </Section>}
-                    <Section title={"Opiniones"} shadow>
+                    {/* <Section title={"Opiniones"} shadow>
                         {
                             details.opinions.length===0 && <MiniCard text={`Sin opiniones`}></MiniCard>
                         }
@@ -308,7 +308,7 @@ export default function ProfileStudent () {
                                 />
                             ))
                         }
-                    </Section>
+                    </Section> */}
                     <ModalLanguage show={modalLanguage} setShow={setModalLanguage} type={modeModal} 
                         myData={user.languages} lanEdit={elemToEdit} />
                     <ModalCerfiticates show={modalCerfiticates} setShow={setModalCerfiticates} type={modeModal} 

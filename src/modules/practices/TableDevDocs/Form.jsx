@@ -14,6 +14,7 @@ import InputRUC from "../../../components/Inputs/InputRUC";
 import IconSystem from "../../../components/IconSystem";
 import Survey from "./Survey";
 import { getDateByNumber } from "../../../utils/generical-functions";
+import { useNavigate } from "react-router-dom";
 
 
 const enterpriseDummy = {
@@ -27,6 +28,7 @@ const enterpriseDummy = {
 export default function Form({myForm,cycle,listOpinions}) {
     const {user} = useAuth();
     const [modal, setModal] = useState(false)
+    const navigate = useNavigate();
     const [enterForm, setEnterForm] = useState(enterpriseDummy)
 
     const register = async () => {
@@ -98,12 +100,13 @@ export default function Form({myForm,cycle,listOpinions}) {
                     <Card key={key}
                         text1={`${item.name} ${item.lastname}`}
                         text2={`Empresa: ${item.enterprise_name && item.enterprise_name!=''?item.enterprise_name: 'No registrada'}`}
-                        text3={`Feha de respuesta del estudiante: ${item.opinion && item.opinion.student_date && item.opinion.student_date!=0? getDateByNumber(item.opinion.student_date): 'Formulario no respondido'}`}
+                        text3={`Fecha de respuesta del estudiante: ${item.opinion && item.opinion.student_date && item.opinion.student_date!=0? getDateByNumber(item.opinion.student_date): 'Formulario no respondido'}`}
                         text4={getState(item)}
                         photo={item.photo}
                         circleState={item.form_student && item.form_enterprise? 1: item.form_student || item.form_enterprise? 0: -1}
                     >
-                        {/* <OptionsIcon listIcons={getOptions(item)} visibleText verticalIcons/> */}
+                        <OptionsIcon visibleText listIcons={[{icon: 'bi bi-box-arrow-in-right', 
+                            text: 'Ver', fn: ()=> navigate(`/practices/professor/forms/${cycle}/${item.id_student}`)}]}/>
                     </Card>
                 ))
             }

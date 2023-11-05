@@ -47,10 +47,8 @@ export default function EnterprisesOpinions () {
 
     const onSearch = async () => {
         setLoading(true)
-        console.log(form)
         const response = await getEnterprisesOpinionsApi(form);
         if(response.success) {
-            console.log(response.result)
             setData(response.result)
         } else invokeToast("error", response.message)
         setLoading(false)

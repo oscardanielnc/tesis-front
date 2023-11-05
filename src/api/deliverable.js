@@ -4,6 +4,10 @@ export function getDocumentsCycleApi (cycle,specialty) {
     const url = `deliv/docs/${cycle}/${specialty}`
     return httpConsult(url, 'GET')
 }
+export function getStudentOpinionsApi (id_enterprise) {
+    const url = `deliv/student/opinions/${id_enterprise}`
+    return httpConsult(url, 'GET')
+}
 export function deleteDocumentCycleApi (body) {
     const url = `deliv/doc`
     return httpConsult(url, 'DELETE', body)

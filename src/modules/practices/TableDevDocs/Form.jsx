@@ -93,7 +93,7 @@ export default function Form({myForm,cycle,listOpinions}) {
                   <Button title={"Registrar empresa"} handleClick={openModal} disabled={myForm.opinion}/>
                 </div>}
             </div>
-            {user.role==='STUDENT' && <Survey myForm={myForm.opinion} person={'s'} />}
+            {user.role==='STUDENT' && myForm && <Survey opinion={myForm.opinion} person={'s'} />}
 
             {
                 listOpinions.map((item,key)=> (

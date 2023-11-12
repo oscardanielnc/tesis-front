@@ -9,6 +9,7 @@ import Loading from "./Loading";
 import useAuth from "../hooks/useAuth";
 import invokeToast from "../utils/invokeToast";
 import { contractStudentApi } from "../api/student";
+import { useNavigate } from "react-router-dom";
 
 export default function CardApplicant ({item, data, setRDetails, rDetails}) {
     const {user} = useAuth()
@@ -17,6 +18,7 @@ export default function CardApplicant ({item, data, setRDetails, rDetails}) {
     const [modalContract, setModalContract] = useState(false);
     const [studentCont, setStudentCont] = useState({});
     const [loadingPriv, setLoadingPriv] = useState(false)
+    const navigate = useNavigate()
 
     const getCV = (name, cv_path) => {
         if(cv_path && cv_path!='') return `${cv_path}/${name} - CV`

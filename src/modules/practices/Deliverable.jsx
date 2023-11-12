@@ -37,7 +37,6 @@ export default function Deliverable () {
             const response = await getAssessmentDataApi(req);
             if(response.success) {
                 setData(response.result)
-                console.log(response.result)
                 if(user.role==='PROFESSOR' && response.result.delivers.length>0) {
                     setDeliverView(response.result.delivers[0])
                 } else if(user.role==='STUDENT') {

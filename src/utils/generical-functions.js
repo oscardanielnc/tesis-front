@@ -76,3 +76,12 @@ export function nowTime() {
 export function getTime5h(date) {
     return new Date(date).getTime() + 1000*60*60*5
 }
+
+export function replaceAll(str, find, replace) {
+    const s1 = str.replace(find, replace)
+    const s2 = s1.replace(find, replace)
+    const s3 = s2.replace(find, replace)
+    const s4 = s3.replace(find, replace)
+    const s5 = s4.replace(find, replace)
+    return s5;
+}

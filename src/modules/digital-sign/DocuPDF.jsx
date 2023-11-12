@@ -48,9 +48,7 @@ export default function DocuPDF () {
     const [originalPdf, setOriginalPdf] = useState(null)
 
     useEffect(() => {
-        console.log("pdf:", examPdf)
         const reader = new FileReader()
-        console.log(reader.readAsDataURL(examPdf))
         async function fetchData() {
             setLoading(true)
             const iam = user.role==='EMPLOYED'? "ENTERPRISE": user.role

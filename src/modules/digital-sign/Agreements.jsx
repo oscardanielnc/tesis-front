@@ -58,7 +58,6 @@ export default function Agreements () {
             myId: user.role==='EMPLOYED'? user.enterprise_id: user.id,
         }
         const response = await getAgreementsApi(req);
-        console.log(response)
         if(response.success) {
             setData(response.result)
         } else invokeToast("error", response.message)

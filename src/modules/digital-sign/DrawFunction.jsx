@@ -59,7 +59,6 @@ export default function DrawFunction ({id, list, setLoading, enterprise_name, jo
                 sign: fSign,
                 data: agreedata
             }
-            console.log(req, nlist)
             const response = await signAgreementApi(req)
             if(response.success && response.result) {
                 window.location.reload()

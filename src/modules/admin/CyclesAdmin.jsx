@@ -10,7 +10,7 @@ import ModalBasic from "../../components/Modals/ModalBasic";
 import invokeToast from "../../utils/invokeToast";
 import { getTime5h, nowTime } from "../../utils/generical-functions";
 
-const fisrtPeriodSys = 20231
+const fisrtPeriodSys = 20232
 const cycleDummy = {
     can: false,
     id: fisrtPeriodSys,
@@ -24,7 +24,6 @@ export default function SysDataAdmin () {
     const [data, setData] = useState([])
     const [show, setShow] = useState(false)
     const [newCycle, setNewCycle] = useState(cycleDummy)
-    console.log()
 
     useEffect(()=> {
         async function fetchData() {

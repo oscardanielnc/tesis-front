@@ -126,10 +126,10 @@ export default function EditJob ({initForm,setEditMode}) {
                     <Section title={`Cantidad máxima de postulantes`} small>
                         <InputText data={form} setData={setForm} attribute={"max_applicants"} isNumber maxLength={5}/>
                     </Section>
-                    <Section title={`Fecha de inicio`} small>
+                    <Section title={`Fecha de inicio del empleo`} small>
                         <InputDate data={form} setData={setForm} attribute={"job_start"}/>
                     </Section>
-                    <Section title={`Fecha de fin`} small>
+                    <Section title={`Fecha de fin del empleo`} small>
                         <InputDate data={form} setData={setForm} attribute={"job_end"}/>
                     </Section>
                 </div>

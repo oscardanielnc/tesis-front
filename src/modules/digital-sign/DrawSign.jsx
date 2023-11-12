@@ -73,7 +73,7 @@ export default function DrawSign () {
                     
                     <Section shadow title={`${data.job_title} (C${data.code})`}>
                         <div className="job_description_place">
-                            <div><strong>Sueldo:</strong> <span>{data.salary} S/.</span></div>
+                            <div><strong>Sueldo: </strong> <span>S/. {data.salary} </span></div>
                             <div><strong>Modalidad:</strong> <span>{data.modality}</span></div>
                         </div>
                         <Document name={`Convenio ${data.job_title} - ${data.student_name}`} path={data.doc_path} placeholder="Sin convenio..." />

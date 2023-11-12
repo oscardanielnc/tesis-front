@@ -13,7 +13,7 @@ import OptionsIcon from "../../components/OptionsIcon";
 import { signInApi } from "../../api/auth";
 import ModalLanguage from "../../components/Modals/ModalLanguage";
 import ModalCerfiticates from "../../components/Modals/ModalCertificates";
-import { deleteItemOfArray, getDateByNumber } from "../../utils/generical-functions";
+import { deleteItemOfArray, getDateByNumber, replaceAll } from "../../utils/generical-functions";
 import ModalBasic from "../../components/Modals/ModalBasic";
 import { deleteMyCertificateApi, deleteMyLenguageApi } from "../../api/sysData";
 import invokeToast from "../../utils/invokeToast";
@@ -248,9 +248,9 @@ export default function ProfileStudent () {
                         {(data.cv_path && data.cv_path!='') && <MiniCard icon={"bi bi-file-earmark-text"} 
                             text={getNameCv()}>
                                 <OptionsIcon  
-                                    listIcons={mySelf? [{icon: 'down', fn: ()=> `${user.cv_path}/${getNameCv()}`},
+                                    listIcons={mySelf? [{icon: 'down', fn: ()=> `${user.cv_path}/${replaceAll(getNameCv(), '/','-')}`},
                                     {icon: 'up', fn: (list)=> uploadMyCV(list)}]: 
-                                    [{icon: 'down', fn: ()=> `${user.cv_path}/${getNameCv()}`}]} 
+                                    [{icon: 'down', fn: ()=> `${user.cv_path}/${replaceAll(getNameCv(), '/','-')}`}]} 
                                 />
                         </MiniCard>}
                         {(data.cv_path=='' || !data.cv_path) && <MiniCard text={`Sin CV`}>

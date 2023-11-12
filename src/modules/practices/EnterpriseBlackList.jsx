@@ -49,7 +49,8 @@ export default function EnterpriseBlackList () {
                     </Section>}
                 </div>
                 <div className="psp_container_results">
-                    {data && <CreateComment onlyOne={data.comments.length===0} id={id} state={data.enterprise.state}/>}
+                    {data && <CreateComment onlyOne={data.comments.length===0} setLoading={setLoading}
+                    id={id} state={data.enterprise.state}/>}
                     {
                         data &&
                         data.comments.map((item,key)=> (
@@ -85,14 +86,13 @@ const formDUmmy = {
     document_name: '',
     action: ''
 }
-function CreateComment({onlyOne,id,state}) {
+function CreateComment({onlyOne,id,state,setLoading}) {
     const [createMode, setCreateMode] = useState(false)
     const [form, setForm]  = useState(formDUmmy)
     const [file, setFile] = useState(null)
     const {user} = useAuth()
 
     const getRole = () => {
-        console.log(user)
         if(user.role==="EVALUATOR") return "Evaluador de la institución educativa"
         if(user.role==="ENTERPRISE") return "Empresa"
         const r = user.coordinator? "Coordinador de ": "Supervisor de "
@@ -146,7 +146,9 @@ function CreateComment({onlyOne,id,state}) {
             action: 1,
             state: state
         }
+        setLoading(true)
         const response = await uploadBlackListApi(file?[file]:[],req)
+        setLoading(false)
         if(response.success && response.result) {
             invokeToast("success", "Publicado!")
             window.location.reload()
@@ -163,7 +165,9 @@ function CreateComment({onlyOne,id,state}) {
             action: isInBL? 3: 2,
             state: state
         }
+        setLoading(true)
         const response = await uploadBlackListApi([],req)
+        setLoading(false)
         if(response.success && response.result) {
             invokeToast("success", "Publicado!")
             window.location.reload()

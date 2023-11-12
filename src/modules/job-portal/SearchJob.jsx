@@ -124,7 +124,7 @@ export default function SearchJob () {
                         {!loading && 
                             data.map((item, index) => (
                                 <Card key={index} 
-                                    text1={`${item.job_title} (C${item.code}) - ${item.salary} S/.`}
+                                    text1={`${item.job_title} (C${item.code}) - S/. ${item.salary}`}
                                     text2={`${item.enterprise_name} (${item.location}) • ${item.modality}`}
                                     text3={`Postulación: desde el ${getDateByDate(item.date_init)} hasta el ${getDateByDate(item.date_end)}`}
                                     text4={item.description+'...'}
@@ -137,6 +137,9 @@ export default function SearchJob () {
                                         text: 'Ver', fn: ()=> navigate(`/job-portal/job/${item.code}`)}]} />
                                 </Card>
                             ))
+                        }
+                        {!loading && 
+                            data.length===0 && <span>No se encontraron convocatorias bajo estos criterios...</span>
                         }
                         {loading && <Loading size={180} />}
                     </Section>

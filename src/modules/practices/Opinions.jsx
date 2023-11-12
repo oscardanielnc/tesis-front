@@ -64,7 +64,6 @@ export default function Opinions () {
             } else invokeToast("error", response.message)
 
             const response2 = await getAlredySignedApi(idEnterprise, user.id);
-            console.log(response2)
             if(response2.success) {
                 setAlredySigned(response2.result)
             } else invokeToast("error", response2.message)
